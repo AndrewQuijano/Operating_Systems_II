@@ -48,7 +48,9 @@ def get_tree(train_x, train_y, test_x, test_y):
     print("Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
 
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=tree, clf_name='Decision_Tree')
-    top(tree, test_x, test_y, extra_rooms=2)
+    # Sanity check to match with test score
+    top(tree, test_x, test_y, "Decision Tree", extra_attempts=1)
+    top(tree, test_x, test_y, "Decision Tree", extra_attempts=3)
 
     with open("results.txt", "a") as my_file:
         my_file.write("[Decision Tree] Training Mean Test Score: " + str(tree.score(train_x, train_y)))

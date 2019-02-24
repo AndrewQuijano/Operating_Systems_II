@@ -15,7 +15,8 @@ def get_forest(train_x, train_y, test_x, test_y):
     y_hat = best_forest.predict(test_x)
     print("Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=best_forest, clf_name='Random_Forest')
-    top(best_forest, test_x, test_y, extra_rooms=2)
+    top(best_forest, test_x, test_y, "Random_Forest", extra_attempts=1)
+    top(best_forest, test_x, test_y, "Random_Forest", extra_attempts=3)
     with open("results.txt", "a") as my_file:
         my_file.write("[Random Forest] Training Mean Test Score: " + str(best_forest.score(train_x, train_y)))
         my_file.write("[Random Forest] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)))
@@ -81,14 +82,6 @@ def tune_forest(train_features, train_labels, n_fold=10):
     rf_min_leaf.fit(train_features, train_labels)
     plot_grid_search(rf_min_leaf.cv_results_, min_samples_leaf, 'min_samples_leaf')
 
-    # -----------------LAST STEP!-------------------
-    # Random search of parameters, using 3 fold cross validation,
-    # search across 100 different combinations, and use all available cores
-
-    # Fit the random search model
-    # rf_random.fit(train_features, train_labels)
-
-    # TODO: IF I ADD MORE "Features", by definition I must increase number of estimators!!
     random_forest = RandomForestClassifier(warm_start=False,
                                            n_estimators=rf_estimate.best_params_['n_estimators'],
                                            max_features=rf_max.best_params_['max_features'],
@@ -97,20 +90,3 @@ def tune_forest(train_features, train_labels, n_fold=10):
                                            min_samples_leaf=rf_min_leaf.best_params_['min_samples_leaf'])
     random_forest.fit(train_features, train_labels)
     return random_forest
-
-
-def main():
-    # Read Wifi and Blue Tooth Data Set
-    blue_x, blue_y = read_data_set('./blue.csv')
-    wifi_x, wifi_y = read_data_set('./wifi.csv')
-
-    # Build your CV sets here
-    blue_train_x, blue_train_y, blue_test_x, blue_test_y = get_cv_set(blue_x, blue_y)
-    wifi_train_x, wifi_train_y, wifi_test_x, wifi_test_y = get_cv_set(wifi_x, wifi_y)
-
-    blue_forest = get_forest(blue_train_x, blue_train_y, blue_test_x, blue_test_y)
-    wifi_forest = get_forest(wifi_train_x, wifi_train_y, wifi_test_x, wifi_test_y)
-
-
-if __name__ == "__main__":
-    main()

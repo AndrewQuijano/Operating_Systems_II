@@ -1,12 +1,14 @@
 import itertools
 import numpy as np
 import random
-import os
+from os import mkdir, path
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.model_selection import validation_curve
 from sklearn.metrics import confusion_matrix
 from matplotlib import pyplot as plt
+from collections import Counter
+from csv import reader
 
 
 def summation(elements):
@@ -30,42 +32,30 @@ def std_dev(elements):
     return variance
 
 
-def normal(elements):
-    return None
-
-
-# Input: A file with numbers:
-# Like 1, 2, 3, 4, 5, 1
-# Get <1, 2> <2, 1>, <3, 1>, def
-def frequency_count(filename=""):
-    freq_map = {}
-
-    return freq_map
+# Input: A file with numbers with frequencies:
+# For example a List of Exam Scores:
+# 80, 90, 100, 90, 75, ...
+# Get <90, 2> <80, 1>, <90, 1>, in a dictionary to be used
+def frequency_count(filename):
+    # Read the input file into one long list
+    objects = []
+    with open(filename, 'r') as file:
+        read_row = reader(filename)
+        for row in read_row:
+            objects.append(row)
+    counter = Counter(objects)
+    return dict(counter)
 
 
 # Input: A Hash Map <K, V> Key is item, Value is Frequency
 # Plot a Histogram!
 def frequency_histogram(hash_map):
-    plt.bar(indexes, values, align='center', color='blue')
+    plt.bar(list(hash_map.keys()), hash_map.values(), color='g')
     plt.xlabel('elements')
     plt.ylabel('count')
     plt.title('Frequency histogram')
-    plt.xticks(indexes, labels)
     plt.savefig(str('./histogram.png'))
     plt.show()
-
-
-# This is only for this specific case...
-def read_data_set(filename, isnumeric=False):
-    x = np.genfromtxt(filename, delimiter=',', skip_header=1)
-    if isnumeric:
-        y = x[:, 0]
-    else:
-        y = np.genfromtxt(filename, delimiter=',', skip_header=1, dtype=str)
-        y = y[:, 0]
-    # x must delete first column which is the label
-    x = x[:, 1:]
-    return x, y
 
 
 def get_cv_set(training_set, test_set, percentile=0.2):
@@ -84,8 +74,9 @@ def get_cv_set(training_set, test_set, percentile=0.2):
     return training_set, test_set, cv_train, cv_test
 
 
-def top(clf, test_x, test_y, extra_rooms=1):
-    # Get your list...
+# Technically setting the extra attempts = 1 should be equivalent to getting you the test score
+def top(clf, test_x, test_y, classifier, extra_attempts=1):
+    # Get your list of classes
     # Sort it such that highest probabilities come first...
     # https://stackoverflow.com/questions/613183/how-do-i-sort-a-dictionary-by-value
     # To print highest first, set reverse=True
@@ -101,10 +92,15 @@ def top(clf, test_x, test_y, extra_rooms=1):
     # Let us say test the first 3 rooms? See if it matches!
     for i in range(len(test_y)):
         # print(probability_dict[i])
-        for j in range(extra_rooms):
+        for j in range(extra_attempts):
             if probability_dict[i][j][1] == test_y[i]:
                 success = success + 1
                 break
+
+    # Print Results
+    with open("results.txt", "a") as my_file:
+        my_file.write("[" + classifier + "] Testing Mean Test Score with " + str(extra_attempts)
+                      + ": " + str(success/len(test_y)))
     # print("Test Error for " + str(extra_rooms) + " Rooms: " + str(success/len(test_y)))
 
 
@@ -129,8 +125,8 @@ def scale_and_pca(train_x, test_x):
 
 def plot_grid_search(cv_results, grid_param, name_param, directory="Cross_Validation"):
     # Create target Directory if don't exist
-    if not os.path.exists(directory):
-        os.mkdir(directory)
+    if not path.exists(directory):
+        mkdir(directory)
     #    print("Directory ", directory, " Created! ")
     # else:
         # print("Directory ", "Cross_Validation", " already exists")
@@ -144,7 +140,6 @@ def plot_grid_search(cv_results, grid_param, name_param, directory="Cross_Valida
 
     # Param1 is the X-axis, Param 2 is represented as a different curve (color line)
     ax.plot(grid_param, scores_mean, label="CV-Curve")
-
     ax.set_title("Grid Search Scores", fontsize=20, fontweight='bold')
     ax.set_xlabel(name_param, fontsize=16)
     ax.set_ylabel('CV Average Score', fontsize=16)
@@ -181,7 +176,8 @@ def plot_validation_curve(x, y, param_range, param_name, clf, clf_name="SVM"):
     plt.legend(loc="best")
     plt.show()
 
-
+# Source code from:
+# https://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
 def plot_confusion_matrix(cm, classes,
                           normalize=False,
                           title='Confusion matrix',
@@ -218,8 +214,8 @@ def plot_confusion_matrix(cm, classes,
 
 def make_confusion_matrix(y_true, y_pred, clf, clf_name, directory="Confusion_Matrix"):
     # Create target Directory if don't exist
-    if not os.path.exists(directory):
-        os.mkdir("Confusion_Matrix")
+    if not path.exists(directory):
+        mkdir("Confusion_Matrix")
     #    print("Directory ", directory, " Created ")
     # else:
     #    print("Directory ", directory, " already exists")

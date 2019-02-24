@@ -21,7 +21,8 @@ def logistic_linear(train_x, train_y, test_x, test_y):
     print("Testing Score is: " + str(accuracy_score(y_true=test_y, y_pred=y_hat)))
 
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=log_model, clf_name='Logistic_Regression')
-    top(log_model, test_x, test_y, extra_rooms=2)
+    top(log_model, test_x, test_y, "Logistic_Regression", extra_attempts=1)
+    top(log_model, test_x, test_y, "Logistic_Regression", extra_attempts=3)
 
     with open("results.txt", "a") as my_file:
         my_file.write("[Logistic Regression] Training Mean Test Score: " + str(log_model.score(train_x, train_y)))
@@ -32,21 +33,3 @@ def logistic_linear(train_x, train_y, test_x, test_y):
                                             target_names=[str(i) for i in log_model.classes_]))
     # print(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i) for i in log_model.classes_]))
     return log_model
-
-
-def main():
-    # Read Wifi and Blue Tooth Data Set
-    blue_x, blue_y = read_data_set('./blue.csv')
-    wifi_x, wifi_y = read_data_set('./wifi.csv')
-
-    # Build your CV sets here
-    blue_train_x, blue_train_y, blue_test_x, blue_test_y = get_cv_set(blue_x, blue_y)
-    wifi_train_x, wifi_train_y, wifi_test_x, wifi_test_y = get_cv_set(wifi_x, wifi_y)
-
-    # Test blue tooth
-    blue_clf = logistic_linear(blue_train_x, blue_train_y, blue_test_x, blue_test_y)
-    wifi_clf = logistic_linear(wifi_train_x, wifi_train_y, wifi_test_x, wifi_test_y)
-
-
-if __name__ == "__main__":
-    main()
