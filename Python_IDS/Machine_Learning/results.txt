@@ -1,0 +1,40 @@
+[SVM] Testing Mean Test Score with 1: 0.2311178247734139[SVM] Testing Mean Test Score with 1: 0.9473684210526315[SVM] Testing Mean Test Score with 2: 0.9894736842105263[SVM Linear] Training Mean Test Score: 0.9473684210526315
+[SVM Linear] Testing Mean Test Score: 0.9473684210526315
+[SVM_Radial] Testing Mean Test Score with 1: 0.9263157894736842[SVM_Radial] Testing Mean Test Score with 2: 0.9894736842105263[SVM Radial] Training Mean Test Score: 0.9368421052631579
+[SVM Radial] Testing Mean Test Score: 0.9368421052631579
+[SVM] Testing Mean Test Score with 1: 0.9473684210526315[SVM] Testing Mean Test Score with 2: 0.9894736842105263[SVM Linear] Training Mean Test Score: 0.9473684210526315
+[SVM Linear] Testing Mean Test Score: 0.9473684210526315
+[SVM_Radial] Testing Mean Test Score with 1: 0.9263157894736842[SVM_Radial] Testing Mean Test Score with 2: 0.9894736842105263[SVM Radial] Training Mean Test Score: 0.9368421052631579
+[SVM Radial] Testing Mean Test Score: 0.9368421052631579
+[SVM] Testing Mean Test Score with 1: 0.9473684210526315[SVM] Testing Mean Test Score with 2: 0.9894736842105263[SVM Linear] Training Mean Test Score: 0.9473684210526315
+[SVM Linear] Testing Mean Test Score: 0.9473684210526315
+[SVM_Radial] Testing Mean Test Score with 1: 0.9263157894736842[SVM_Radial] Testing Mean Test Score with 2: 0.9894736842105263[SVM Radial] Training Mean Test Score: 0.9368421052631579
+[SVM Radial] Testing Mean Test Score: 0.9368421052631579
+[Random_Forest] Testing Mean Test Score with 1: 0.5894736842105263[Random_Forest] Testing Mean Test Score with 3: 0.9473684210526315[Random Forest] Training Mean Test Score: 0.5894736842105263
+[Random Forest] Testing Mean Test Score: 0.5894736842105263
+[SVM] Testing Mean Test Score with 1: 0.9473684210526315[SVM] Testing Mean Test Score with 2: 0.9894736842105263[SVM Linear] Training Mean Test Score: 0.9473684210526315
+[SVM Linear] Testing Mean Test Score: 0.9473684210526315
+[SVM_Radial] Testing Mean Test Score with 1: 0.9263157894736842[SVM_Radial] Testing Mean Test Score with 2: 0.9894736842105263[SVM Radial] Training Mean Test Score: 0.9368421052631579
+[SVM Radial] Testing Mean Test Score: 0.9368421052631579
+[Random_Forest] Testing Mean Test Score with 1: 0.5263157894736842[Random_Forest] Testing Mean Test Score with 3: 0.8842105263157894[Random Forest] Training Mean Test Score: 0.5263157894736842
+[Random Forest] Testing Mean Test Score: 0.5263157894736842
+[SVM] Testing Mean Test Score with 1: 0.9473684210526315[SVM] Testing Mean Test Score with 2: 0.9894736842105263[SVM Linear] Training Mean Test Score: 0.9473684210526315
+[SVM Linear] Testing Mean Test Score: 0.9473684210526315
+[SVM_Radial] Testing Mean Test Score with 1: 0.9263157894736842[SVM_Radial] Testing Mean Test Score with 2: 0.9894736842105263[SVM Radial] Training Mean Test Score: 0.9368421052631579
+[SVM Radial] Testing Mean Test Score: 0.9368421052631579
+[Random_Forest] Testing Mean Test Score with 1: 0.6210526315789474[Random_Forest] Testing Mean Test Score with 3: 0.9263157894736842[Random Forest] Training Mean Test Score: 0.6210526315789474
+[Random Forest] Testing Mean Test Score: 0.6210526315789474
+[SVM] Testing Mean Test Score with 1: 0.9473684210526315[SVM] Testing Mean Test Score with 2: 0.9894736842105263[SVM Linear] Training Mean Test Score: 0.9473684210526315
+[SVM Linear] Testing Mean Test Score: 0.9473684210526315
+[SVM] Testing Mean Test Score with 1: 0.9473684210526315[SVM] Testing Mean Test Score with 2: 0.9894736842105263[SVM Linear] Training Mean Test Score: 0.9473684210526315
+[SVM Linear] Testing Mean Test Score: 0.9473684210526315
+[SVM_Radial] Testing Mean Test Score with 1: 0.9263157894736842[SVM_Radial] Testing Mean Test Score with 2: 0.9894736842105263[SVM Radial] Training Mean Test Score: 0.9368421052631579
+[SVM Radial] Testing Mean Test Score: 0.9368421052631579
+[Random_Forest] Testing Mean Test Score with 1: 0.5157894736842106[Random_Forest] Testing Mean Test Score with 3: 0.9263157894736842[Random Forest] Training Mean Test Score: 0.5157894736842106
+[Random Forest] Testing Mean Test Score: 0.5157894736842106
+[SVM] Testing Mean Test Score with 1: 0.9473684210526315[SVM] Testing Mean Test Score with 2: 0.9894736842105263[SVM Linear] Training Mean Test Score: 0.9473684210526315
+[SVM Linear] Testing Mean Test Score: 0.9473684210526315
+[SVM_Radial] Testing Mean Test Score with 1: 0.9263157894736842[SVM_Radial] Testing Mean Test Score with 2: 0.9894736842105263[SVM Radial] Training Mean Test Score: 0.9368421052631579
+[SVM Radial] Testing Mean Test Score: 0.9368421052631579
+[Random_Forest] Testing Mean Test Score with 1: 0.6210526315789474[Random_Forest] Testing Mean Test Score with 3: 0.9263157894736842[Random Forest] Training Mean Test Score: 0.6210526315789474
+[Random Forest] Testing Mean Test Score: 0.6210526315789474

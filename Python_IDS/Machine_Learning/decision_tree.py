@@ -2,6 +2,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, classification_report
 from misc import *
+import time
 
 
 def tune_tree(train_features, train_labels, n_fold=10):

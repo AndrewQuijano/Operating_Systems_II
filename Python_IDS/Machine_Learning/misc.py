@@ -153,7 +153,7 @@ def plot_grid_search(cv_results, grid_param, name_param, directory="Cross_Valida
     ax.set_xlabel(name_param, fontsize=16)
     ax.set_ylabel('CV Average Score', fontsize=16)
     ax.legend(loc="best", fontsize=15)
-    ax.grid('on')
+    ax.grid(True)
     plt.savefig(str('./Cross_Validation/CV_Plot_'+name_param+'.png'))
     # plt.show()
 

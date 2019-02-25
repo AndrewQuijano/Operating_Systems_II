@@ -11,21 +11,24 @@ from decision_tree import *
 from sys import argv, exit
 
 
-def read_data(file, skip_head=False):
+def read_data(file, skip_head=True):
     if skip_head:
-        features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=None, autostrip=True, converters=None)
+        features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=float, autostrip=True, converters=None)
     else:
-        features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=None, autostrip=True, converters=None)
-    classes = features[:, 0].copy()
-    features = features[:, 1:]
+        features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=float, autostrip=True, converters=None)
+
     if np.isnan(features).any():
-        print("NaN found in X!")
-        print(np.argwhere(np.isnan(features)))
-    if np.isnan(classes).any():
-        print("NaN found in Y!")
-        np.argwhere(np.isnan(classes))
-    # Convert features to data type float
-    features = features.astype(float)
+        if skip_head:
+            features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=str, autostrip=True, converters=None)
+        else:
+            features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=str, autostrip=True, converters=None)
+        classes = features[:, 0]
+        features = features[:, 1:]
+        features.astype(float)
+    else:
+        classes = features[:, 0]
+        features = features[:, 1:]
+
     return features, classes
 
 

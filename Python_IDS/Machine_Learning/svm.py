@@ -1,9 +1,8 @@
-import time
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn import svm
 from sklearn.model_selection import GridSearchCV
 from misc import *
-
+import time
 
 # Default is 10...
 def svc_rbf_param_selection(x, y, n_folds=2):
@@ -11,12 +10,14 @@ def svc_rbf_param_selection(x, y, n_folds=2):
     gammas = np.arange(0.01, 1, 0.01)
 
     # Test with just cost...
-    rbf_search_cost = GridSearchCV(svm.SVC(kernel='rbf'), param_grid={'C': c}, cv=n_folds, n_jobs=-1)
+    rbf_search_cost = GridSearchCV(svm.SVC(kernel='rbf', gamma='scale'), param_grid={'C': c}, cv=n_folds,
+                                   n_jobs=-1, error_score='raise')
     rbf_search_cost.fit(x, y)
     plot_grid_search(rbf_search_cost.cv_results_, c, 'SVM_RBF_Cost')
 
     # Test with just gamma
-    rbf_search_gamma = GridSearchCV(svm.SVC(kernel='rbf'), param_grid={'gamma': gammas}, cv=n_folds, n_jobs=-1)
+    rbf_search_gamma = GridSearchCV(svm.SVC(kernel='rbf'), param_grid={'gamma': gammas}, cv=n_folds,
+                                    error_score='raise')
     rbf_search_gamma.fit(x, y)
     plot_grid_search(rbf_search_gamma.cv_results_, gammas, 'SVM_RBF_Gamma')
 
@@ -30,8 +31,8 @@ def svc_rbf_param_selection(x, y, n_folds=2):
 def svc_linear_param_selection(x, y, n_folds=2):
     c = np.arange(0.01, 1, 0.01)
     param_grid = {'C': c}
-    model = svm.SVC(kernel='linear')
-    svm_line = GridSearchCV(model, param_grid, cv=n_folds, n_jobs=-1)
+    model = svm.SVC(kernel='linear', gamma='scale')
+    svm_line = GridSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise')
     svm_line.fit(x, y)
     plot_grid_search(svm_line.cv_results_, c, 'SVM_Linear_Cost')
     return svm_line
