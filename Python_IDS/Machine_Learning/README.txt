@@ -33,3 +33,9 @@ To be asked later:
 A- Tuning Parameters
 B- Triple Classifier system? Picking best classifier in crowd source environment?
 C- Semi-supervised learning or clustering?
+
+Usaage:
+python3 main_driver <training-set> <test-set>
+
+This is assuming that both files are CSV files. It also assumes that features and classes are all floating point values!
+When complete view Results.txt for scoring. This will generate the CV-plots to assist with parameter tuning and Confusion Matrices to assist with scoring.
