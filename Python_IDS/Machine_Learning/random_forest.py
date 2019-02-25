@@ -18,6 +18,7 @@ def get_forest(train_x, train_y, test_x, test_y):
     top(best_forest, test_x, test_y, "Random_Forest", extra_attempts=1)
     top(best_forest, test_x, test_y, "Random_Forest", extra_attempts=3)
     with open("results.txt", "a") as my_file:
+        my_file.write("[Random Forest] Best Parameters: " + str(best_forest.get_params()) + '\n')
         my_file.write("[Random Forest] Training Mean Test Score: " + str(best_forest.score(train_x, train_y)) + '\n')
         my_file.write("[Random Forest] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 
@@ -34,7 +35,7 @@ def get_forest(train_x, train_y, test_x, test_y):
 # https://towardsdatascience.com/hyperparameter-tuning-the-random-forest-in-python-using-scikit-learn-28d2aa77dd74
 # http://scikit-learn.org/stable/auto_examples/model_selection/plot_randomized_search.html#sphx-glr-auto-examples-model-selection-plot-randomized-search-py
 # https://towardsdatascience.com/random-forest-in-python-24d0893d51c0
-def tune_forest(train_features, train_labels, n_fold=2):
+def tune_forest(train_features, train_labels, n_fold=10):
     # Number of trees in random forest
     n_estimators = np.arange(10, 510, 10)
     # Number of features to consider at every split

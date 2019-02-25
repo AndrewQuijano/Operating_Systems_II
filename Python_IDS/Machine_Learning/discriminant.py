@@ -16,6 +16,7 @@ def discriminant_line(train_x, train_y, test_x, test_y):
     top(lda, test_x, test_y, "LDA", extra_attempts=3)
 
     with open("results.txt", "a") as my_file:
+        my_file.write("[LDA] Best Parameters: " + str(lda.get_params()) + '\n')
         my_file.write("[LDA] Training Mean Test Score: " + str(lda.score(train_x, train_y)))
         my_file.write("[LDA] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)))
 
@@ -35,10 +36,11 @@ def discriminant_quad(train_x, train_y, test_x, test_y):
     print("Prediction Score is (QDA): " + str(accuracy_score(test_y, y_hat)))
 
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=qda, clf_name='QDA')
-    top(qda, test_x, test_y, "QDA", extra_rooms=1)
-    top(qda, test_x, test_y, "QDA", extra_rooms=3)
+    top(qda, test_x, test_y, "QDA", extra_attempts=1)
+    top(qda, test_x, test_y, "QDA", extra_attempts=3)
 
     with open("results.txt", "a") as my_file:
+        my_file.write("[QDA] Best Parameters: " + str(qda.get_params()) + '\n')
         my_file.write("[QDA] Training Mean Test Score: " + str(qda.score(train_x, train_y)) + '\n')
         my_file.write("[QDA] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
     with open("classification_reports.txt", "a") as my_file:

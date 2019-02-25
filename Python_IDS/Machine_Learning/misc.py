@@ -64,6 +64,7 @@ def frequency_histogram(hash_map):
     plt.title('Frequency histogram')
     plt.savefig(str('./histogram.png'))
     plt.show()
+    plt.close()
 
 
 def get_cv_set(training_set, test_set, percentile=0.2):
@@ -154,11 +155,12 @@ def plot_grid_search(cv_results, grid_param, name_param, directory="Cross_Valida
     ax.set_ylabel('CV Average Score', fontsize=16)
     ax.legend(loc="best", fontsize=15)
     ax.grid(True)
-    plt.savefig(str('./Cross_Validation/CV_Plot_'+name_param+'.png'))
-    # plt.show()
+    plt.savefig(str('./' + directory + '/CV_Plot_' + name_param + '.png'))
+    plt.close()
 
 
-def plot_validation_curve(x, y, param_range, param_name, clf, clf_name="SVM"):
+# METHOD IS NOT USED AT THE MOMENT!
+def plot_validation_curve(x, y, param_range, param_name, clf, clf_name):
     train_scores, test_scores = validation_curve(
         clf, x, y, param_name=param_name, param_range=param_range,
         cv=10, scoring="accuracy", n_jobs=-1)
@@ -183,7 +185,6 @@ def plot_validation_curve(x, y, param_range, param_name, clf, clf_name="SVM"):
                      test_scores_mean + test_scores_std, alpha=0.2,
                      color="navy", lw=lw)
     plt.legend(loc="best")
-    plt.show()
 
 
 # Source code from:
@@ -237,11 +238,14 @@ def make_confusion_matrix(y_true, y_pred, clf, clf_name, directory="Confusion_Ma
     plt.figure()
     plot_confusion_matrix(cnf_matrix, classes=[str(i) for i in clf.classes_], normalize=False,
                           title='Confusion matrix, without normalization: ')
-    plt.savefig(str('./Confusion_Matrix/Confusion_Matrix_'+clf_name+'.png'))
+    plt.savefig(str('./' + directory + '/Normalized_Confusion_Matrix_' + clf_name + '.png'))
+    # plt.show()
+    plt.close()
 
     # Plot normalized confusion matrix
     plt.figure()
     plot_confusion_matrix(cnf_matrix, classes=[str(i) for i in clf.classes_], normalize=True,
                           title='Normalized confusion matrix')
-    plt.savefig(str('./Confusion_Matrix/Normalized_Confusion_Matrix_'+clf_name+'.png'))
+    plt.savefig(str('./' + directory + '/Normalized_Confusion_Matrix_' + clf_name + '.png'))
     # plt.show()
+    plt.close()

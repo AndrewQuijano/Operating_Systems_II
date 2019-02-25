@@ -873,3 +873,127 @@ mensbathroom13       0.00      0.00      0.00         1
      macro avg       0.41      0.53      0.45        95
   weighted avg       0.49      0.62      0.53        95
 
+---[SVM Linear]---
+              precision    recall  f1-score   support
+
+         3.0       0.21      0.17      0.19       165
+         5.0       0.21      0.18      0.20       160
+         6.0       0.25      0.23      0.24       170
+         8.0       0.25      0.35      0.29       166
+
+   micro avg       0.23      0.23      0.23       661
+   macro avg       0.23      0.23      0.23       661
+weighted avg       0.23      0.23      0.23       661
+
+---[SVM Radial]---
+              precision    recall  f1-score   support
+
+         3.0       0.24      0.16      0.20       165
+         5.0       0.22      0.17      0.19       160
+         6.0       0.28      0.27      0.28       170
+         8.0       0.26      0.41      0.32       166
+
+   micro avg       0.25      0.25      0.25       661
+   macro avg       0.25      0.25      0.24       661
+weighted avg       0.25      0.25      0.25       661
+
+---[Random Forest]---              precision    recall  f1-score   support
+
+         3.0       0.24      0.18      0.21       165
+         5.0       0.23      0.19      0.21       160
+         6.0       0.28      0.20      0.23       170
+         8.0       0.23      0.38      0.28       166
+
+   micro avg       0.24      0.24      0.24       661
+   macro avg       0.24      0.24      0.23       661
+weighted avg       0.24      0.24      0.23       661
+
+---[Neural_Network]---
+              precision    recall  f1-score   support
+
+         3.0       0.21      0.19      0.20       165
+         5.0       0.21      0.17      0.19       160
+         6.0       0.28      0.24      0.26       170
+         8.0       0.21      0.30      0.25       166
+
+   micro avg       0.23      0.23      0.23       661
+   macro avg       0.23      0.23      0.22       661
+weighted avg       0.23      0.23      0.23       661
+
+---[Logistic Regression]---              precision    recall  f1-score   support
+
+         3.0       0.21      0.21      0.21       165
+         5.0       0.18      0.13      0.15       160
+         6.0       0.28      0.27      0.27       170
+         8.0       0.18      0.23      0.20       166
+
+   micro avg       0.21      0.21      0.21       661
+   macro avg       0.21      0.21      0.21       661
+weighted avg       0.21      0.21      0.21       661
+
+---[KNN]---              precision    recall  f1-score   support
+
+         3.0       0.20      0.18      0.19       165
+         5.0       0.21      0.14      0.17       160
+         6.0       0.30      0.29      0.29       170
+         8.0       0.23      0.34      0.27       166
+
+   micro avg       0.24      0.24      0.24       661
+   macro avg       0.24      0.24      0.23       661
+weighted avg       0.24      0.24      0.23       661
+
+---[LDA]---              precision    recall  f1-score   support
+
+         3.0       0.21      0.19      0.20       165
+         5.0       0.18      0.14      0.16       160
+         6.0       0.28      0.23      0.25       170
+         8.0       0.18      0.27      0.22       166
+
+   micro avg       0.21      0.21      0.21       661
+   macro avg       0.21      0.21      0.21       661
+weighted avg       0.21      0.21      0.21       661
+---[SVM Linear]---
+              precision    recall  f1-score   support
+
+         3.0       0.20      0.16      0.18       165
+         5.0       0.22      0.19      0.20       160
+         6.0       0.25      0.23      0.24       170
+         8.0       0.24      0.33      0.28       166
+
+   micro avg       0.23      0.23      0.23       661
+   macro avg       0.23      0.23      0.22       661
+weighted avg       0.23      0.23      0.22       661
+
+---[SVM Linear]---
+              precision    recall  f1-score   support
+
+         3.0       0.28      0.16      0.21       165
+         5.0       0.31      0.34      0.32       160
+         8.0       0.30      0.39      0.34       166
+
+   micro avg       0.30      0.30      0.30       491
+   macro avg       0.29      0.30      0.29       491
+weighted avg       0.29      0.30      0.29       491
+
+---[SVM Linear]---
+              precision    recall  f1-score   support
+
+         3.0       0.28      0.16      0.21       165
+         5.0       0.31      0.34      0.32       160
+         8.0       0.30      0.39      0.34       166
+
+   micro avg       0.30      0.30      0.30       491
+   macro avg       0.29      0.30      0.29       491
+weighted avg       0.29      0.30      0.29       491
+
+---[SVM Linear]---
+              precision    recall  f1-score   support
+
+         3.0       0.28      0.16      0.21       165
+         5.0       0.31      0.34      0.32       160
+         8.0       0.30      0.39      0.34       166
+
+   micro avg       0.30      0.30      0.30       491
+   macro avg       0.29      0.30      0.29       491
+weighted avg       0.29      0.30      0.29       491
+

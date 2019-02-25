@@ -9,7 +9,6 @@ from misc import *
 def tune_knn(train_x, train_y, test_x, test_y, n_fold=10):
     # Get Number of features
     rows = np.shape(train_x)[0]
-    print("There are " + str(rows) + " features")
 
     if rows > 101:
         rows = 101

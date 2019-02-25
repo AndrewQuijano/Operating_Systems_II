@@ -24,7 +24,12 @@ def read_data(file, skip_head=True):
             features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=str, autostrip=True, converters=None)
         classes = features[:, 0]
         features = features[:, 1:]
-        features.astype(float)
+        # Now you have NaN in your features, ok now you have issues!
+        if np.isnan(features).any():
+            print("There are NaNs found in your features at: " + str(list(map(tuple, np.where(np.isnan(features))))))
+            exit(0)
+        else:
+            features.astype(float)
     else:
         classes = features[:, 0]
         features = features[:, 1:]
@@ -55,6 +60,7 @@ def main():
         exit(0)
 
     # Now train ALL classifiers!
+
     # 1- SVM
     svm_line_clf = svm_linear(train_x, train_y, test_x, test_y)
     svm_rbf_clf = svm_rbf(train_x, train_y, test_x, test_y)

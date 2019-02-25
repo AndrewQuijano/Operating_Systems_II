@@ -3,28 +3,42 @@
   <component name="ChangeListManager">
     <list default="true" id="6db138bc-d0d6-428a-97ae-238cdd108fdb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Confusion_Matrix/Confusion_Matrix_Linear_SVM.png" beforeDir="false" afterPath="$PROJECT_DIR$/Confusion_Matrix/Confusion_Matrix_Linear_SVM.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Confusion_Matrix/Confusion_Matrix_KNN.png" beforeDir="false" afterPath="$PROJECT_DIR$/Confusion_Matrix/Confusion_Matrix_KNN.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Confusion_Matrix/Confusion_Matrix_LDA.png" beforeDir="false" afterPath="$PROJECT_DIR$/Confusion_Matrix/Confusion_Matrix_LDA.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Confusion_Matrix/Confusion_Matrix_Logistic_Regression.png" beforeDir="false" afterPath="$PROJECT_DIR$/Confusion_Matrix/Confusion_Matrix_Logistic_Regression.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Confusion_Matrix/Confusion_Matrix_QDA.png" beforeDir="false" afterPath="$PROJECT_DIR$/Confusion_Matrix/Confusion_Matrix_QDA.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Confusion_Matrix/Confusion_Matrix_Radial_SVM.png" beforeDir="false" afterPath="$PROJECT_DIR$/Confusion_Matrix/Confusion_Matrix_Radial_SVM.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Confusion_Matrix/Confusion_Matrix_Random_Forest.png" beforeDir="false" afterPath="$PROJECT_DIR$/Confusion_Matrix/Confusion_Matrix_Random_Forest.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Confusion_Matrix/Normalized_Confusion_Matrix_KNN.png" beforeDir="false" afterPath="$PROJECT_DIR$/Confusion_Matrix/Normalized_Confusion_Matrix_KNN.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Confusion_Matrix/Normalized_Confusion_Matrix_LDA.png" beforeDir="false" afterPath="$PROJECT_DIR$/Confusion_Matrix/Normalized_Confusion_Matrix_LDA.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Confusion_Matrix/Normalized_Confusion_Matrix_Linear_SVM.png" beforeDir="false" afterPath="$PROJECT_DIR$/Confusion_Matrix/Normalized_Confusion_Matrix_Linear_SVM.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Confusion_Matrix/Normalized_Confusion_Matrix_Logistic_Regression.png" beforeDir="false" afterPath="$PROJECT_DIR$/Confusion_Matrix/Normalized_Confusion_Matrix_Logistic_Regression.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Confusion_Matrix/Normalized_Confusion_Matrix_QDA.png" beforeDir="false" afterPath="$PROJECT_DIR$/Confusion_Matrix/Normalized_Confusion_Matrix_QDA.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Confusion_Matrix/Normalized_Confusion_Matrix_Radial_SVM.png" beforeDir="false" afterPath="$PROJECT_DIR$/Confusion_Matrix/Normalized_Confusion_Matrix_Radial_SVM.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Confusion_Matrix/Normalized_Confusion_Matrix_Random_Forest.png" beforeDir="false" afterPath="$PROJECT_DIR$/Confusion_Matrix/Normalized_Confusion_Matrix_Random_Forest.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cross_Validation/CV_Plot_KNN_n_neighbors.png" beforeDir="false" afterPath="$PROJECT_DIR$/Cross_Validation/CV_Plot_KNN_n_neighbors.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cross_Validation/CV_Plot_Logistic_Regression_Cost.png" beforeDir="false" afterPath="$PROJECT_DIR$/Cross_Validation/CV_Plot_Logistic_Regression_Cost.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Cross_Validation/CV_Plot_SVM_Linear_Cost.png" beforeDir="false" afterPath="$PROJECT_DIR$/Cross_Validation/CV_Plot_SVM_Linear_Cost.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Cross_Validation/CV_Plot_SVM_RBF_Cost.png" beforeDir="false" afterPath="$PROJECT_DIR$/Cross_Validation/CV_Plot_SVM_RBF_Cost.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Cross_Validation/CV_Plot_SVM_RBF_Gamma.png" beforeDir="false" afterPath="$PROJECT_DIR$/Cross_Validation/CV_Plot_SVM_RBF_Gamma.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cross_Validation/CV_Plot_alpha.png" beforeDir="false" afterPath="$PROJECT_DIR$/Cross_Validation/CV_Plot_alpha.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cross_Validation/CV_Plot_hidden_layer.png" beforeDir="false" afterPath="$PROJECT_DIR$/Cross_Validation/CV_Plot_hidden_layer.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Cross_Validation/CV_Plot_max_depth.png" beforeDir="false" afterPath="$PROJECT_DIR$/Cross_Validation/CV_Plot_max_depth.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Cross_Validation/CV_Plot_max_features.png" beforeDir="false" afterPath="$PROJECT_DIR$/Cross_Validation/CV_Plot_max_features.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Cross_Validation/CV_Plot_min_samples_leaf.png" beforeDir="false" afterPath="$PROJECT_DIR$/Cross_Validation/CV_Plot_min_samples_leaf.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Cross_Validation/CV_Plot_min_samples_split.png" beforeDir="false" afterPath="$PROJECT_DIR$/Cross_Validation/CV_Plot_min_samples_split.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Cross_Validation/CV_Plot_n_estimators.png" beforeDir="false" afterPath="$PROJECT_DIR$/Cross_Validation/CV_Plot_n_estimators.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bayes.py" beforeDir="false" afterPath="$PROJECT_DIR$/bayes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cross_Validation/CV_Plot_solver.png" beforeDir="false" afterPath="$PROJECT_DIR$/Cross_Validation/CV_Plot_solver.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KNN.py" beforeDir="false" afterPath="$PROJECT_DIR$/KNN.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classification_reports.txt" beforeDir="false" afterPath="$PROJECT_DIR$/classification_reports.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/decision_tree.py" beforeDir="false" afterPath="$PROJECT_DIR$/decision_tree.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/discriminant.py" beforeDir="false" afterPath="$PROJECT_DIR$/discriminant.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logistic_regression.py" beforeDir="false" afterPath="$PROJECT_DIR$/logistic_regression.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main_driver.py" beforeDir="false" afterPath="$PROJECT_DIR$/main_driver.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/misc.py" beforeDir="false" afterPath="$PROJECT_DIR$/misc.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/neural_network.py" beforeDir="false" afterPath="$PROJECT_DIR$/neural_network.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/random_forest.py" beforeDir="false" afterPath="$PROJECT_DIR$/random_forest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results.txt" beforeDir="false" afterPath="$PROJECT_DIR$/results.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/svm.py" beforeDir="false" afterPath="$PROJECT_DIR$/svm.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -35,59 +49,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bayes.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="15" column="20" selection-start-line="15" selection-start-column="20" selection-end-line="15" selection-end-column="20" />
-              <folding>
-                <element signature="e#0#42#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/decision_tree.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" selection-start-line="5" selection-end-line="5" />
-              <folding>
-                <element signature="e#0#47#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/discriminant.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" selection-start-line="4" selection-end-line="4" />
-              <folding>
-                <element signature="e#0#65#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/logistic_regression.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" selection-start-line="5" selection-end-line="5" />
-              <folding>
-                <element signature="e#0#65#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main_driver.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
-              <caret line="26" column="30" selection-start-line="26" selection-start-column="30" selection-end-line="26" selection-end-column="30" />
+            <state relative-caret-position="645">
+              <caret line="61" column="32" selection-start-line="61" selection-start-column="32" selection-end-line="61" selection-end-column="32" />
               <folding>
                 <element signature="e#24#43#0" expanded="true" />
               </folding>
@@ -96,45 +62,13 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/misc.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="77" column="34" selection-start-line="77" selection-start-column="34" selection-end-line="77" selection-end-column="34" />
-              <folding>
-                <element signature="e#0#16#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/neural_network.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="11" selection-start-line="3" selection-start-column="11" selection-end-line="3" selection-end-column="11" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/random_forest.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="542">
-              <caret line="85" column="49" lean-forward="true" selection-start-line="85" selection-start-column="49" selection-end-line="85" selection-end-column="49" />
-              <folding>
-                <element signature="e#0#51#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/svm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="34" column="89" lean-forward="true" selection-start-line="34" selection-start-column="89" selection-end-line="34" selection-end-column="89" />
+            <state relative-caret-position="360">
+              <caret line="49" column="50" selection-start-line="49" selection-start-column="50" selection-end-line="49" selection-end-column="50" />
               <folding>
                 <element signature="e#0#83#0" expanded="true" />
+                <element signature="e#262#978#0" />
               </folding>
             </state>
           </provider>
@@ -146,6 +80,8 @@
     <findStrings>
       <find>top</find>
       <find>plot</find>
+      <find>plt</find>
+      <find>plot_grid</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -155,16 +91,16 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/generic.py" />
-        <option value="$PROJECT_DIR$/KNN.py" />
-        <option value="$PROJECT_DIR$/main_driver.py" />
-        <option value="$PROJECT_DIR$/neural_network.py" />
-        <option value="$PROJECT_DIR$/logistic_regression.py" />
-        <option value="$PROJECT_DIR$/discriminant.py" />
-        <option value="$PROJECT_DIR$/decision_tree.py" />
         <option value="$PROJECT_DIR$/bayes.py" />
-        <option value="$PROJECT_DIR$/misc.py" />
+        <option value="$PROJECT_DIR$/neural_network.py" />
+        <option value="$PROJECT_DIR$/decision_tree.py" />
+        <option value="$PROJECT_DIR$/KNN.py" />
+        <option value="$PROJECT_DIR$/logistic_regression.py" />
         <option value="$PROJECT_DIR$/random_forest.py" />
+        <option value="$PROJECT_DIR$/misc.py" />
+        <option value="$PROJECT_DIR$/discriminant.py" />
         <option value="$PROJECT_DIR$/svm.py" />
+        <option value="$PROJECT_DIR$/main_driver.py" />
       </list>
     </option>
   </component>
@@ -261,17 +197,51 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/KNN.py">
+    <entry file="file://$PROJECT_DIR$/random_forest.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="9" selection-start-line="4" selection-start-column="9" selection-end-line="4" selection-end-column="9" />
+        <state relative-caret-position="510">
+          <caret line="37" column="55" selection-start-line="37" selection-start-column="55" selection-end-line="37" selection-end-column="55" />
+          <folding>
+            <element signature="e#0#51#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/neural_network.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="25" column="111" selection-start-line="25" selection-start-column="111" selection-end-line="25" selection-end-column="111" />
+          <folding>
+            <element signature="e#0#65#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/misc.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="122">
+          <caret line="217" column="36" selection-start-line="217" selection-start-column="36" selection-end-line="217" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#16#0" expanded="true" />
+            <element signature="e#385#478#0" />
+            <element signature="e#515#663#0" />
+            <element signature="e#690#756#0" />
+            <element signature="e#786#978#0" />
+            <element signature="e#1186#1434#0" />
+            <element signature="e#1555#1774#0" />
+            <element signature="e#1821#2300#0" />
+            <element signature="e#2463#3718#0" />
+            <element signature="e#3753#3998#0" />
+            <element signature="e#4170#4391#0" />
+            <element signature="e#5499#6634#0" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/decision_tree.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
+        <state relative-caret-position="690">
+          <caret line="46" column="32" selection-start-line="46" selection-start-column="32" selection-end-line="46" selection-end-column="32" />
           <folding>
             <element signature="e#0#47#0" expanded="true" />
           </folding>
@@ -280,7 +250,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bayes.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
+        <state relative-caret-position="212">
           <caret line="15" column="20" selection-start-line="15" selection-start-column="20" selection-end-line="15" selection-end-column="20" />
           <folding>
             <element signature="e#0#42#0" expanded="true" />
@@ -288,69 +258,53 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/neural_network.py">
+    <entry file="file://$PROJECT_DIR$/discriminant.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="11" selection-start-line="3" selection-start-column="11" selection-end-line="3" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main_driver.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="26" column="30" selection-start-line="26" selection-start-column="30" selection-end-line="26" selection-end-column="30" />
+        <state relative-caret-position="210">
+          <caret line="14" column="53" selection-start-line="14" selection-start-column="53" selection-end-line="14" selection-end-column="53" />
           <folding>
-            <element signature="e#24#43#0" expanded="true" />
+            <element signature="e#0#65#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/logistic_regression.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
+        <state relative-caret-position="105">
+          <caret line="7" column="63" selection-start-line="7" selection-start-column="63" selection-end-line="7" selection-end-column="63" />
           <folding>
             <element signature="e#0#65#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/random_forest.py">
+    <entry file="file://$PROJECT_DIR$/KNN.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="542">
-          <caret line="85" column="49" lean-forward="true" selection-start-line="85" selection-start-column="49" selection-end-line="85" selection-end-column="49" />
+        <state relative-caret-position="345">
+          <caret line="23" column="67" selection-start-line="23" selection-start-column="58" selection-end-line="23" selection-end-column="67" />
           <folding>
-            <element signature="e#0#51#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/misc.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="77" column="34" selection-start-line="77" selection-start-column="34" selection-end-line="77" selection-end-column="34" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/discriminant.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" selection-start-line="4" selection-end-line="4" />
-          <folding>
-            <element signature="e#0#65#0" expanded="true" />
+            <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/svm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="34" column="89" lean-forward="true" selection-start-line="34" selection-start-column="89" selection-end-line="34" selection-end-column="89" />
+        <state relative-caret-position="360">
+          <caret line="49" column="50" selection-start-line="49" selection-start-column="50" selection-end-line="49" selection-end-column="50" />
           <folding>
             <element signature="e#0#83#0" expanded="true" />
+            <element signature="e#262#978#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main_driver.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="645">
+          <caret line="61" column="32" selection-start-line="61" selection-start-column="32" selection-end-line="61" selection-end-column="32" />
+          <folding>
+            <element signature="e#24#43#0" expanded="true" />
           </folding>
         </state>
       </provider>

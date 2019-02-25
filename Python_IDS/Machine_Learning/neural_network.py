@@ -21,6 +21,7 @@ def get_brain(train_x, train_y, test_x, test_y):
     top(clf, test_x, test_y, "Neural_Network", extra_attempts=1)
     top(clf, test_x, test_y, "Neural_Network", extra_attempts=3)
     with open("results.txt", "a") as my_file:
+        my_file.write("[Neural_Network] Best Parameters: " + str(clf.get_params()) + '\n')
         my_file.write("[Neural_Network] Training Mean Test Score: " + str(clf.score(train_x, train_y)) + '\n')
         my_file.write("[Neural_Network] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 
