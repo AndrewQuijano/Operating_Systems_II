@@ -2,7 +2,7 @@ import time
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn import svm
 from sklearn.model_selection import GridSearchCV
-from generic import *
+from misc import *
 
 
 # Default is 10...

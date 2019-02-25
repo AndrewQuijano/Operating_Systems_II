@@ -18,6 +18,14 @@ def summation(elements):
     return answer
 
 
+def is_valid_file_type(file):
+    if not path.exists(file):
+        return False
+    if not path.isfile(file):
+        return False
+    return file.lower().endswith(('.csv', '.txt'))
+
+
 def mean(elements):
     numerator = summation(elements)
     return numerator/len(elements)
@@ -176,6 +184,7 @@ def plot_validation_curve(x, y, param_range, param_name, clf, clf_name="SVM"):
                      color="navy", lw=lw)
     plt.legend(loc="best")
     plt.show()
+
 
 # Source code from:
 # https://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html

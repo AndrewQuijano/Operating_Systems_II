@@ -2,7 +2,7 @@ import time
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV
-from generic import *
+from misc import *
 
 
 def logistic_linear(train_x, train_y, test_x, test_y):

@@ -3,7 +3,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, accuracy_score
 # from sklearn.model_selection import RandomizedSearchCV
 from sklearn.model_selection import GridSearchCV
-from generic import *
+from misc import *
 
 
 def get_forest(train_x, train_y, test_x, test_y):

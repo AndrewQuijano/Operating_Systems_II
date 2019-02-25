@@ -1,7 +1,7 @@
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
-from generic import *
+from misc import *
 
 
 def discriminant_line(train_x, train_y, test_x, test_y):

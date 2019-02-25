@@ -13,9 +13,9 @@ from sys import argv, exit
 
 def read_data(file, skip_head=False):
     if skip_head:
-        features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=float, autostrip=True, converters=None)
+        features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=None, autostrip=True, converters=None)
     else:
-        features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=float, autostrip=True, converters=None)
+        features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=None, autostrip=True, converters=None)
     classes = features[:, 0].copy()
     features = features[:, 1:]
     if np.isnan(features).any():
@@ -24,6 +24,8 @@ def read_data(file, skip_head=False):
     if np.isnan(classes).any():
         print("NaN found in Y!")
         np.argwhere(np.isnan(classes))
+    # Convert features to data type float
+    features = features.astype(float)
     return features, classes
 
 
@@ -37,11 +39,17 @@ def main():
     # Read the training and testing data-set
     # This assumes the class variable is on the first column!
     # It also assumes all data is numeric!
-    train_x, train_y = read_data(argv[1])
-    test_x, test_y = read_data(argv[2])
-    print(train_x)
-    print("Space")
-    print(train_y)
+    if is_valid_file_type(argv[1]):
+        train_x, train_y = read_data(argv[1])
+    else:
+        print("Training Set Not Found or invalid file extension!")
+        exit(0)
+
+    if is_valid_file_type(argv[2]):
+        test_x, test_y = read_data(argv[2])
+    else:
+        print("Testing Set Not Found or invalid file extension!")
+        exit(0)
 
     # Now train ALL classifiers!
     # 1- SVM
