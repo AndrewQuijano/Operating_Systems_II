@@ -40,11 +40,12 @@ def tune_knn(train_x, train_y, test_x, test_y, n_fold=10):
     top(best_knn, test_x, test_y, "KNN", extra_attempts=3)
 
     with open("results.txt", "a") as my_file:
-        my_file.write("[KNN] Training Mean Test Score: " + str(best_knn.score(train_x, train_y)))
-        my_file.write("[KNN] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)))
+        my_file.write("[KNN] Training Mean Test Score: " + str(best_knn.score(train_x, train_y)) + '\n')
+        my_file.write("[KNN] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
     with open("classification_reports.txt", "a") as my_file:
         my_file.write("---[KNN]---")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
                                             target_names=[str(i) for i in best_knn.classes_]))
+        my_file.write('\n')
     # print(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i) for i in best_knn.classes_]))
     return best_knn

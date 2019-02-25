@@ -98,9 +98,10 @@ def top(clf, test_x, test_y, classifier, extra_attempts=1):
                 break
 
     # Print Results
+    score = success/len(test_y)
     with open("results.txt", "a") as my_file:
         my_file.write("[" + classifier + "] Testing Mean Test Score with " + str(extra_attempts)
-                      + ": " + str(success/len(test_y)))
+                      + ": " + str(score))
     # print("Test Error for " + str(extra_rooms) + " Rooms: " + str(success/len(test_y)))
 
 

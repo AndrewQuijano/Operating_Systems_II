@@ -42,12 +42,13 @@ def naive_bayes(train_x, train_y, test_x, test_y, n_fold=10):
     top(clf, test_x, test_y, "Bayes with Isotonic Calibration", extra_rooms=1)
     top(clf, test_x, test_y, "Bayes with Isotonic Calibration", extra_rooms=3)
     with open("results.txt", "a") as my_file:
-        my_file.write("[NB Isotonic] Training Mean Test Score: " + str(clf_isotonic.score(train_x, train_y)))
-        my_file.write("[NB Isotonic] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)))
+        my_file.write("[NB Isotonic] Training Mean Test Score: " + str(clf_isotonic.score(train_x, train_y)) + '\n')
+        my_file.write("[NB Isotonic] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
     with open("classification_reports.txt", "a") as my_file:
-        my_file.write("---[Bayes with Isotonic Calibration]---")
+        my_file.write("---[Bayes with Isotonic Calibration]---\n")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
                                             target_names=[str(i) for i in clf_isotonic.classes_]))
+        my_file.write('\n')
     # print(classification_report(test_y, prob_pos_isotonic, target_names=[str(i) for i in clf_isotonic.classes_]))
     make_confusion_matrix(y_true=test_y, y_pred=prob_pos_isotonic, clf=clf_isotonic, clf_name='Naive_Bayes_Isotonic')
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from bayes import *
 from discriminant import *
 from KNN import *
@@ -11,27 +13,34 @@ from sys import argv, exit
 
 def read_data(file, skip_head=False):
     if skip_head:
-        features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=float, autostrip=True, converters=None)
-    else:
         features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=float, autostrip=True, converters=None)
-    classes = features[:, 1].copy()
+    else:
+        features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=float, autostrip=True, converters=None)
+    classes = features[:, 0].copy()
     features = features[:, 1:]
+    if np.isnan(features).any():
+        print("NaN found in X!")
+        print(np.argwhere(np.isnan(features)))
+    if np.isnan(classes).any():
+        print("NaN found in Y!")
+        np.argwhere(np.isnan(classes))
     return features, classes
 
 
 def main():
 
     # Check if both sets are available
-    if len(argv) != 2:
+    if len(argv) != 3:
         print("Usage: python3 main_driver <train-set> <test-set>")
         exit(0)
 
     # Read the training and testing data-set
     # This assumes the class variable is on the first column!
     # It also assumes all data is numeric!
-    train_x, train_y = read_data(argv[0])
-    test_x, test_y = get_cv_set(argv[1])
+    train_x, train_y = read_data(argv[1])
+    test_x, test_y = read_data(argv[2])
     print(train_x)
+    print("Space")
     print(train_y)
 
     # Now train ALL classifiers!

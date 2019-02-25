@@ -48,15 +48,17 @@ def svm_linear(train_x, train_y, test_x, test_y):
     print("Linear SVM, Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)))
 
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=svm_line, clf_name='Linear_SVM')
-    top(svm_line, test_x, test_y, 2)
+    top(svm_line, test_x, test_y, "SVM", extra_attempts=1)
+    top(svm_line, test_x, test_y, "SVM", extra_attempts=2)
 
     with open("results.txt", "a") as my_file:
-        my_file.write("[SVM Linear] Training Mean Test Score: " + str(svm_line.score(train_x, train_y)))
-        my_file.write("[SVM Linear] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)))
+        my_file.write("[SVM Linear] Training Mean Test Score: " + str(svm_line.score(train_x, train_y)) + '\n')
+        my_file.write("[SVM Linear] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
     with open("classification_reports.txt", "a") as my_file:
-        my_file.write("---[SVM Linear]---")
+        my_file.write("---[SVM Linear]---\n")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
                                             target_names=[str(i) for i in svm_line.classes_]))
+        my_file.write('\n')
     # print(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i) for i in svm_line.classes_]))
     return svm_line
 
@@ -70,35 +72,17 @@ def svm_rbf(train_x, train_y, test_x, test_y):
     y_hat = svm_radial.predict(test_x)
     print("RBF SVM, Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
 
-    with open("classification_reports.txt", "a") as my_file:
-        my_file.write("---[SVM Radial]---")
-        my_file.write(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i)
-                                                                                       for i in svm_radial.classes_]))
-    # print(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i) for i in svm_radial.classes_]))
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=svm_radial, clf_name='Radial_SVM')
-    top(svm_radial, test_x, test_y, 2)
+    top(svm_radial, test_x, test_y, "SVM_Radial", extra_attempts=1)
+    top(svm_radial, test_x, test_y, "SVM_Radial", extra_attempts=2)
 
     with open("results.txt", "a") as my_file:
-        my_file.write("[SVM Radial] Training Mean Test Score: " + str(svm_radial.score(train_x, train_y)))
-        my_file.write("[SVM Radial] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)))
+        my_file.write("[SVM Radial] Training Mean Test Score: " + str(svm_radial.score(train_x, train_y)) + '\n')
+        my_file.write("[SVM Radial] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
+    with open("classification_reports.txt", "a") as my_file:
+        my_file.write("---[SVM Radial]---\n")
+        my_file.write(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i)
+                                                                                       for i in svm_radial.classes_]))
+        my_file.write('\n')
+    # print(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i) for i in svm_radial.classes_]))
     return svm_radial
-
-
-def main():
-    blue_x, blue_y = read_data_set('./blue.csv')
-    wifi_x, wifi_y = read_data_set('./wifi.csv')
-
-    # Build your CV sets here
-    blue_train_x, blue_train_y, blue_test_x, blue_test_y = get_cv_set(blue_x, blue_y)
-    wifi_train_x, wifi_train_y, wifi_test_x, wifi_test_y = get_cv_set(wifi_x, wifi_y)
-
-    # Build both models with Linear and Radial SVM...
-    blue_clf = svm_linear(blue_train_x, blue_train_y, blue_test_x, blue_test_y)
-    blue_clf_rbf = svm_rbf(blue_train_x, blue_train_y, blue_test_x, blue_test_y)
-
-    wifi_clf = svm_linear(wifi_train_x, wifi_train_y, wifi_test_x, wifi_test_y)
-    wifi_clf_rbf = svm_rbf(wifi_train_x, wifi_train_y, wifi_test_x, wifi_test_y)
-
-
-if __name__ == "__main__":
-    main()

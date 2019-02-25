@@ -22,13 +22,14 @@ def get_brain(train_x, train_y, test_x, test_y):
     top(clf, test_x, test_y, "Neural_Network", extra_attempts=1)
     top(clf, test_x, test_y, "Neural_Network", extra_attempts=3)
     with open("results.txt", "a") as my_file:
-        my_file.write("[Neural_Network] Training Mean Test Score: " + str(clf.score(train_x, train_y)))
-        my_file.write("[Neural_Network] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)))
+        my_file.write("[Neural_Network] Training Mean Test Score: " + str(clf.score(train_x, train_y)) + '\n')
+        my_file.write("[Neural_Network] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 
     with open("classification_reports.txt", "a") as my_file:
-        my_file.write("---[Neural_Network]---")
+        my_file.write("---[Neural_Network]---\n")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
                                             target_names=[str(i) for i in clf.classes_]))
+        my_file.write('\n')
     # print(classification_report(test_y, y_hat, target_names=[str(i) for i in clf.classes_]))
     return clf
 
