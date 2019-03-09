@@ -1,4 +1,3 @@
-import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -63,11 +62,11 @@ public class Start
 		PcapDumper dumper = pcap.dumpOpen(ofile);	// output file 
 
         //Create packet handler which will receive packets
-        PcapPacketHandler jpacketHandler = new PcapPacketHandler() 
+        PcapPacketHandler<PcapDumper> jpacketHandler = new PcapPacketHandler<PcapDumper>() 
         {
             Arp arp = new Arp();
 
-            public void nextPacket(PcapPacket packet, Object user) 
+            public void nextPacket(PcapPacket packet, PcapDumper user) 
             {
                 //Here i am capturing the ARP packets only,you can capture any packet that you want by just changing the below if condition
                 if (packet.hasHeader(arp)) 
@@ -97,7 +96,7 @@ public class Start
 				on = new Scanner(System.in);
 			}
 			System.err.println("scanning");
-			pcap.loop(pcap.LOOP_INFINITE, jpacketHandler, dumper);  
+			pcap.loop(Pcap.LOOP_INFINITE, jpacketHandler, dumper);  
 			if(!on.nextBoolean())
 			{
 				pcap.breakloop();
