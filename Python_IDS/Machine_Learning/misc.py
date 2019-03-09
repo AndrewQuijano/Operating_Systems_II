@@ -18,6 +18,14 @@ def summation(elements):
     return answer
 
 
+def is_valid_file_type(file):
+    if not path.exists(file):
+        return False
+    if not path.isfile(file):
+        return False
+    return file.lower().endswith(('.csv', '.txt'))
+
+
 def mean(elements):
     numerator = summation(elements)
     return numerator/len(elements)
@@ -56,6 +64,7 @@ def frequency_histogram(hash_map):
     plt.title('Frequency histogram')
     plt.savefig(str('./histogram.png'))
     plt.show()
+    plt.close()
 
 
 def get_cv_set(training_set, test_set, percentile=0.2):
@@ -98,9 +107,10 @@ def top(clf, test_x, test_y, classifier, extra_attempts=1):
                 break
 
     # Print Results
+    score = success/len(test_y)
     with open("results.txt", "a") as my_file:
         my_file.write("[" + classifier + "] Testing Mean Test Score with " + str(extra_attempts)
-                      + ": " + str(success/len(test_y)))
+                      + ": " + str(score))
     # print("Test Error for " + str(extra_rooms) + " Rooms: " + str(success/len(test_y)))
 
 
@@ -144,12 +154,13 @@ def plot_grid_search(cv_results, grid_param, name_param, directory="Cross_Valida
     ax.set_xlabel(name_param, fontsize=16)
     ax.set_ylabel('CV Average Score', fontsize=16)
     ax.legend(loc="best", fontsize=15)
-    ax.grid('on')
-    plt.savefig(str('./Cross_Validation/CV_Plot_'+name_param+'.png'))
-    # plt.show()
+    ax.grid(True)
+    plt.savefig(str('./' + directory + '/CV_Plot_' + name_param + '.png'))
+    plt.close()
 
 
-def plot_validation_curve(x, y, param_range, param_name, clf, clf_name="SVM"):
+# METHOD IS NOT USED AT THE MOMENT!
+def plot_validation_curve(x, y, param_range, param_name, clf, clf_name):
     train_scores, test_scores = validation_curve(
         clf, x, y, param_name=param_name, param_range=param_range,
         cv=10, scoring="accuracy", n_jobs=-1)
@@ -174,7 +185,7 @@ def plot_validation_curve(x, y, param_range, param_name, clf, clf_name="SVM"):
                      test_scores_mean + test_scores_std, alpha=0.2,
                      color="navy", lw=lw)
     plt.legend(loc="best")
-    plt.show()
+
 
 # Source code from:
 # https://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
@@ -227,11 +238,14 @@ def make_confusion_matrix(y_true, y_pred, clf, clf_name, directory="Confusion_Ma
     plt.figure()
     plot_confusion_matrix(cnf_matrix, classes=[str(i) for i in clf.classes_], normalize=False,
                           title='Confusion matrix, without normalization: ')
-    plt.savefig(str('./Confusion_Matrix/Confusion_Matrix_'+clf_name+'.png'))
+    plt.savefig(str('./' + directory + '/Normalized_Confusion_Matrix_' + clf_name + '.png'))
+    # plt.show()
+    plt.close()
 
     # Plot normalized confusion matrix
     plt.figure()
     plot_confusion_matrix(cnf_matrix, classes=[str(i) for i in clf.classes_], normalize=True,
                           title='Normalized confusion matrix')
-    plt.savefig(str('./Confusion_Matrix/Normalized_Confusion_Matrix_'+clf_name+'.png'))
+    plt.savefig(str('./' + directory + '/Normalized_Confusion_Matrix_' + clf_name + '.png'))
     # plt.show()
+    plt.close()
