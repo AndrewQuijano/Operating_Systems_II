@@ -40,23 +40,37 @@ def read_data(file, skip_head=True):
 def main():
 
     # Check if both sets are available
-    if len(argv) != 3:
+    if len(argv) == 2:
+        # Read the training and testing data-set
+        # This assumes the class variable is on the first column!
+        # It also assumes all data is numeric!
+        if is_valid_file_type(argv[1]):
+            train_x, train_y = read_data(argv[1])
+        else:
+            print("Training Set Not Found or invalid file extension!")
+            exit(0)
+
+        # Now make a split between training and testing set from the input data
+        train_x, train_y, test_x, test_y = get_cv_set(train_x, train_y)
+
+    elif len(argv) == 3:
+        # Read the training and testing data-set
+        # This assumes the class variable is on the first column!
+        # It also assumes all data is numeric!
+        if is_valid_file_type(argv[1]):
+            train_x, train_y = read_data(argv[1])
+        else:
+            print("Training Set Not Found or invalid file extension!")
+            exit(0)
+
+        if is_valid_file_type(argv[2]):
+            test_x, test_y = read_data(argv[2])
+        else:
+            print("Testing Set Not Found or invalid file extension!")
+            exit(0)
+
+    else:
         print("Usage: python3 main_driver <train-set> <test-set>")
-        exit(0)
-
-    # Read the training and testing data-set
-    # This assumes the class variable is on the first column!
-    # It also assumes all data is numeric!
-    if is_valid_file_type(argv[1]):
-        train_x, train_y = read_data(argv[1])
-    else:
-        print("Training Set Not Found or invalid file extension!")
-        exit(0)
-
-    if is_valid_file_type(argv[2]):
-        test_x, test_y = read_data(argv[2])
-    else:
-        print("Testing Set Not Found or invalid file extension!")
         exit(0)
 
     # Now train ALL classifiers!
