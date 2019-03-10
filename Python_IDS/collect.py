@@ -23,18 +23,24 @@ def collect_connections(pcap_file):
 
     for pkt in cap:
         if 'tcp' in pkt:
-            key = 'tcp_connection_no: ' + pkt.tcp.stream
-            data = 'dong'#str(pkt.tcp.payload)
+            key = "tcp_conn"+pkt.tcp.stream
+            data = str(pkt.tcp)
         elif 'udp' in pkt:
-            key = 'udp_connection_no: ' + pkt.udp.stream
-            data = str(pkt.udp.payload)
+            key = "udp_conn"+pkt.udp.stream
+            data = str(pkt.udp)
         else:
-            key = 'other_transport'
+            key = "other_transport"
 
         if key not in connections.keys():
             connections[key] = data
         else:
-            connections[key] += ' , ' + data
+            connections[key] += "\n" + data
+
+    for k,v in connections.items():
+        out_file = k + '.bin'
+        output = open(out_file, 'w')
+        output.write(v)
+        output.flush()
 
 if __name__ == '__main__':
     pcap_file = 'sniff.pcap'
