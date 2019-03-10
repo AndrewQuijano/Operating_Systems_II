@@ -1,9 +1,8 @@
-import time
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import GridSearchCV
 from sklearn.neural_network import MLPClassifier
-from sklearn.preprocessing import scale
-from generic import *
+import time
+from misc import *
 
 
 # http://scikit-learn.org/stable/auto_examples/neural_networks/plot_mlp_alpha.html#sphx-glr-auto-examples-neural-networks-plot-mlp-alpha-py
@@ -18,16 +17,19 @@ def get_brain(train_x, train_y, test_x, test_y):
     y_hat = clf.predict(test_x)
     print("Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)))
 
-    make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=clf, clf_name='NN')
-    top(clf, test_x, test_y, extra_rooms=2)
+    make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=clf, clf_name='Neural_Network')
+    top(clf, test_x, test_y, "Neural_Network", extra_attempts=1)
+    top(clf, test_x, test_y, "Neural_Network", extra_attempts=3)
     with open("results.txt", "a") as my_file:
-        my_file.write("[NN] Training Mean Test Score: " + str(clf.score(train_x, train_y)))
-        my_file.write("[NN] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)))
+        my_file.write("[Neural_Network] Best Parameters: " + str(clf.get_params()) + '\n')
+        my_file.write("[Neural_Network] Training Mean Test Score: " + str(clf.score(train_x, train_y)) + '\n')
+        my_file.write("[Neural_Network] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 
     with open("classification_reports.txt", "a") as my_file:
-        my_file.write("---[Random Forest]---")
+        my_file.write("---[Neural_Network]---\n")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
                                             target_names=[str(i) for i in clf.classes_]))
+        my_file.write('\n')
     # print(classification_report(test_y, y_hat, target_names=[str(i) for i in clf.classes_]))
     return clf
 
@@ -58,24 +60,3 @@ def tune_brain(train_x, train_y, n_fold=10):
                         alpha=brain_alpha.best_params_['alpha'], solver=brain_solver.best_params_['solver'])
     clf.fit(train_x, train_y)
     return clf
-
-
-def main():
-    # Read Wifi and Blue Tooth Data Set
-    blue_x, blue_y = read_data_set('./blue.csv')
-    wifi_x, wifi_y = read_data_set('./wifi.csv')
-
-    # Build your CV sets here
-    blue_train_x, blue_train_y, blue_test_x, blue_test_y = get_cv_set(blue_x, blue_y)
-    wifi_train_x, wifi_train_y, wifi_test_x, wifi_test_y = get_cv_set(wifi_x, wifi_y)
-
-    # I HAVE BEEN WARNED THAT THIS CLASSIFIER NEEDS SCALED DATA!
-    blue_train_x, blue_test_x = scale(blue_train_x, blue_test_x)
-    wifi_train_x, wifi_test_x = scale(wifi_train_x, wifi_test_x)
-
-    blue_brain = get_brain(blue_train_x, blue_train_y, blue_test_x, blue_test_y)
-    wifi_brain = get_brain(wifi_train_x, wifi_train_y, wifi_test_x, wifi_test_y)
-
-
-if __name__ == "__main__":
-    main()

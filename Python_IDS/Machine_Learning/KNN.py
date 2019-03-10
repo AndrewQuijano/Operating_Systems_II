@@ -2,14 +2,13 @@ import time
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
-from generic import *
+from misc import *
 
 
 # https://www.pyimagesearch.com/2016/08/15/how-to-tune-hyperparameters-with-python-and-scikit-learn/
 def tune_knn(train_x, train_y, test_x, test_y, n_fold=10):
     # Get Number of features
     rows = np.shape(train_x)[0]
-    print("There are " + str(rows) + " features")
 
     if rows > 101:
         rows = 101
@@ -35,30 +34,17 @@ def tune_knn(train_x, train_y, test_x, test_y, n_fold=10):
     y_hat = best_knn.predict(test_x)
     print("Testing Score is: " + str(accuracy_score(test_y, y_hat)))
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=best_knn, clf_name='KNN')
-    top(best_knn, test_x, test_y, extra_rooms=3)
+
+    top(best_knn, test_x, test_y, "KNN", extra_attempts=1)
+    top(best_knn, test_x, test_y, "KNN", extra_attempts=3)
 
     with open("results.txt", "a") as my_file:
-        my_file.write("[KNN] Training Mean Test Score: " + str(best_knn.score(train_x, train_y)))
-        my_file.write("[KNN] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)))
+        my_file.write("[KNN] Training Mean Test Score: " + str(best_knn.score(train_x, train_y)) + '\n')
+        my_file.write("[KNN] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
     with open("classification_reports.txt", "a") as my_file:
         my_file.write("---[KNN]---")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
                                             target_names=[str(i) for i in best_knn.classes_]))
+        my_file.write('\n')
     # print(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i) for i in best_knn.classes_]))
     return best_knn
-
-
-def main():
-    blue_x, blue_y = read_data_set('./blue.csv')
-    wifi_x, wifi_y = read_data_set('./wifi.csv')
-
-    # Build your CV sets here
-    blue_train_x, blue_train_y, blue_test_x, blue_test_y = get_cv_set(blue_x, blue_y)
-    wifi_train_x, wifi_train_y, wifi_test_x, wifi_test_y = get_cv_set(wifi_x, wifi_y)
-
-    blue_knn = tune_knn(blue_train_x, blue_train_y, blue_test_x, blue_test_y)
-    wifi_knn = tune_knn(wifi_train_x, wifi_train_y, wifi_test_x, wifi_test_y)
-
-
-if __name__ == "__main__":
-    main()
