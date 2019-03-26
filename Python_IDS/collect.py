@@ -11,13 +11,19 @@
 import pyshark
 
 
+# GLOBAL TODO:
+   #  - NEED TO DERIVE Time-Based features!! So calculate 2sec/1min from timestamp?
+   #        ...or should read directly from wire in this module?
+
+
+
 # An object for individual packets, with members for all relevant
 #    header information
 class Packet:
 
     # protocol-specific members set as None in constructor
     def __init__(self, con_no, protocol, service, src_ip, dst_ip, src_port, 
-            dst_port, time_elapsed, size): 
+            dst_port, time_elapsed, size, urgent): 
         self.con_no = con_no
         self.protocol = protocol
         self.service = service
@@ -27,6 +33,7 @@ class Packet:
         self.dst_port = dst_port
         self.time_elapsed = time_elapsed
         self.size = int(size)
+        self.urgent = urgent
 
     def to_string(self):
         out_str = ('\nconnection_number: ' + str(self.con_no) + 
@@ -36,7 +43,8 @@ class Packet:
             '\ndestination IP: ' + str(self.dst_ip) +
             '\nsource port: ' + str(self.src_port) +
             '\ndestination port: ' + str(self.dst_port) +
-            '\npacket size: ' + str(self.size) + 
+            '\npacket size: ' + str(self.size) +
+            '\nurgent flag: ' + str(self.urgent) + 
             '\ntime elapsed since first packet of connection: ' + 
             str(self.time_elapsed) + 
             '\n')
@@ -91,14 +99,14 @@ def collect_connections(pcap_file):
             pkt_obj = Packet(pkt.tcp.stream, 'TCP', pkt.highest_layer,
                     pkt.ip.src, pkt.ip.dst,
                     pkt.tcp.srcport, pkt.tcp.dstport, pkt.tcp.time_relative,
-                    pkt.length)
+                    pkt.length, 0)#pkt.tcp.flags.urg)
         elif 'udp' in pkt:
             # TODO: why doesn't pkt.udp.time_relative work?? didn't it used to?
             key = "udp_conn"+pkt.udp.stream
             pkt_obj = Packet(pkt.udp.stream, 'UDP', pkt.highest_layer, 
                     pkt.ip.src, pkt.ip.dst,
                     pkt.udp.srcport, pkt.udp.dstport, 0,#pkt.udp.time_relative,
-                    pkt.length)
+                    pkt.length, 0)
         else:
             # do not record packets that aren't TCP/UDP
             continue
@@ -108,7 +116,6 @@ def collect_connections(pcap_file):
         else:
             lst = connections[key]
             lst.append(pkt_obj)
-
 
 
     # derive features, generate output file
@@ -133,17 +140,19 @@ def collect_connections(pcap_file):
             else:
                 dst_bytes += pkt.size
 
-            output.write(pkt.to_string())
-            output.flush()
+            if pkt.urgent == 1:
+                urgent += 1
+
+#            output.write(pkt.to_string())
+#            output.flush()
 
         record = Connection(duration, protocol, service, v, None, src_bytes,
-                dst_bytes, None, None, None)
+            dst_bytes, None, None, urgent)
+
 
         output.write(record.to_string())
         output.flush()
         
-
-
 
 if __name__ == '__main__':
     pcap_file = 'sniff.pcap'
