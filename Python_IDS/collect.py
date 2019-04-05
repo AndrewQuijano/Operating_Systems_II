@@ -2,7 +2,7 @@
 
 # --------------------------------------------------------
 #   Network Packet Sniffer:
-#       collects packet records into connection records
+#       parses packet data, generates connection records
 #
 #    Authors: Daniel Mesko
 # --------------------------------------------------------
@@ -82,8 +82,18 @@ class Connection:
             '\nPACKETS:\n' ) #+ str(map(lambda x : x.to_string(), self.packets)) )
         return out_str
 
+    def to_csv(self):
+        out_str = (str(self.duration) + ',' + 
+            self.protocol + ',' +
+            self.service + ',' +
+            str(self.flag) + ',' + 
+            str(self.src_bytes) + ',' +
+            str(self.dst_bytes) + ',' +
+            str(self.land) + ',' +
+            str(self.wrong_fragments) + ',' +
+            str(self.urgent) + ',')
+        return out_str
 
-# collection function
 
 # TODO: catch attribute errors!
 def collect_connections(pcap_file):
@@ -119,10 +129,10 @@ def collect_connections(pcap_file):
 
 
     # derive features, generate output file
-#    out_file = open('packets.csv', 'w')
+    output = open('records.csv', 'w')
     for k,v in connections.items():
-        out_file = k + '.bin'
-        output = open(out_file, 'w')
+#        out_file = k + '.bin'
+#        output = open(out_file, 'w')
 
         src_bytes = 0
         dst_bytes = 0
@@ -133,7 +143,8 @@ def collect_connections(pcap_file):
         duration = v[-1].time_elapsed
         src_ip = v[0].src_ip
         dst_ip = v[0].dst_ip
-        
+
+        # traverse packets, aggregate connection data        
         for pkt in v: 
             if src_ip == pkt.src_ip:
                 src_bytes += pkt.size
@@ -143,18 +154,17 @@ def collect_connections(pcap_file):
             if pkt.urgent == 1:
                 urgent += 1
 
-#            output.write(pkt.to_string())
-#            output.flush()
-
+        # generate Connection
         record = Connection(duration, protocol, service, v, None, src_bytes,
             dst_bytes, None, None, urgent)
 
-
-        output.write(record.to_string())
+        # write Connection data to output .csv file
+        output.write(record.to_csv())
+        output.write('\n')
         output.flush()
         
 
 if __name__ == '__main__':
     pcap_file = 'sniff.pcap'
     collect_connections(pcap_file)
-    print('\nconnection records generated\n')
+    print('\nconnection records generated, written to records.csv\n')
