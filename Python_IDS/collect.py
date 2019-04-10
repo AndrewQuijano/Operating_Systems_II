@@ -12,8 +12,10 @@ import pyshark
 
 
 # GLOBAL TODO:
-   #  - NEED TO DERIVE Time-Based features!! So calculate 2sec/1min from timestamp?
+   #  - NEED TO DERIVE Time-Based features!! So calculate 2sec from timestamp?
    #        ...or should read directly from wire in this module?
+   #  - NEED TO DERIVE 100 connection window features
+   # WILL NEED to sort by same dest.host, same service, and do with time windows
 
 
 
@@ -68,7 +70,7 @@ class Connection:
         self.wrong_fragments = wrong_fragments
         self.urgent = urgent
 
-    # TODO: Add connection number?
+    # TODO: This is just a pretty printer...remove it?
     def to_string(self):
         out_str = ('\nduration: ' + str(self.duration) +
             '\nprotocol: ' + self.protocol +
@@ -99,10 +101,12 @@ class Connection:
 def collect_connections(pcap_file):
 
     cap = pyshark.FileCapture(pcap_file)
-    data = ''
-    connections = {}
+    raw_connections = {}
+    connections = []
 
-    # collect packets into connection records
+# ----------------------------------------------------------------
+# Collect packets from the same connection, create connection dict
+# ----------------------------------------------------------------
     for pkt in cap:
         if 'tcp' in pkt:
             key = "tcp_conn"+pkt.tcp.stream
@@ -121,18 +125,18 @@ def collect_connections(pcap_file):
             # do not record packets that aren't TCP/UDP
             continue
 
-        if key not in connections.keys():
-            connections[key] = [pkt_obj]
+        if key not in raw_connections.keys():
+            raw_connections[key] = [pkt_obj]
         else:
-            lst = connections[key]
+            lst = raw_connections[key]
             lst.append(pkt_obj)
 
 
-    # derive features, generate output file
-    output = open('records.csv', 'w')
-    for k,v in connections.items():
-#        out_file = k + '.bin'
-#        output = open(out_file, 'w')
+
+# -------------------------------------------------------------------------
+# Derive basic features of each connection, create Connection objects, list
+# -------------------------------------------------------------------------
+    for k,v in raw_connections.items():
 
         src_bytes = 0
         dst_bytes = 0
@@ -140,11 +144,20 @@ def collect_connections(pcap_file):
         urgent = 0
         protocol = v[0].protocol
         service = v[0].service
-        duration = v[-1].time_elapsed
+        duration = float(v[-1].time_elapsed)
+        duration = int(duration / 1.0)
         src_ip = v[0].src_ip
         dst_ip = v[0].dst_ip
+        src_port = v[0].src_port
+        dst_port = v[0].dst_port
 
-        # traverse packets, aggregate connection data        
+        # land feature (loopback connection)
+        if (src_ip == dst_ip) and (src_port == dst_port):
+            land = 1
+        else:
+            land = 0
+
+        # traverse packets (some basic features are aggregated from each packet)       
         for pkt in v: 
             if src_ip == pkt.src_ip:
                 src_bytes += pkt.size
@@ -154,16 +167,37 @@ def collect_connections(pcap_file):
             if pkt.urgent == 1:
                 urgent += 1
 
-        # generate Connection
-        record = Connection(duration, protocol, service, v, None, src_bytes,
-            dst_bytes, None, None, urgent)
+       
+    # TODO: WTF is status flag (why is it always SF)? I'm gonna
+        #       hardcode it, but that's soooo wrong
+        # ALSO....wrong fragments bit, hardcoding as 0
 
-        # write Connection data to output .csv file
-        output.write(record.to_csv())
+        # generate Connection with basic features
+        record = Connection(duration, protocol, service, v, 'SF', src_bytes,
+            dst_bytes, land, 0, urgent)
+        
+        connections.append(record)
+        
+# ---------------------------------------------------------------------
+# Derive traffic-based features, update each Connection object
+# ---------------------------------------------------------------------
+    for rec in connections:
+        break
+
+
+# ---------------------------------------------------------------------
+# Traverse Connection list, generate CSV file
+# ---------------------------------------------------------------------
+    output = open('records.csv', 'w')
+    for rec in connections:
+        output.write(rec.to_csv())
         output.write('\n')
         output.flush()
         
 
+
+
+# pass control to collect_connections(), take all the credit
 if __name__ == '__main__':
     pcap_file = 'sniff.pcap'
     collect_connections(pcap_file)
