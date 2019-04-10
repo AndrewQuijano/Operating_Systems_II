@@ -13,32 +13,30 @@ def main():
     if valid_ip(argv[0]):
         ip = argv[0]
     else:
+        print("Invalid IP Address!")
         exit(0)
 
     if valid_port(argv[1]):
         port = int(argv[1])
     else:
+        print("Invalid Port Number!")
         exit(0)
 
     # Keep sending (x, y) coordinates...
     while True:
         try:
-            var = input("FTP> ")
-            args = var.split(" ")
+            var = input("ML> ")
 
-            # connect to the server on local computer
-            client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client_socket.connect((ip, port))
-
-            # Send (x, y)
-            if len(args) == 2:
-                client_socket.send(args[0].encode())
-                client_socket.send(args[1].encode())
-                client_socket.close()
-
-            if args[0] == "exit":
-                client_socket.close()
+            if var == "exit":
                 break
+            else:
+                # connect to the server on local computer
+                client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                client_socket.connect((ip, port))
+
+                client_socket.send(var.encode())
+                y_hat = client_socket.recv(1024).decode()
+                print(y_hat)
 
         except EOFError:
             print("EOF detected, exiting!")
