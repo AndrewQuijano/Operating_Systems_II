@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 from options import *
 from isvalid import *
+from denial_of_service import syn_flood
+from password_file_cracker import *
 from os import geteuid, popen, getcwd, mkdir
 from os.path import exists, isfile
 import subprocess
@@ -37,7 +39,7 @@ def parse_args(args, not_batch_mode=True):
                 network_scan(args[1])
 
         elif args[0] == "dos":
-            print("AOBUT TO FLOOD")
+            print("ABOUT TO FLOOD")
             if len(args) == 3 and valid_ip(args[1]) and valid_port(args[2], True):
                 syn_flood(args[1], args[2])
             else:

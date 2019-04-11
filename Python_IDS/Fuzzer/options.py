@@ -3,70 +3,10 @@
 # UNI: afq2101
 from __future__ import print_function
 from os import popen
-from pikepdf import open as PdfFileReader
-import crypt
-from zipfile import ZipFile
 import urllib.request
 import urllib.error
 import requests
-from extra import *
 counter = 0
-
-
-def extract_file(zip_file, password):
-    try:
-        ZipFile(zip_file).extractall(pwd=password.encode('cp850', 'replace'))
-        return True
-    except Exception:
-        return False
-
-
-def crack_zip_file(zip_file, file="password.txt"):
-    with open(file) as fd:
-        for line in fd:
-            if '#' in line:
-                continue
-            password = line.strip('\n')
-            if extract_file(zip_file, password):
-                print("[+] Password = " + password)
-                return
-    print("Password not found!")
-
-
-def crack_local_host(crypt_pass, file="password.txt"):
-    with open(file) as fd:
-        for word in fd:
-            if '#' in word:
-                continue
-            word = word.strip('\n')
-            print(word)
-            salt = crypt_pass[3:12]
-            passwd = crypt.crypt(word, '$6$' + salt)
-            if passwd == crypt_pass:
-                print("[+] Found Password: " + word)
-                return
-    print("Password Not Found!")
-
-
-def extract_pdf(pdf, password):
-    try:
-        with open(pdf, "rb") as input_file:
-            PdfFileReader(input_file, password)
-            return True
-    except Exception:
-        return False
-
-
-def crack_pdf_file(pdf, file="password.txt"):
-    with open(file, "r") as fd:
-        for line in fd:
-            if '#' in line:
-                continue
-            password = line.strip('\n')
-            if extract_pdf(pdf, password):
-                print("[+] Password = " + password)
-                return
-    print("Password Not Found!")
 
 
 def network_scan(ip_address):
@@ -208,7 +148,7 @@ def pid_to_port():
                     port_to_pid[s_port] = pid
                     port_to_pid[d_port] = pid
                     print("Source IP/Port" + str(s_ip)+":" + str(s_port))
-                    print("Desintation IP/Port" + str(d_ip)+":" + str(d_port))
+                    print("Destintation IP/Port" + str(d_ip)+":" + str(d_port))
                     print("Process ID: " + pid + " Name: " + process_name)
     return port_to_pid
 
