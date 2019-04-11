@@ -156,10 +156,14 @@ class Connection:
             str(self.urgent) + ','
             'THIS IS WHERE CONTENT-FEATURES GO,' +
             str(self.count) + ',' +
+            str(self.srv_count) + ',' +
             str(self.serror_rate) + ',' +
+            str(self.srv_serror_rate) + ',' +
             str(self.rerror_rate) + ',' +
-            str(self.same_srv_rate) + ',' + 
-            str(self.diff_srv_rate) + ',')
+            str(self.srv_rerror_rate) + ',' +
+            str(self.same_srv_rate) + ',' +
+            str(self.diff_srv_rate) + ',' +
+            str(self.srv_diff_host_rate) + ',')
         return out_str
 
 
@@ -256,18 +260,31 @@ def collect_connections(pcap_file):
     #   past 2 sec from current connection, then derive features
 
     #TODO: probably horribly inefficient...what do?
-    twosec_samehost_connections = []
+
     for rec in connections:
+        
+        samehost_connections = []
+        twosec_samehost_connections = []
+        twosec_samesrv_connections = []
+
+        # traverse all connections to find samehost, sameservice
         for cmprec in connections:
+            time_delta = float(rec.timestamp) - float(cmprec.timestamp)
             if (rec.dst_ip == cmprec.dst_ip):
-                time_delta = float(rec.timestamp) - float(cmprec.timestamp)
+                samehost_connections.append(cmprec)
                 if (time_delta <= 2.0) and (time_delta >= 0.0):
                     twosec_samehost_connections.append(cmprec)
                 else:
                     continue
+            elif (rec.service == cmprec.service):
+                if (time_delta <= 2.0) and (time_delta >= 0.0):
+                    twosec_samesrv_connections.append(cmprec)
+                else:
+                    continue
             else:
                 continue
-        # traverse twosec list, gather some features
+
+        # process twosec samehost connections
         count = len(twosec_samehost_connections)
         same_srv_count = 0
         diff_srv_count = 0
@@ -284,15 +301,33 @@ def collect_connections(pcap_file):
         
         same_srv_rate = round(same_srv_count / count, 2)
         diff_srv_rate = round(diff_srv_count / count, 2)
-
         rec.add_samehost_timebased_features(count, None, None,
                 same_srv_rate, diff_srv_rate)
+
+        # process twosec sameservice connections
+        srv_countcount = len(twosec_samesrv_connections)
+        srv_serror_count = 0
+        srv_rerror_count = 0
+        srv_diff_host_count = 0
+
+        for cmprec in twosec_samesrv_connections:
+            if (rec.dst_ip != cmprec.dst_ip):
+                srv_diff_host_counts = srv_diff_host_counts + 1
+            else:
+                continue
+            
+            # TODO: do syn errors, rej errors
+
+        srv_diff_host_rate = round(srv_diff_host_count / count, 2)
+        rec.add_sameservice_timebased_features(count, None, None,
+                srv_diff_host_rate)
 
 # ---------------------------------------------------------------------
 # Derive host-based traffic features (same host over 100 connections)
 #  ---------------------------------------------------------------------
 
-
+        for cmprec in samehost_connections:
+            break
 
 
 # ---------------------------------------------------------------------
