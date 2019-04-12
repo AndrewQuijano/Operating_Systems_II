@@ -1,29 +1,29 @@
 #!/usr/bin/python
 
-# --------------------------------------------------------
+# --------------------------------------------------------------
 #   Network Packet Sniffer:
-#       parses packet data, generates connection records
+#       a packet preprocessor that reads raw PCAP packet data,
+#           aggregates packets into connection records, and 
+#           extracts/derives various features of the connections
+#           consistent with those of the KDD CUP 99 dataset.
 #
 #    Authors: Daniel Mesko
-# --------------------------------------------------------
+# --------------------------------------------------------------
 
 
 import pyshark
 
 
 # GLOBAL TODO:
-   #  - NEED TO DERIVE Time-Based features!! So calculate 2sec from timestamp?
-   #        ...or should read directly from wire in this module?
    #  - NEED TO DERIVE 100 connection window features
-   # WILL NEED to sort by same dest.host, same service, and do with time windows
-
-
+   #  - Remove to_string pretty printers for packet/connection?
+   #  - Catch Attribute Errors in packet extraction
+   #  - SERIOUSLY...print all connection data just to verify features
 
 # An object for individual packets, with members for all relevant
 #    header information
 class Packet:
 
-    # protocol-specific members set as None in constructor
     def __init__(self, con_no, protocol, service, src_ip, dst_ip, src_port, 
             dst_port, time_elapsed, size, timestamp, urgent): 
         self.con_no = con_no
@@ -38,7 +38,6 @@ class Packet:
         self.timestamp = timestamp
         self.urgent = urgent
     
-    # TODO: remove pretty printers?
     def to_string(self):
         out_str = ('\nconnection_number: ' + str(self.con_no) + 
             '\nprotocol: ' + self.protocol +
@@ -60,7 +59,7 @@ class Packet:
 #   features as members
 class Connection:
 
-    # members set to None in construction are filled in by other functions
+    # fields set to "None" in construction are filled in by other functions
     def __init__(self, src_ip, src_port, dst_ip, dst_port, timestamp, 
             duration, protocol, service, packets, flag,
             src_bytes, dst_bytes, land, wrong_fragments, urgent):
@@ -73,7 +72,7 @@ class Connection:
         self.dst_port = dst_port
         self.timestamp = timestamp
 
-        # basic features of individual connections, filled in now
+        # basic features of individual connections
         self.duration = duration
         self.protocol = protocol
         self.service = service
@@ -111,7 +110,7 @@ class Connection:
         self.dst_host_rerror_rate = None
         self.dst_host_srv_rerror_rate = None
 
-
+        
     def add_samehost_timebased_features(self, count, serror_rate, rerror_rate,
             same_srv_rate, diff_srv_rate):
         self.count = count
@@ -127,8 +126,10 @@ class Connection:
         self.srv_rerror_rate = srv_rerror_rate
         self.srv_diff_host_rate = srv_diff_host_rate
 
+    def add_hostbased_features(self, dst_host_count):
+        self.dst_host_count = dst_host_count
 
-    # TODO: This is just a pretty printer...remove it?
+
     def to_string(self):
         out_str = ('\nduration: ' + str(self.duration) +
             '\nprotocol: ' + self.protocol +
@@ -167,7 +168,6 @@ class Connection:
         return out_str
 
 
-# TODO: catch attribute errors!
 def collect_connections(pcap_file):
 
     cap = pyshark.FileCapture(pcap_file)
@@ -240,8 +240,8 @@ def collect_connections(pcap_file):
                 urgent += 1
            
        
-    # TODO: WTF is status flag (why is it always SF)? I'm gonna
-        #       hardcode it, but that's soooo wrong
+    # TODO: how to catch status flag (last flag bit set)? I'm gonna
+        #       hardcode it now as SF, but that's soooo wrong
         # ALSO....wrong fragments bit, hardcoding as 0
 
         # generate Connection with basic features
@@ -255,12 +255,9 @@ def collect_connections(pcap_file):
 # Derive time-based traffic features (over 2 sec window)
 # ---------------------------------------------------------------------
     
-    # same-host feature derivation - compare connection with every
-    #   other connection, looking for same destination host, within
-    #   past 2 sec from current connection, then derive features
+    # same-host/same-service feature derivation 
 
-    #TODO: probably horribly inefficient...what do?
-
+    #TODO: probably horribly inefficient (n^8 worst case)...what do?
     for rec in connections:
         
         samehost_connections = []
@@ -274,13 +271,10 @@ def collect_connections(pcap_file):
                 samehost_connections.append(cmprec)
                 if (time_delta <= 2.0) and (time_delta >= 0.0):
                     twosec_samehost_connections.append(cmprec)
-                else:
-                    continue
-            elif (rec.service == cmprec.service):
+                    
+            if (rec.service == cmprec.service):
                 if (time_delta <= 2.0) and (time_delta >= 0.0):
                     twosec_samesrv_connections.append(cmprec)
-                else:
-                    continue
             else:
                 continue
 
@@ -339,8 +333,6 @@ def collect_connections(pcap_file):
         output.write('\n')
         output.flush()
         
-
-
 
 # pass control to collect_connections(), take all the credit
 if __name__ == '__main__':
