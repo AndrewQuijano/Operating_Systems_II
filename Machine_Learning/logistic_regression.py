@@ -5,7 +5,7 @@ from misc import *
 import time
 
 
-def logistic_linear(train_x, train_y, test_x, test_y, n_fold=10):
+def logistic_linear(train_x, train_y, test_x=None, test_y=None, n_fold=10):
     start = time.time()
     n = np.logspace(-3, 3)
     param_grid = {'C': n}

@@ -6,7 +6,7 @@ from misc import *
 
 
 # https://www.pyimagesearch.com/2016/08/15/how-to-tune-hyperparameters-with-python-and-scikit-learn/
-def tune_knn(train_x, train_y, test_x, test_y, n_fold=10):
+def tune_knn(train_x, train_y, test_x=None, test_y=None, n_fold=10):
     # Get Number of features
     rows = np.shape(train_x)[0]
 

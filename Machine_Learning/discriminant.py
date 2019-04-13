@@ -4,7 +4,7 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from misc import *
 
 
-def discriminant_line(train_x, train_y, test_x, test_y):
+def discriminant_line(train_x, train_y, test_x=None, test_y=None):
     lda = LinearDiscriminantAnalysis(solver="svd", store_covariance=True)
     lda.fit(train_x, train_y)
     print("Training Score (LDA): " + str(lda.score(train_x, train_y)))
@@ -36,7 +36,7 @@ def lda_test(lda, test_x, test_y):
     top(lda, test_x, test_y, "LDA", extra_attempts=3)
 
 
-def discriminant_quad(train_x, train_y, test_x, test_y):
+def discriminant_quad(train_x, train_y, test_x=None, test_y=None):
     qda = QuadraticDiscriminantAnalysis(store_covariance=True)
     qda.fit(train_x, train_y)
     print("Training Score is (QDA): " + str(qda.score(train_x, train_y)))

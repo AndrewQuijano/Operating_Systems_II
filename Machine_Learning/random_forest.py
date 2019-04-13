@@ -6,7 +6,7 @@ from misc import *
 import time
 
 
-def get_forest(train_x, train_y, test_x, test_y):
+def get_forest(train_x, train_y, test_x=None, test_y=None):
     start_time = time.time()
     best_forest = tune_forest(train_x, train_y)
     print("--- Best Parameter Random Forest Time: %s seconds ---" % (time.time() - start_time))

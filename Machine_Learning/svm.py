@@ -40,7 +40,7 @@ def svc_linear_param_selection(x, y, n_folds=10):
 
 
 # http://scikit-learn.org/stable/modules/model_evaluation.html
-def svm_linear(train_x, train_y, test_x, test_y):
+def svm_linear(train_x, train_y, test_x=None, test_y=None):
     start_time = time.time()
     svm_line = svc_linear_param_selection(train_x, train_y)
     print("--- Best Parameter Linear SVM: %s seconds ---" % (time.time() - start_time))
@@ -57,7 +57,7 @@ def svm_linear(train_x, train_y, test_x, test_y):
     return svm_line
 
 
-def svm_rbf(train_x, train_y, test_x, test_y):
+def svm_rbf(train_x, train_y, test_x=None, test_y=None):
     start_time = time.time()
     svm_radial = svc_rbf_param_selection(train_x, train_y)
     print("--- Best Parameter RBF Time to complete: %s seconds ---" % (time.time() - start_time))

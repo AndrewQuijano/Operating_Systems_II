@@ -37,6 +37,7 @@ def read_data(file, skip_head=True):
     return features, classes
 
 
+# Just test functionality of script!
 def main():
     train_x = None
     train_y = None
@@ -114,6 +115,79 @@ def main():
     # 8- Decision Tree
     tree = get_tree(train_x, train_y, test_x, test_y)
     tree_test(tree, test_x, test_y)
+
+
+# Use this to run IDS using Classifier!
+def ids():
+    import subprocess
+    # To run the program I need either
+    # 1- the raw PCAP with labels?
+    # 2- just the raw CSV pre-processed using Stolfo's KDD Data mining techniques
+
+    if len(argv) == 2:
+        print("usage: python3 main_ids <training data set>")
+
+    if not is_valid_file_type(argv[1]):
+        exit("Invalid file type! only accept.txt or .csv file extensions!")
+
+    # With the training file ready, get all models trained!
+    train_x, train_y = read_data(argv[1])
+    # Now make a split between training and testing set from the input data
+
+    # 1- SVM
+    svm_line_clf = svm_linear(train_x, train_y)
+    svm_rbf_clf = svm_rbf(train_x, train_y)
+
+    # 2- Random Forest
+    forest_clf = get_forest(train_x, train_y)
+
+    # 3- Logistic Regression
+    logistic_clf = logistic_linear(train_x, train_y)
+
+    # 4- KNN
+    knn_clf = tune_knn(train_x, train_y)
+
+    # 5- LDA/QDA
+    lda_clf = discriminant_line(train_x, train_y)
+    qda_clf = discriminant_quad(train_x, train_y)
+
+    # 6- Bayes
+    bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
+
+    # 7- Decision Tree
+    tree = get_tree(train_x, train_y)
+
+    # run python3 collect.py <.pcap>
+    while True:
+
+        try:
+            file = input("Input test PCAP file:")
+            subprocess.run(["python3", file])
+
+            # Force to wait until ready to analyze
+            # When done, read the test data generated from the packet sniffer
+
+            # Check if the correct CSV file exists, if so read it in!
+            if not is_valid_file_type("./record.csv"):
+                continue
+
+            test_x, test_y = read_data("./record.csv")
+
+            # Now test it and get results. Training is done, just get Test Score, Classification Report, etc.
+            svm_test(svm_line_clf, test_x, test_y, "Linear")
+            svm_test(svm_rbf_clf, test_x, test_y, "Radial")
+            forest_test(forest_clf, test_x, test_y)
+            log_linear_test(logistic_clf, test_x, test_y)
+            knn_test(knn_clf, train_x, train_y)
+            lda_test(lda_clf, test_x, test_y)
+            qda_test(qda_clf, test_x, test_y)
+            tree_test(tree, test_x, test_y)
+            naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
+
+        except KeyboardInterrupt:
+            break
+        except EOFError:
+            break
 
 
 if __name__ == "__main__":

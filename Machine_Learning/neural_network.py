@@ -7,7 +7,7 @@ from misc import *
 
 # http://scikit-learn.org/stable/auto_examples/neural_networks/plot_mlp_alpha.html#sphx-glr-auto-examples-neural-networks-plot-mlp-alpha-py
 # http://scikit-learn.org/stable/auto_examples/neural_networks/plot_mlp_training_curves.html#sphx-glr-auto-examples-neural-networks-plot-mlp-training-curves-py
-def get_brain(train_x, train_y, test_x, test_y):
+def get_brain(train_x, train_y, test_x=None, test_y=None):
     start_time = time.time()
     clf = tune_brain(train_x, train_y)
     print("--- Best Parameter NN Generation: %s seconds ---" % (time.time() - start_time))

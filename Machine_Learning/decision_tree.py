@@ -38,7 +38,7 @@ def tune_tree(train_features, train_labels, n_fold=10):
     return clf
 
 
-def get_tree(train_x, train_y, test_x, test_y):
+def get_tree(train_x, train_y, test_x=None, test_y=None):
     start_time = time.time()
     tree = tune_tree(train_x, train_y)
     print("--- Best Parameter Decision Tree Time: %s seconds ---" % (time.time() - start_time))
