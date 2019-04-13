@@ -161,32 +161,43 @@ def ids():
     while True:
 
         try:
-            file = input("Input test PCAP file:")
-            subprocess.run(["python3", file])
+            # Read input from user
+            input = input("Input test PCAP file:")
 
-            # Force to wait until ready to analyze
-            # When done, read the test data generated from the packet sniffer
+            # Sniff and test?
+            if input == "sniff":
+                subprocess.run(["sudo", "tcpdump", "-c", "500", "-s0", "-i", "enp0s3" "-w", "sniff.pcap"])
+            elif input == "process":
+                subprocess.run(["python3", "sniff.pcap"])
+            elif input == "detect":
+                # Force to wait until ready to analyze
+                # When done, read the test data generated from the packet sniffer
 
-            # Check if the correct CSV file exists, if so read it in!
-            if not is_valid_file_type("./record.csv"):
+                # Check if the correct CSV file exists, if so read it in!
+                if not is_valid_file_type("./record.csv"):
+                    continue
+
+                test_x, test_y = read_data("./record.csv")
+
+                # Now test it and get results. Training is done, just get Test Score, Classification Report, etc.
+                svm_test(svm_line_clf, test_x, test_y, "Linear")
+                svm_test(svm_rbf_clf, test_x, test_y, "Radial")
+                forest_test(forest_clf, test_x, test_y)
+                log_linear_test(logistic_clf, test_x, test_y)
+                knn_test(knn_clf, train_x, train_y)
+                lda_test(lda_clf, test_x, test_y)
+                qda_test(qda_clf, test_x, test_y)
+                tree_test(tree, test_x, test_y)
+                naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
+            elif input == "exit":
+                break
+            else:
                 continue
-
-            test_x, test_y = read_data("./record.csv")
-
-            # Now test it and get results. Training is done, just get Test Score, Classification Report, etc.
-            svm_test(svm_line_clf, test_x, test_y, "Linear")
-            svm_test(svm_rbf_clf, test_x, test_y, "Radial")
-            forest_test(forest_clf, test_x, test_y)
-            log_linear_test(logistic_clf, test_x, test_y)
-            knn_test(knn_clf, train_x, train_y)
-            lda_test(lda_clf, test_x, test_y)
-            qda_test(qda_clf, test_x, test_y)
-            tree_test(tree, test_x, test_y)
-            naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
-
         except KeyboardInterrupt:
+            print("CTRL-C detected, Closing now!")
             break
         except EOFError:
+            print("CTLD-D detected, Closing now!")
             break
 
 

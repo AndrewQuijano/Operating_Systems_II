@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7a2caf0e-5530-4001-ae5e-af9064368ca6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Machine_Learning/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Machine_Learning/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Machine_Learning/KNN.py" beforeDir="false" afterPath="$PROJECT_DIR$/Machine_Learning/KNN.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Machine_Learning/decision_tree.py" beforeDir="false" afterPath="$PROJECT_DIR$/Machine_Learning/decision_tree.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Machine_Learning/discriminant.py" beforeDir="false" afterPath="$PROJECT_DIR$/Machine_Learning/discriminant.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Machine_Learning/logistic_regression.py" beforeDir="false" afterPath="$PROJECT_DIR$/Machine_Learning/logistic_regression.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Machine_Learning/main_driver.py" beforeDir="false" afterPath="$PROJECT_DIR$/Machine_Learning/main_driver.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Machine_Learning/neural_network.py" beforeDir="false" afterPath="$PROJECT_DIR$/Machine_Learning/neural_network.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Machine_Learning/random_forest.py" beforeDir="false" afterPath="$PROJECT_DIR$/Machine_Learning/random_forest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Machine_Learning/svm.py" beforeDir="false" afterPath="$PROJECT_DIR$/Machine_Learning/svm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main_ids.py" beforeDir="false" afterPath="$PROJECT_DIR$/main_ids.py" afterDir="false" />
-    </list>
+    <list default="true" id="7a2caf0e-5530-4001-ae5e-af9064368ca6" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,21 +11,11 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/main_ids.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" selection-start-line="7" selection-end-line="72" />
-              <folding>
-                <element signature="e#19#39#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Machine_Learning/main_driver.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-153" />
+            <state relative-caret-position="272">
+              <caret line="51" column="24" selection-start-line="51" selection-start-column="24" selection-end-line="51" selection-end-column="24" />
+            </state>
           </provider>
         </entry>
       </file>
@@ -261,11 +240,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Machine_Learning/main_driver.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-153" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/main_ids.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -273,6 +247,13 @@
           <folding>
             <element signature="e#19#39#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Machine_Learning/main_driver.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="51" column="24" selection-start-line="51" selection-start-column="24" selection-end-line="51" selection-end-column="24" />
         </state>
       </provider>
     </entry>
