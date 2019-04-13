@@ -79,7 +79,7 @@ def svm_test(svm_clf, test_x, test_y, kernel):
     y_hat = svm_clf.predict(test_x)
     print("SVM_Radial, Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
 
-    make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=svm, clf_name='SVM_' + str(kernel))
+    make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=svm_clf, clf_name='SVM_' + str(kernel))
     top(svm_clf, test_x, test_y, "SVM_" + str(kernel), extra_attempts=1)
     top(svm_clf, test_x, test_y, "SVM_" + str(kernel), extra_attempts=2)
 

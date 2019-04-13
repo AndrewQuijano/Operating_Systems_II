@@ -9,7 +9,7 @@ from random_forest import *
 from svm import *
 from decision_tree import *
 from sys import argv, exit
-
+from convert_tcpdump import convert_tcpdump_to_text2pcap
 
 def read_data(file, skip_head=True):
     if skip_head:
@@ -162,14 +162,18 @@ def ids():
 
         try:
             # Read input from user
-            input = input("Input test PCAP file:")
+            args = input("Input test PCAP file:")
 
             # Sniff and test?
-            if input == "sniff":
+            if args == "sniff":
                 subprocess.run(["sudo", "tcpdump", "-c", "500", "-s0", "-i", "enp0s3" "-w", "sniff.pcap"])
-            elif input == "process":
+            elif args == "process":
                 subprocess.run(["python3", "sniff.pcap"])
-            elif input == "detect":
+            elif args == "fix":
+                convert_tcpdump_to_text2pcap("outside.tcpdump", "outside.txt")
+            elif args == "convert":
+                subprocess.run(["text2pcap", "-l", "101", "outside.txt", "outside.pcap"])
+            elif args == "detect":
                 # Force to wait until ready to analyze
                 # When done, read the test data generated from the packet sniffer
 
