@@ -28,11 +28,11 @@ public class Start
 
 		List<PcapIf> alldevs = new ArrayList<PcapIf>();
 		int r = Pcap.findAllDevs(alldevs, errbuf);  
-		if (r == Pcap.NOT_OK || alldevs.isEmpty()) 
+		if (r != Pcap.OK || alldevs.isEmpty()) 
 		{  
 			System.err.printf("Can't read list of devices, error is %s", errbuf.toString());  
 			return;  
-		}  
+		}
 		int i=0;
 		while(i < alldevs.size())
 		{
