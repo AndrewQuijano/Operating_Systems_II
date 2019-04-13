@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="f497d766-490f-48e3-82c5-f9f01f2114b3" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Incremental_ML/.idea/Incremental_ML.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Incremental_ML/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Incremental_ML/.idea/libraries/R_User_Library.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Incremental_ML/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Incremental_ML/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Incremental_ML/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Incremental_ML/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Incremental_ML/client.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Incremental_ML/incremental_bayes.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Incremental_ML/network_setup.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Incremental_ML/server.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Incremental_ML/tuning.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/.idea/Machine_Learning.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/.idea/libraries/R_User_Library.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Confusion_Matrix/Confusion_Matrix_KNN.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Confusion_Matrix/Confusion_Matrix_LDA.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Confusion_Matrix/Confusion_Matrix_Linear_SVM.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Confusion_Matrix/Confusion_Matrix_Logistic_Regression.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Confusion_Matrix/Confusion_Matrix_NN.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Confusion_Matrix/Confusion_Matrix_Neural_Network.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Confusion_Matrix/Confusion_Matrix_QDA.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Confusion_Matrix/Confusion_Matrix_Radial_SVM.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Confusion_Matrix/Confusion_Matrix_Random_Forest.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Confusion_Matrix/Normalized_Confusion_Matrix_KNN.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Confusion_Matrix/Normalized_Confusion_Matrix_LDA.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Confusion_Matrix/Normalized_Confusion_Matrix_Linear_SVM.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Confusion_Matrix/Normalized_Confusion_Matrix_Logistic_Regression.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Confusion_Matrix/Normalized_Confusion_Matrix_NN.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Confusion_Matrix/Normalized_Confusion_Matrix_Neural_Network.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Confusion_Matrix/Normalized_Confusion_Matrix_QDA.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Confusion_Matrix/Normalized_Confusion_Matrix_Radial_SVM.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Confusion_Matrix/Normalized_Confusion_Matrix_Random_Forest.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_KNN_n_neighbors.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_Logistic_Regression_Cost.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_SVM_Linear_Cost.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_SVM_RBF_Cost.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_SVM_RBF_Gamma.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_alpha.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_hidden_layer.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_max_depth.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_max_features.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_min_samples_leaf.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_min_samples_split.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_n_estimators.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_solver.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/Generic_SciKit_Learn.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/KNN.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/bayes.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/classification_reports.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/decision_tree.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/discriminant.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/logistic_regression.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/main_driver.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/misc.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/neural_network.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/random_forest.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/results.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/svm.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/zip_test.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/zip_test_2.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/zip_train.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Python_IDS/Machine_Learning/zip_train_2.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../main_ids.py" beforeDir="false" afterPath="$PROJECT_DIR$/../main_ids.py" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="15" />
+    <option name="y" value="30" />
+    <option name="width" value="1890" />
+    <option name="height" value="960" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f497d766-490f-48e3-82c5-f9f01f2114b3" name="Default Changelist" comment="" />
+      <created>1555184101398</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1555184101398</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
+    <layout>
+      <window_info id="Favorites" side_tool="true" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.25" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" />
+      <window_info anchor="bottom" id="Python Console" />
+      <window_info anchor="bottom" id="Terminal" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+  </component>
+</project>

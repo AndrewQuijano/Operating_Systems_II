@@ -10,7 +10,7 @@ def main():
     # 1- the raw PCAP with labels?
     # 2- just the raw CSV pre-processed using Stolfo's KDD Data mining techniques
     if len(argv) == 2:
-        print("usage: python3 main_ids <training-dataset>")
+        print("usage: python3 main_ids <training data set>")
 
     if not valid_extension(argv[1], "csv"):
         exit("Invalid file type!")
@@ -61,7 +61,7 @@ def main():
             test_x, test_y = read_data("./record.csv")
 
             # Now test it and get results. Training is done, just get Test Score, Classification Report, etc.
-
+            naive_bayes_test(bayes, bayes_istonic, bayes_sigmoid, test_x, test_y)
 
         except KeyboardInterrupt:
             break

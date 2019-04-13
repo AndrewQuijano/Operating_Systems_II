@@ -97,6 +97,7 @@ def main():
 
     # 7- Bayes
     bayes, bayes_istonic, bayes_sigmoid = naive_bayes(train_x, train_y, test_x, test_y)
+    naive_bayes_test(bayes, bayes_istonic, bayes_sigmoid)
 
     # 8- Decision Tree
     tree = get_tree(train_x, train_y, test_x, test_y)

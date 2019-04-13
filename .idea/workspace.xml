@@ -2,22 +2,75 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7a2caf0e-5530-4001-ae5e-af9064368ca6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Java_IDS/src/differentStart/Start.java" beforeDir="false" afterPath="$PROJECT_DIR$/Java_IDS/src/differentStart/Start.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python_IDS/Fuzzer/.idea/Fuzzer.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python_IDS/Fuzzer/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python_IDS/Fuzzer/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python_IDS/Fuzzer/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python_IDS/Fuzzer/denial_of_service.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python_IDS/Fuzzer/extra.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python_IDS/Fuzzer/fuzzer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python_IDS/Fuzzer/isvalid.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python_IDS/Fuzzer/options.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python_IDS/Fuzzer/password.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python_IDS/Fuzzer/password_file_cracker.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python_IDS/Fuzzer/probe.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python_IDS/Fuzzer/remote_to_local.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python_IDS/Fuzzer/user_to_root.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python_IDS/Incremental_ML/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Python_IDS/Incremental_ML/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Incremental_ML/.idea/Incremental_ML.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Incremental_ML/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Incremental_ML/.idea/libraries/R_User_Library.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Incremental_ML/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Incremental_ML/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Incremental_ML/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Incremental_ML/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Incremental_ML/client.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Incremental_ML/incremental_bayes.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Incremental_ML/network_setup.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Incremental_ML/server.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Incremental_ML/tuning.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/.idea/Machine_Learning.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/.idea/libraries/R_User_Library.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Confusion_Matrix/Confusion_Matrix_KNN.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Confusion_Matrix/Confusion_Matrix_LDA.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Confusion_Matrix/Confusion_Matrix_Linear_SVM.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Confusion_Matrix/Confusion_Matrix_Logistic_Regression.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Confusion_Matrix/Confusion_Matrix_NN.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Confusion_Matrix/Confusion_Matrix_Neural_Network.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Confusion_Matrix/Confusion_Matrix_QDA.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Confusion_Matrix/Confusion_Matrix_Radial_SVM.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Confusion_Matrix/Confusion_Matrix_Random_Forest.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Confusion_Matrix/Normalized_Confusion_Matrix_KNN.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Confusion_Matrix/Normalized_Confusion_Matrix_LDA.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Confusion_Matrix/Normalized_Confusion_Matrix_Linear_SVM.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Confusion_Matrix/Normalized_Confusion_Matrix_Logistic_Regression.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Confusion_Matrix/Normalized_Confusion_Matrix_NN.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Confusion_Matrix/Normalized_Confusion_Matrix_Neural_Network.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Confusion_Matrix/Normalized_Confusion_Matrix_QDA.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Confusion_Matrix/Normalized_Confusion_Matrix_Radial_SVM.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Confusion_Matrix/Normalized_Confusion_Matrix_Random_Forest.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_KNN_n_neighbors.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_Logistic_Regression_Cost.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_SVM_Linear_Cost.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_SVM_RBF_Cost.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_SVM_RBF_Gamma.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_alpha.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_hidden_layer.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_max_depth.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_max_features.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_min_samples_leaf.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_min_samples_split.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_n_estimators.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Cross_Validation/CV_Plot_solver.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/Generic_SciKit_Learn.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/KNN.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/bayes.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/classification_reports.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/decision_tree.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/discriminant.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/logistic_regression.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/main_driver.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/misc.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/neural_network.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/random_forest.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/results.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/svm.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/zip_test.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/zip_test_2.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/zip_train.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Python_IDS/Machine_Learning/zip_train_2.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main_ids.py" beforeDir="false" afterPath="$PROJECT_DIR$/main_ids.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,20 +83,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main_ids.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="278">
-              <caret line="59" column="69" selection-start-line="59" selection-start-column="69" selection-end-line="59" selection-end-column="69" />
+            <state relative-caret-position="-147">
+              <caret line="4" column="17" lean-forward="true" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
               <folding>
                 <element signature="e#19#39#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Python_IDS/Machine_Learning/main_driver.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1156">
-              <caret line="1" selection-start-line="1" selection-end-line="1" />
             </state>
           </provider>
         </entry>
@@ -63,6 +107,7 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/Python_IDS/Machine_Learning/bayes.py" />
         <option value="$PROJECT_DIR$/Python_IDS/Machine_Learning/main_driver.py" />
         <option value="$PROJECT_DIR$/main_ids.py" />
       </list>
@@ -89,6 +134,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -96,27 +142,16 @@
               <item name="Operating_Systems_II" type="b2602c69:ProjectViewProjectNode" />
               <item name="Operating_Systems_II" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="Operating_Systems_II" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Operating_Systems_II" type="462c0819:PsiDirectoryNode" />
-              <item name="Python_IDS" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Operating_Systems_II" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Operating_Systems_II" type="462c0819:PsiDirectoryNode" />
-              <item name="Python_IDS" type="462c0819:PsiDirectoryNode" />
-              <item name="Machine_Learning" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Machine_Learning" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -174,30 +209,35 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Python_IDS/Machine_Learning/classification_reports.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1173" />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Python_IDS/Machine_Learning/bayes.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1165">
-          <caret line="69" lean-forward="true" selection-start-line="69" selection-end-line="69" />
+        <state relative-caret-position="199">
+          <caret line="28" column="20" selection-start-line="28" selection-start-column="20" selection-end-line="28" selection-end-column="20" />
           <folding>
             <element signature="e#0#42#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Python_IDS/Machine_Learning/main_driver.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1156">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/main_ids.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="278">
-          <caret line="59" column="69" selection-start-line="59" selection-start-column="69" selection-end-line="59" selection-end-column="69" />
+        <state relative-caret-position="-147">
+          <caret line="4" column="17" lean-forward="true" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
           <folding>
             <element signature="e#19#39#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Python_IDS/Machine_Learning/main_driver.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1547">
+          <caret line="99" column="57" selection-start-line="99" selection-start-column="57" selection-end-line="99" selection-end-column="57" />
         </state>
       </provider>
     </entry>
