@@ -18,7 +18,7 @@ def valid_ip(ip):
     return True
 
 
-def valid_port(port, dos=False):
+def valid_port(port, dos=True):
     try:
         port_number = int(port)
     except ValueError:

