@@ -18,7 +18,6 @@ import pyshark
    #  - NEED TO DERIVE 100 connection window features
    #  - Remove to_string pretty printers for packet/connection?
    #  - Catch Attribute Errors in packet extraction
-   #  - SERIOUSLY...print all connection data just to verify features
 
 # An object for individual packets, with members for all relevant
 #    header information
@@ -177,16 +176,26 @@ def collect_connections(pcap_file):
 # ----------------------------------------------------------------
 # Collect packets from the same connection, create connection dict
 # ----------------------------------------------------------------
+    udp_count = 0
     for pkt in cap:
+    # TODO: Add try/catch for AttributeError
         if 'tcp' in pkt:
             key = "tcp_conn"+pkt.tcp.stream
+            flags = ""
+            if str(pkt.tcp.flags) == "0x00000018":
+                flags += "PUSH-ACK"
+
+            if str(pkt.tcp.flags) == "0x00000018":
+                flags += "PUSH-ACK"
+
             pkt_obj = Packet(pkt.tcp.stream, 'TCP', pkt.highest_layer,
                     pkt.ip.src, pkt.ip.dst,
                     pkt.tcp.srcport, pkt.tcp.dstport, pkt.tcp.time_relative,
                     pkt.length, pkt.sniff_timestamp, 0) #pkt.tcp.flags.urg)
         elif 'udp' in pkt:
             # TODO: why doesn't pkt.udp.time_relative work?? didn't it used to?
-            key = "udp_conn"+pkt.udp.stream
+            key = "udp_conn"+ str(udp_count)
+            udp_count = udp_count + 1
             pkt_obj = Packet(pkt.udp.stream, 'UDP', pkt.highest_layer, 
                     pkt.ip.src, pkt.ip.dst,
                     pkt.udp.srcport, pkt.udp.dstport, 0,#pkt.udp.time_relative,
@@ -208,6 +217,8 @@ def collect_connections(pcap_file):
 # -------------------------------------------------------------------------
     for k,v in raw_connections.items():
 
+        # TODO: does taking service layer of first packet always represent
+        #   the connection accurately? I think not...
         src_bytes = 0
         dst_bytes = 0
         wrong_frag = 0
@@ -238,11 +249,13 @@ def collect_connections(pcap_file):
 
             if pkt.urgent == 1:
                 urgent += 1
+
            
        
     # TODO: how to catch status flag (last flag bit set)? I'm gonna
         #       hardcode it now as SF, but that's soooo wrong
         # ALSO....wrong fragments bit, hardcoding as 0
+
 
         # generate Connection with basic features
         record = Connection(src_ip, src_port, dst_ip, dst_port, timestamp, 
@@ -250,7 +263,13 @@ def collect_connections(pcap_file):
                 dst_bytes, land, 0, urgent)
         
         connections.append(record)
-        
+
+        dummy_fn = str(k) + ".log"
+        dummy = open(dummy_fn, "w")
+        dummy.write(record.to_string())
+        dummy.flush()
+
+       
 # ---------------------------------------------------------------------
 # Derive time-based traffic features (over 2 sec window)
 # ---------------------------------------------------------------------
@@ -290,7 +309,6 @@ def collect_connections(pcap_file):
                 same_srv_count = same_srv_count + 1
             else:
                 diff_srv_count = diff_srv_count + 1
-            
             # TODO: do syn errors, rej errors
         
         same_srv_rate = round(same_srv_count / count, 2)
@@ -306,7 +324,7 @@ def collect_connections(pcap_file):
 
         for cmprec in twosec_samesrv_connections:
             if (rec.dst_ip != cmprec.dst_ip):
-                srv_diff_host_counts = srv_diff_host_counts + 1
+                srv_diff_host_count = srv_diff_host_count + 1
             else:
                 continue
             
@@ -332,7 +350,7 @@ def collect_connections(pcap_file):
         output.write(rec.to_csv())
         output.write('\n')
         output.flush()
-        
+
 
 # pass control to collect_connections(), take all the credit
 if __name__ == '__main__':
