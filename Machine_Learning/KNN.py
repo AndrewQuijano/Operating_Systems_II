@@ -31,20 +31,28 @@ def tune_knn(train_x, train_y, test_x, test_y, n_fold=10):
     print("[INFO] KNN-Best Parameters: " + str(best_knn.best_params_))
     print("[INFO] randomized search took {:.2f} seconds".format(time.time() - start))
     print("Training Score is: " + str(best_knn.score(train_x, train_y)))
+
+    with open("results.txt", "a") as my_file:
+        my_file.write("[KNN] Training Mean Test Score: " + str(best_knn.score(train_x, train_y)) + '\n')
+
+    # print(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i) for i in best_knn.classes_]))
+    if test_x is not None and test_y is not None:
+        knn_test(best_knn, test_x, test_y)
+    return best_knn
+
+
+def knn_test(best_knn, test_x, test_y):
     y_hat = best_knn.predict(test_x)
     print("Testing Score is: " + str(accuracy_score(test_y, y_hat)))
+
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=best_knn, clf_name='KNN')
 
     top(best_knn, test_x, test_y, "KNN", extra_attempts=1)
     top(best_knn, test_x, test_y, "KNN", extra_attempts=3)
-
     with open("results.txt", "a") as my_file:
-        my_file.write("[KNN] Training Mean Test Score: " + str(best_knn.score(train_x, train_y)) + '\n')
         my_file.write("[KNN] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
     with open("classification_reports.txt", "a") as my_file:
         my_file.write("---[KNN]---")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
                                             target_names=[str(i) for i in best_knn.classes_]))
         my_file.write('\n')
-    # print(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i) for i in best_knn.classes_]))
-    return best_knn

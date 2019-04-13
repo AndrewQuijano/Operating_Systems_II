@@ -44,6 +44,18 @@ def get_tree(train_x, train_y, test_x, test_y):
     print("--- Best Parameter Decision Tree Time: %s seconds ---" % (time.time() - start_time))
     print("Best Decision Tree Parameters: " + str(tree.get_params()))
     print("Training Mean Test Score: " + str(tree.score(train_x, train_y)))
+
+    with open("results.txt", "a") as my_file:
+        my_file.write("[Decision Tree] Best Parameters: " + str(tree.get_params()) + '\n')
+        my_file.write("[Decision Tree] Training Mean Test Score: " + str(tree.score(train_x, train_y)) + '\n')
+
+    if test_x is not None or test_y is not None:
+        tree_test(tree, test_x, test_y)
+    # print(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i) for i in tree.classes_]))
+    return tree
+
+
+def tree_test(tree, test_x, test_y):
     y_hat = tree.predict(test_x)
     print("Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
 
@@ -53,14 +65,10 @@ def get_tree(train_x, train_y, test_x, test_y):
     top(tree, test_x, test_y, "Decision Tree", extra_attempts=3)
 
     with open("results.txt", "a") as my_file:
-        my_file.write("[Decision Tree] Best Parameters: " + str(tree.get_params()) + '\n')
-        my_file.write("[Decision Tree] Training Mean Test Score: " + str(tree.score(train_x, train_y)) + '\n')
         my_file.write("[Decision Tree] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
+
     with open("classification_reports.txt", "a") as my_file:
         my_file.write("---[Decision Tree]---\n")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
                                             target_names=[str(i) for i in tree.classes_]))
         my_file.write('\n')
-    # print(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i) for i in tree.classes_]))
-    return tree
-
