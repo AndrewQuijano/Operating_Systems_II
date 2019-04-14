@@ -86,7 +86,7 @@ def tune_forest(train_features, train_labels, n_fold=10):
     return random_forest
 
 
-def forest_test(best_forest, test_x, test_y, extra_test):
+def forest_test(best_forest, test_x, test_y, extra_test=False):
     y_hat = best_forest.predict(test_x)
     print("[Random_Forest] Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=best_forest, clf_name='Random_Forest')

@@ -83,8 +83,8 @@ def main():
 
     # 1- SVM
     start_time = time.time()
-    svm_line_clf = svm_linear(train_x, train_y, test_x, test_y)
-    svm_rbf_clf = svm_rbf(train_x, train_y, test_x, test_y)
+    svm_line_clf = svm_linear(train_x, train_y)
+    svm_rbf_clf = svm_rbf(train_x, train_y)
     svm_test(svm_line_clf, test_x, test_y, "Linear")
     svm_test(svm_rbf_clf, test_x, test_y, "Radial")
 
@@ -169,17 +169,18 @@ def ids():
         try:
             # Read input from user
             args = input("Input: ")
-
-            # Sniff and test?
-            if args == "sniff":
+            # args = argv.split()
+    
+            # Sniff and test
+            if args == "sniff": #args: number of packets, interface, PCAP name
                 subprocess.run(["sudo", "tcpdump", "-c", "500", "-s0", "-i", "ens33", "-w", "sniff.pcap"])
-            elif args == "process":
+            elif args == "process": #args: pcap name
                 subprocess.run(["python3", "../Sniffer/collect.py", "sniff.pcap"])
-            elif args == "fix":
+            elif args == "fix": #args: input .tcpdump output.txt 
                 convert_tcpdump_to_text2pcap("../../outside.tcpdump", "outside.txt")
-            elif args == "convert":
+            elif args == "convert": #args: convert .txt .pcap
                 subprocess.run(["text2pcap", "-l", "101", "outside.txt", "outside.pcap"])
-            elif args == "detect":
+            elif args == "detect": #args: csv type
                 # Check if the correct CSV file exists, if so read it in!
                 if not is_valid_file_type("./record.csv"):
                     continue
@@ -209,4 +210,4 @@ def ids():
 
 
 if __name__ == "__main__":
-    ids()
+    main()
