@@ -2,32 +2,32 @@
 # main issue: http://scikit-learn.org/stable/modules/scaling_strategies.html
 from network_setup import *
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.linear_model import Perceptron, SGDClassifier, PassiveAggressiveClassifier, SGDRegressor, PassiveAggressiveRegressor
+from sklearn.linear_model import Perceptron, SGDClassifier, SGDRegressor
+from sklearn.linear_model import PassiveAggressiveRegressor, PassiveAggressiveClassifier
 import numpy as np
 
 # ORIGINAL PARTS WHICH ALREADY ARE INCREMENTAL!
-#from random_forest import tune_forest
-#from logistic_regression import *
 
 
 # Return X, Y for training, or just X to be used for classifiers
 def parse_string_to_numpy(data, training_phase=True):
-    try:
-        args = data.split(",")
-        if training_phase:
-            x = args[1:]
-            y = args[0]
-            x = np.fromstring(x, dtype=float, sep=',')
-            y = np.fromstring(y, dtype=float, sep=',')
-            return x, y
-        else:
-            x = np.fromstring(args, dtype=float, sep=',')
-            return x, None
-    except ValueError:
-        return None, None
+    #try:
+
+    #if training_phase:
+    x = np.fromstring(data, dtype='float32', sep=',')
+    y = x[0]
+    x = x[1:]
+    x = x.reshape(1, -1)
+    y = y.reshape(1, -1)
+    return x, y
+    #else:
+    #   x = np.fromstring(args, dtype=float, sep=',')
+    #   return x, None
+    #except ValueError:
+    #    return None, None
 
 
-def main():
+def server():
     server_socket = create_server_socket(12345)
     if server_socket is None:
         die("Failed to make Server Socket!")
@@ -41,7 +41,6 @@ def main():
     pa_regressor = PassiveAggressiveRegressor()
 
     # For Partial fit to work, I need to know all classes ahead of time!
-    
     while True:
         try:
 
@@ -110,6 +109,39 @@ def main():
             break
 
     server_socket.close()
+
+
+# test driver only on local host with ML model, see main_driver in ML python library
+# Test with ZIP code data set
+def main():
+    # Once server socket is ready get all classifiers up!
+    bayes = MultinomialNB(class_prior=None, fit_prior=True)
+    percep = Perceptron()
+    sgd_class = SGDClassifier()
+    pa_classifier = PassiveAggressiveClassifier()
+    sgd_regress = SGDRegressor()
+    pa_regress = PassiveAggressiveRegressor()
+
+    # For Partial fit to work, I need to know all classes ahead of time!
+    classes = [3.0, 5.0, 6.0, 8.0]
+
+    # Train it
+    with open("zip_train.csv", "r") as file:
+        for line in file:
+            print(line)
+            x, y = parse_string_to_numpy(line.rstrip())
+            print("NUMPY")
+            print(x)
+            print(y)
+            # bayes.partial_fit(x, y, classes=classes)
+            # WORKS
+            # percep.partial_fit(x, y, classes=classes)
+            sgd_class.partial_fit(x, y, classes=classes)
+            pa_classifier.partial_fit(x, y, classes=classes)
+            #sgd_regress.partial_fit(x, y, classes=classes)
+            #pa_regress.partial_fit(x, y, classes=classes)
+
+    # Now test it!
 
 
 if __name__ == "__main__":

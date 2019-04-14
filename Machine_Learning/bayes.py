@@ -25,15 +25,17 @@ def naive_bayes(train_x, train_y, n_fold=10):
     return clf, clf_isotonic, clf_sigmoid
 
 
-def naive_bayes_test(clf, clf_isotonic, clf_sigmoid, test_x, test_y):
+def naive_bayes_test(clf, clf_isotonic, clf_sigmoid, test_x, test_y, extra_test=False):
     prob_pos_clf = clf.predict(test_x)
     prob_pos_isotonic = clf_isotonic.predict(test_x)
     prob_pos_sigmoid = clf_sigmoid.predict(test_x)
 
     # Evaluate Results
     # Sanity check to match with test score
-    top(clf, test_x, test_y, "Naive Bayes", extra_rooms=1)
-    top(clf, test_x, test_y, "Naive Bayes", extra_rooms=3)
+    if extra_test:
+        top(clf, test_x, test_y, "Naive Bayes")
+        top(clf, test_x, test_y, "Naive Bayes", 3)
+
     with open("results.txt", "a") as my_file:
         my_file.write("[NB] Testing Mean Test Score: " + str(accuracy_score(test_y, prob_pos_clf)))
     with open("classification_reports.txt", "a") as my_file:
@@ -44,8 +46,10 @@ def naive_bayes_test(clf, clf_isotonic, clf_sigmoid, test_x, test_y):
     make_confusion_matrix(y_true=test_y, y_pred=prob_pos_clf, clf=clf, clf_name='Naive_Bayes')
 
     # Sanity check to match with test score
-    top(clf, test_x, test_y, "Bayes with Isotonic Calibration", extra_rooms=1)
-    top(clf, test_x, test_y, "Bayes with Isotonic Calibration", extra_rooms=3)
+    if extra_test:
+        top(clf, test_x, test_y, "Bayes with Isotonic Calibration")
+        top(clf, test_x, test_y, "Bayes with Isotonic Calibration", 3)
+
     with open("results.txt", "a") as my_file:
         my_file.write("[NB Isotonic] Testing Mean Test Score: " + str(accuracy_score(test_y, prob_pos_isotonic)) + '\n')
     with open("classification_reports.txt", "a") as my_file:
@@ -57,8 +61,10 @@ def naive_bayes_test(clf, clf_isotonic, clf_sigmoid, test_x, test_y):
     make_confusion_matrix(y_true=test_y, y_pred=prob_pos_isotonic, clf=clf_isotonic, clf_name='Naive_Bayes_Isotonic')
 
     # Sanity check to match with test score
-    top(clf, test_x, test_y, "Bayes with Sigmoid Calibration", extra_attempts=1)
-    top(clf, test_x, test_y, "Bayes with Sigmoid Calibration", extra_attempts=3)
+    if extra_test:
+        top(clf, test_x, test_y, "Bayes with Sigmoid Calibration")
+        top(clf, test_x, test_y, "Bayes with Sigmoid Calibration", 3)
+
     with open("results.txt", "a") as my_file:
         my_file.write("[NB Sigmoid] Testing Mean Test Score: " + str(accuracy_score(test_y, prob_pos_sigmoid)))
     with open("classification_reports.txt", "a") as my_file:

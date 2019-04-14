@@ -45,7 +45,7 @@ def svm_linear(train_x, train_y, test_x=None, test_y=None):
     svm_line = svc_linear_param_selection(train_x, train_y)
     print("--- Best Parameter Linear SVM: %s seconds ---" % (time.time() - start_time))
     print("Best Linear Parameters: " + str(svm_line.best_params_))
-    print("SVM_Linear, Training Mean Test Score: " + str(svm_line.score(train_x, train_y)))
+    print("[SVM_Linear] Training Mean Test Score: " + str(svm_line.score(train_x, train_y)))
 
     with open("results.txt", "a") as my_file:
         my_file.write("[SVM_Linear] Best Parameters: " + str(svm_line.get_params()) + '\n')
@@ -62,7 +62,7 @@ def svm_rbf(train_x, train_y, test_x=None, test_y=None):
     svm_radial = svc_rbf_param_selection(train_x, train_y)
     print("--- Best Parameter RBF Time to complete: %s seconds ---" % (time.time() - start_time))
     print("Best RBF Parameters: " + str(svm_radial.get_params()))
-    print("SVM_Radial, Training Mean Test Score: " + str(svm_radial.score(train_x, train_y)))
+    print("[SVM_Radial] Training Mean Test Score: " + str(svm_radial.score(train_x, train_y)))
 
     with open("results.txt", "a") as my_file:
         my_file.write("[SVM_Radial] Best Parameters: " + str(svm_radial.get_params()) + '\n')
@@ -75,13 +75,14 @@ def svm_rbf(train_x, train_y, test_x=None, test_y=None):
     return svm_radial
 
 
-def svm_test(svm_clf, test_x, test_y, kernel):
+def svm_test(svm_clf, test_x, test_y, kernel, extra_test=False):
     y_hat = svm_clf.predict(test_x)
-    print("SVM_Radial, Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
+    print("[SVM_" + kernel + "] Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
 
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=svm_clf, clf_name='SVM_' + str(kernel))
-    top(svm_clf, test_x, test_y, "SVM_" + str(kernel), extra_attempts=1)
-    top(svm_clf, test_x, test_y, "SVM_" + str(kernel), extra_attempts=2)
+    if extra_test:
+        top(svm_clf, test_x, test_y, "SVM_" + str(kernel), extra_attempts=1)
+        top(svm_clf, test_x, test_y, "SVM_" + str(kernel), extra_attempts=2)
 
     with open("results.txt", "a") as my_file:
         my_file.write("[SVM_" + kernel + "Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')

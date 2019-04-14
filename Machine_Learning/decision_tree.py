@@ -43,7 +43,7 @@ def get_tree(train_x, train_y, test_x=None, test_y=None):
     tree = tune_tree(train_x, train_y)
     print("--- Best Parameter Decision Tree Time: %s seconds ---" % (time.time() - start_time))
     print("Best Decision Tree Parameters: " + str(tree.get_params()))
-    print("Training Mean Test Score: " + str(tree.score(train_x, train_y)))
+    print("[Decision_Tree] Training Mean Test Score: " + str(tree.score(train_x, train_y)))
 
     with open("results.txt", "a") as my_file:
         my_file.write("[Decision Tree] Best Parameters: " + str(tree.get_params()) + '\n')
@@ -55,17 +55,18 @@ def get_tree(train_x, train_y, test_x=None, test_y=None):
     return tree
 
 
-def tree_test(tree, test_x, test_y):
+def tree_test(tree, test_x, test_y, extra_test=False):
     y_hat = tree.predict(test_x)
-    print("Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
+    print("[Decision_Tree] Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
 
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=tree, clf_name='Decision_Tree')
     # Sanity check to match with test score
-    top(tree, test_x, test_y, "Decision Tree", extra_attempts=1)
-    top(tree, test_x, test_y, "Decision Tree", extra_attempts=3)
+    if extra_test:
+        top(tree, test_x, test_y, "Decision Tree", extra_attempts=1)
+        top(tree, test_x, test_y, "Decision Tree", extra_attempts=3)
 
     with open("results.txt", "a") as my_file:
-        my_file.write("[Decision Tree] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
+        my_file.write("[Decision_Tree] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 
     with open("classification_reports.txt", "a") as my_file:
         my_file.write("---[Decision Tree]---\n")
