@@ -24,7 +24,7 @@ import pyshark
 class Packet:
 
     def __init__(self, con_no, protocol, service, src_ip, dst_ip, src_port, 
-            dst_port, time_elapsed, size, timestamp, urgent): 
+            dst_port, flags, time_elapsed, size, timestamp, urgent): 
         self.con_no = con_no
         self.protocol = protocol
         self.service = service
@@ -32,6 +32,7 @@ class Packet:
         self.dst_ip = dst_ip
         self.src_port = src_port
         self.dst_port = dst_port
+        self.flags = flags
         self.time_elapsed = time_elapsed
         self.size = int(size)
         self.timestamp = timestamp
@@ -46,7 +47,8 @@ class Packet:
             '\nsource port: ' + str(self.src_port) +
             '\ndestination port: ' + str(self.dst_port) +
             '\npacket size: ' + str(self.size) +
-            '\nurgent flag: ' + str(self.urgent) + 
+            '\nurgent flag: ' + str(self.urgent) +
+            '\nflags: ' + self.flags +  
             '\ntime elapsed since first packet of connection: ' + 
             str(self.time_elapsed) + 
             '\nabsolute time: ' + str(self.timestamp) + 
@@ -181,16 +183,30 @@ def collect_connections(pcap_file):
     # TODO: Add try/catch for AttributeError
         if 'tcp' in pkt:
             key = "tcp_conn"+pkt.tcp.stream
-            flags = ""
-            if str(pkt.tcp.flags) == "0x00000018":
-                flags += "PUSH-ACK"
+            raw_flags = int(str(pkt.tcp.flags), 16)
 
-            if str(pkt.tcp.flags) == "0x00000018":
-                flags += "PUSH-ACK"
+            fin_flag = ( raw_flags & 0x01 ) != 0
+            syn_flag = ( raw_flags & 0x02 ) != 0
+            rst_flag = ( raw_flags & 0x04 ) != 0
+            psh_flag = ( raw_flags & 0x08 ) != 0
+            ack_flag = ( raw_flags & 0x10 ) != 0
+            urg_flag = ( raw_flags & 0x20 ) != 0
+            ece_flag = ( raw_flags & 0x40 ) != 0
+            cwr_flag = ( raw_flags & 0x80 ) != 0
+            flags = (
+                ( "CWR " if cwr_flag else "" ) +
+                ( "ECE " if ece_flag else "" ) +
+                ( "URG " if urg_flag else "" ) +
+                ( "ACK " if ack_flag else "" ) +
+                ( "PSH " if psh_flag else "" ) +
+                ( "RST " if rst_flag else "" ) +
+                ( "SYN " if syn_flag else "" ) +
+                ( "FIN " if fin_flag else "" ) )
+            
 
             pkt_obj = Packet(pkt.tcp.stream, 'TCP', pkt.highest_layer,
-                    pkt.ip.src, pkt.ip.dst,
-                    pkt.tcp.srcport, pkt.tcp.dstport, pkt.tcp.time_relative,
+                    pkt.ip.src, pkt.ip.dst, pkt.tcp.srcport, pkt.tcp.dstport,
+                    flags, pkt.tcp.time_relative,
                     pkt.length, pkt.sniff_timestamp, 0) #pkt.tcp.flags.urg)
         elif 'udp' in pkt:
             # TODO: why doesn't pkt.udp.time_relative work?? didn't it used to?
@@ -198,7 +214,7 @@ def collect_connections(pcap_file):
             udp_count = udp_count + 1
             pkt_obj = Packet(pkt.udp.stream, 'UDP', pkt.highest_layer, 
                     pkt.ip.src, pkt.ip.dst,
-                    pkt.udp.srcport, pkt.udp.dstport, 0,#pkt.udp.time_relative,
+                    pkt.udp.srcport, pkt.udp.dstport, 0, 0,#pkt.udp.time_relative,
                     pkt.length, pkt.sniff_timestamp, 0)
         else:
             # do not record packets that aren't TCP/UDP
@@ -233,6 +249,21 @@ def collect_connections(pcap_file):
         dst_port = v[0].dst_port
         timestamp = v[-1].timestamp
 
+        # connection status logging variables
+        orig_syn = False
+        resp_syn = False
+        unwanted_synack = False
+        orig_fin = False
+        resp_fin = False
+        orig_rst = False
+        resp_rst = False
+        orig_synrst = False
+        resp_synackrst = False
+        orig_synfin = False
+        resp_synackfin = False
+
+        i = 0
+        
 
         # land feature (loopback connection)
         if (src_ip == dst_ip) and (src_port == dst_port):
@@ -240,7 +271,11 @@ def collect_connections(pcap_file):
         else:
             land = 0
 
-        # traverse packets (some basic features are aggregated from each packet)       
+
+        # traverse packets, aggregate urgent packet count, byte counts,
+        #   and higher-level connection/termination status (as described
+        #   by Wenke "Data Mining Approachces for Intrusion Detection ",
+        #   status codes described by https://github.com/hrbrmstr/hrbrmisc/blob/master/R/cyber-bro.r"
         for pkt in v: 
             if src_ip == pkt.src_ip:
                 src_bytes += pkt.size
@@ -250,16 +285,70 @@ def collect_connections(pcap_file):
             if pkt.urgent == 1:
                 urgent += 1
 
-           
+            # log changes to connecion status by reading packet flags
+            if pkt.protocol == 'TCP':
+                if src_ip == pkt.src_ip:
+                    if 'SYN' in pkt.flags:
+                        orig_syn = True
+                    if 'FIN' in pkt.flags:
+                        orig_fin = True
+                        if ((i > 0) and ('SYN' in v[i-1].flags)):
+                            orig_synfin = True
+                    if 'RST' in pkt.flags:
+                        orig_rst = True
+                        if ((i > 0) and ('SYN' in v[i-1].flags)):
+                            orig_synrst = True
+                else:
+                     if 'SYN' in pkt.flags:
+                        resp_syn = True
+                     if 'FIN' in pkt.flags:
+                        resp_syn = True
+                        if ((i > 0) and ('SYN ACK' in v[i-1].flags)):
+                            resp_synackfin = True
+                     if 'RST' in pkt.flags:
+                        resp_rst = True
+                        if ((i > 0) and ('SYN ACK' in v[i-1].flags)):
+                            resp_synackrst = True
+            i = i + 1    
+        
+        # now that connection status is aggregated from packet flags, 
+        #   determine the status flag to set
+        if protocol == 'UDP':
+            status_flag = 'SF'
+        else:
+            if (((orig_syn) and (not resp_syn)) or ((resp_syn) and (not orig_syn))):
+                status_flag = 'S0'
+            elif (orig_syn and resp_syn) and (not orig_fin and not resp_fin):
+                status_flag = 'S1'
+            elif ((orig_syn and resp_syn) and (orig_fin and resp_fin) and (src_bytes == 0)):
+                status_flag = 'REJ' # TODO: Is this really how you detect a rejected connection? 
+            elif (orig_syn and resp_syn) and (orig_fin and resp_fin):
+                status_flag = 'SF'
+            elif (orig_syn and resp_syn) and (orig_fin and not resp_fin):
+                status_flag = 'S2'
+            elif (orig_syn and resp_syn) and (resp_fin and not orig_fin):
+                status_flag = 'S3'
+            if (orig_synrst) and (not resp_syn):
+                status_flag = 'RSTOS0'
+            elif (resp_synackrst) and (not orig_syn):
+                status_flag = 'RSTRH'
+            elif (orig_syn and resp_syn) and (orig_rst):
+                status_flag = 'RSTO'
+            elif resp_rst:
+                status_flag = 'RSTR'
+            elif (orig_syn and orig_fin) and (not resp_syn):
+                status_flag = 'SH'
+            elif (resp_syn and resp_fin) and (not orig_syn):
+                status_flag = 'SHR'
+            elif (not orig_syn and not resp_syn):
+                status_flag = 'OTH'
        
-    # TODO: how to catch status flag (last flag bit set)? I'm gonna
-        #       hardcode it now as SF, but that's soooo wrong
-        # ALSO....wrong fragments bit, hardcoding as 0
+        # TODO: wrong fragments bit, hardcoding as 0
 
 
         # generate Connection with basic features
         record = Connection(src_ip, src_port, dst_ip, dst_port, timestamp, 
-                duration, protocol, service, v, 'SF', src_bytes,
+                duration, protocol, service, v, status_flag, src_bytes,
                 dst_bytes, land, 0, urgent)
         
         connections.append(record)
