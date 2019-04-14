@@ -130,8 +130,21 @@ class Connection:
         self.srv_rerror_rate = srv_rerror_rate
         self.srv_diff_host_rate = srv_diff_host_rate
 
-    def add_hostbased_features(self, dst_host_count):
+    def add_hostbased_features(self, dst_host_count, dst_host_srv_count,
+            dst_host_same_srv_rate, dst_host_diff_srv_rate,
+            dst_host_same_src_port_rate, dst_host_srv_diff_host_rate,
+            dst_host_serror_rate, dst_host_srv_serror_rate,
+            dst_host_rerror_rate, dst_host_srv_rerror_rate):
         self.dst_host_count = dst_host_count
+        self.dst_host_srv_count = dst_host_srv_count
+        self.dst_host_same_srv_rate = dst_host_same_srv_rate
+        self.dst_host_diff_srv_rate = dst_host_diff_srv_rate
+        self.dst_host_same_src_port_rate = dst_host_same_src_port_rate
+        self.dst_host_srv_diff_host_rate = dst_host_srv_diff_host_rate
+        self.dst_host_serror_rate = dst_host_serror_rate
+        self.dst_host_srv_serror_rate = dst_host_srv_serror_rate
+        self.dst_host_rerror_rate = dst_host_rerror_rate
+        self.dst_host_srv_rerror_rate = dst_host_srv_rerror_rate
 
 
     def to_string(self):
@@ -168,7 +181,17 @@ class Connection:
             str(self.srv_rerror_rate) + ',' +
             str(self.same_srv_rate) + ',' +
             str(self.diff_srv_rate) + ',' +
-            str(self.srv_diff_host_rate) + ',')
+            str(self.srv_diff_host_rate) + ',' + 
+            str(self.dst_host_count) + ',' +
+            str(self.dst_host_srv_count) + ',' +
+            str(self.dst_host_same_srv_rate) + ',' +
+            str(self.dst_host_diff_srv_rate) + ',' +
+            str(self.dst_host_same_src_port_rate) + ',' +
+            str(self.dst_host_srv_diff_host_rate) + ',' +
+            str(self.dst_host_serror_rate) + ',' +
+            str(self.dst_host_srv_serror_rate) + ',' +
+            str(self.dst_host_rerror_rate) + ',' +
+            str(self.dst_host_srv_rerror_rate))
         return out_str
 
 
@@ -206,7 +229,6 @@ def collect_connections(pcap_file):
                 ( "SYN " if syn_flag else "" ) +
                 ( "FIN " if fin_flag else "" ) )
             
-
             urgent = 0
             if 'URG' in flags:
                 urgent = 1
@@ -449,8 +471,61 @@ def collect_connections(pcap_file):
 # Derive host-based traffic features (same host over 100 connections)
 #  ---------------------------------------------------------------------
 
-        for cmprec in samehost_connections:
-            break
+        # TODO: Supposed to be samehost connections??
+        if len(samehost_connections) >= 100:
+            onehundred_samehost_connections = samehost_connections[0:99]
+        else:
+            rangeval = len(samehost_connections) - 1
+            onehundred_samehost_connections = samehost_connections[0:rangeval]
+
+        dst_host_count = len(samehost_connections)
+        dst_host_srv_count = 0
+
+        dst_host_diff_srv_count = 0
+        dst_host_same_src_port_count = 0
+        dst_host_srv_diff_host_count = 0
+        dst_host_serror_count = 0
+        dst_host_srv_serror_count = 0
+        dst_host_rerror_count = 0
+        dst_host_srv_rerror_count = 0
+
+        
+        for cmprec in onehundred_samehost_connections:
+            if (rec.service == cmprec.service):
+                dst_host_srv_count = dst_host_srv_count + 1
+            else:
+                dst_host_diff_srv_count = dst_host_diff_srv_count + 1
+
+            if (rec.dst_port == cmprec.dst_port):
+               dst_host_same_src_port_count = dst_host_same_src_port_count + 1
+
+            # TODO: add dst_host_srv_diff_host 
+
+            if cmprec.flag == 'S0':
+                dst_host_serror_rate = dst_host_serror_rate + 1
+
+            if cmprec.flag == 'S0' and rec.service == cmprec.service:
+                dst_host_srv_serror_rate = dst_host_srv_serror_rate + 1
+
+            if cmprec.flag == 'RSTOS0' or cmprec.flag == 'RSTRH':
+                dst_host_rerror_count = dst_host_rerror_count + 1
+            if (cmprec.flag == 'RSTOS0' or cmprec.flag == 'RSTRH') and (rec.service == cmprec.service):
+                dst_host_srv_rerror_count = dst_host_srv_rerror_count + 1
+
+
+        dst_host_same_srv_rate = round(dst_host_srv_count / dst_host_count, 2)
+        dst_host_diff_srv_rate = round(dst_host_diff_srv_count / dst_host_count, 2)
+        dst_host_same_src_port_rate = round(dst_host_same_src_port_count / dst_host_count, 2)
+        dst_host_srv_diff_host_rate = round(dst_host_srv_diff_host_count / dst_host_count, 2)
+        dst_host_serror_rate = round(dst_host_serror_count / dst_host_count, 2)
+        dst_host_srv_serror_rate = round(dst_host_srv_serror_count / dst_host_count, 2)
+        dst_host_rerror_rate = round(dst_host_rerror_count / dst_host_count, 2)
+        dst_host_srv_rerror_rate = round(dst_host_srv_rerror_count / dst_host_count, 2)
+        
+        rec.add_hostbased_features(dst_host_count, dst_host_srv_count, dst_host_same_srv_rate,
+            dst_host_diff_srv_rate, dst_host_same_src_port_rate, dst_host_srv_diff_host_rate,
+            dst_host_serror_rate, dst_host_srv_serror_rate, dst_host_rerror_rate, 
+            dst_host_srv_rerror_rate)   
 
 
 # ---------------------------------------------------------------------
