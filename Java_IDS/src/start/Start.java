@@ -1,3 +1,6 @@
+package start;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -10,6 +13,9 @@ import org.jnetpcap.PcapIf;
 import org.jnetpcap.packet.PcapPacket;
 import org.jnetpcap.packet.PcapPacketHandler;
 import org.jnetpcap.protocol.network.Arp;
+
+import nids.Sniffer;
+import nids.kdd;
 
 public class Start 
 {
@@ -25,18 +31,24 @@ public class Start
 
 	public static void main(String[] args) throws Exception 
 	{
-		//final String FILENAME = "test-http-jpeg.pcap";  
-		List<PcapIf> alldevs = new ArrayList<PcapIf>();
-		final StringBuilder errbuf = new StringBuilder();
-
-		int r = Pcap.findAllDevs(alldevs, errbuf);  
-		if (r != Pcap.OK || alldevs.isEmpty()) 
+		if(!Sniffer.start())
 		{
-			System.err.printf("Can't read list of devices, error is %s", errbuf.toString());  
-			return;  
+			System.out.println("Error!");
 		}
+		
+		kdd test = new kdd();
+		List<PcapPacket> l = test.getPacketList("lol.pcap");
+		
+		for (int i = 0; i < l.size(); i++)
+		{
+			PcapPacket p = l.get(i);
+			System.out.println(p.toString());
+		}
+		/*
 
+		List<PcapIf> alldevs = new ArrayList<PcapIf>();
 		int i = 0;
+		final StringBuilder errbuf = new StringBuilder();
 		while(i < alldevs.size())
 		{
 			System.out.println(i+" : "+alldevs.get(i++).getName());
@@ -103,5 +115,6 @@ public class Start
 			}
 			System.err.println("scanning completed do you want to scan more");
 		}
+		*/
 	}
 }

@@ -13,7 +13,7 @@ def get_brain(train_x, train_y, test_x=None, test_y=None):
     print("--- Best Parameter NN Generation: %s seconds ---" % (time.time() - start_time))
     # Print Training and Test Error
     print("Best NN Parameters: " + str(clf.get_params()))
-    print("Training Mean Test Score: " + str(clf.score(train_x, train_y)))
+    print("[NN] Training Mean Test Score: " + str(clf.score(train_x, train_y)))
 
     with open("results.txt", "a") as my_file:
         my_file.write("[Neural_Network] Best Parameters: " + str(clf.get_params()) + '\n')
@@ -53,13 +53,14 @@ def tune_brain(train_x, train_y, n_fold=10):
     return clf
 
 
-def brain_test(clf, test_x, test_y):
+def brain_test(clf, test_x, test_y, extra_test=False):
     y_hat = clf.predict(test_x)
-    print("Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)))
+    print("[NN] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)))
 
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=clf, clf_name='Neural_Network')
-    top(clf, test_x, test_y, "Neural_Network", extra_attempts=1)
-    top(clf, test_x, test_y, "Neural_Network", extra_attempts=3)
+    if extra_test:
+        top(clf, test_x, test_y, "Neural_Network", extra_attempts=1)
+        top(clf, test_x, test_y, "Neural_Network", extra_attempts=3)
     with open("results.txt", "a") as my_file:
         my_file.write("[Neural_Network] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 

@@ -11,11 +11,11 @@ def get_forest(train_x, train_y, test_x=None, test_y=None):
     best_forest = tune_forest(train_x, train_y)
     print("--- Best Parameter Random Forest Time: %s seconds ---" % (time.time() - start_time))
     print("Best Random Forest Parameters: " + str(best_forest.get_params()))
-    print("Training Mean Test Score: " + str(best_forest.score(train_x, train_y)))
+    print("[Random_Forest]Training Mean Test Score: " + str(best_forest.score(train_x, train_y)))
 
     with open("results.txt", "a") as my_file:
-        my_file.write("[Random Forest] Best Parameters: " + str(best_forest.get_params()) + '\n')
-        my_file.write("[Random Forest] Training Mean Test Score: " + str(best_forest.score(train_x, train_y)) + '\n')
+        my_file.write("[Random_Forest] Best Parameters: " + str(best_forest.get_params()) + '\n')
+        my_file.write("[Random_Forest] Training Mean Test Score: " + str(best_forest.score(train_x, train_y)) + '\n')
 
     if test_x is not None and test_y is not None:
         forest_test(best_forest, test_x, test_y)
@@ -86,17 +86,18 @@ def tune_forest(train_features, train_labels, n_fold=10):
     return random_forest
 
 
-def forest_test(best_forest, test_x, test_y):
+def forest_test(best_forest, test_x, test_y, extra_test):
     y_hat = best_forest.predict(test_x)
-    print("Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
+    print("[Random_Forest] Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=best_forest, clf_name='Random_Forest')
-    top(best_forest, test_x, test_y, "Random_Forest", extra_attempts=1)
-    top(best_forest, test_x, test_y, "Random_Forest", extra_attempts=3)
+    if extra_test:
+        top(best_forest, test_x, test_y, "Random_Forest", extra_attempts=1)
+        top(best_forest, test_x, test_y, "Random_Forest", extra_attempts=3)
     with open("results.txt", "a") as my_file:
-        my_file.write("[Random Forest] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
+        my_file.write("[Random_Forest] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 
     with open("classification_reports.txt", "a") as my_file:
-        my_file.write("---[Random Forest]---")
+        my_file.write("---[Random_Forest]---")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
                                             target_names=[str(i) for i in best_forest.classes_]))
         my_file.write('\n')

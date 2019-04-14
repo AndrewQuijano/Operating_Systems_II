@@ -19,7 +19,7 @@ def discriminant_line(train_x, train_y, test_x=None, test_y=None):
     return lda
 
 
-def lda_test(lda, test_x, test_y):
+def lda_test(lda, test_x, test_y, extra_test=False):
     y_hat = lda.predict(test_x)
     print("Testing Score is (LDA): " + str(accuracy_score(test_y, y_hat)))
 
@@ -32,8 +32,10 @@ def lda_test(lda, test_x, test_y):
                                             target_names=[str(i) for i in lda.classes_]))
 
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=lda, clf_name='LDA')
-    top(lda, test_x, test_y, "LDA", extra_attempts=1)
-    top(lda, test_x, test_y, "LDA", extra_attempts=3)
+
+    if extra_test:
+        top(lda, test_x, test_y, "LDA", extra_attempts=1)
+        top(lda, test_x, test_y, "LDA", extra_attempts=3)
 
 
 def discriminant_quad(train_x, train_y, test_x=None, test_y=None):
@@ -51,12 +53,14 @@ def discriminant_quad(train_x, train_y, test_x=None, test_y=None):
     return qda
 
 
-def qda_test(qda, test_x, test_y):
+def qda_test(qda, test_x, test_y, extra_test=False):
     y_hat = qda.predict(test_x)
     print("Prediction Score is (QDA): " + str(accuracy_score(test_y, y_hat)))
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=qda, clf_name='QDA')
-    top(qda, test_x, test_y, "QDA", extra_attempts=1)
-    top(qda, test_x, test_y, "QDA", extra_attempts=3)
+
+    if extra_test:
+        top(qda, test_x, test_y, "QDA", extra_attempts=1)
+        top(qda, test_x, test_y, "QDA", extra_attempts=3)
 
     with open("results.txt", "a") as my_file:
         my_file.write("[QDA] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')

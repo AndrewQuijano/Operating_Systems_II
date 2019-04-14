@@ -30,7 +30,7 @@ def tune_knn(train_x, train_y, test_x=None, test_y=None, n_fold=10):
     # evaluate the best randomized searched model on the testing data
     print("[INFO] KNN-Best Parameters: " + str(best_knn.best_params_))
     print("[INFO] randomized search took {:.2f} seconds".format(time.time() - start))
-    print("Training Score is: " + str(best_knn.score(train_x, train_y)))
+    print("[KNN] Training Score is: " + str(best_knn.score(train_x, train_y)))
 
     with open("results.txt", "a") as my_file:
         my_file.write("[KNN] Training Mean Test Score: " + str(best_knn.score(train_x, train_y)) + '\n')
@@ -41,14 +41,16 @@ def tune_knn(train_x, train_y, test_x=None, test_y=None, n_fold=10):
     return best_knn
 
 
-def knn_test(best_knn, test_x, test_y):
+def knn_test(best_knn, test_x, test_y, extra_test=False):
     y_hat = best_knn.predict(test_x)
-    print("Testing Score is: " + str(accuracy_score(test_y, y_hat)))
+    print("[KNN] Testing Score is: " + str(accuracy_score(test_y, y_hat)))
 
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=best_knn, clf_name='KNN')
 
-    top(best_knn, test_x, test_y, "KNN", extra_attempts=1)
-    top(best_knn, test_x, test_y, "KNN", extra_attempts=3)
+    if extra_test:
+        top(best_knn, test_x, test_y, "KNN", extra_attempts=1)
+        top(best_knn, test_x, test_y, "KNN", extra_attempts=3)
+
     with open("results.txt", "a") as my_file:
         my_file.write("[KNN] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
     with open("classification_reports.txt", "a") as my_file:

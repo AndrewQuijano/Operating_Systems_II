@@ -16,7 +16,7 @@ def logistic_linear(train_x, train_y, test_x=None, test_y=None, n_fold=10):
 
     print("[INFO] Logistic Regression-Best Parameters: " + str(log_model.best_params_))
     print("[INFO] randomized search took {:.2f} seconds".format(time.time() - start))
-    print("Training Score is: " + str(log_model.score(train_x, train_y)))
+    print("[Logistic] Training Score is: " + str(log_model.score(train_x, train_y)))
 
     with open("results.txt", "a") as my_file:
         my_file.write("[Logistic Regression] Best Parameters: " + str(log_model.get_params()) + '\n')
@@ -29,13 +29,14 @@ def logistic_linear(train_x, train_y, test_x=None, test_y=None, n_fold=10):
     return log_model
 
 
-def log_linear_test(log_model, test_x, test_y):
+def log_linear_test(log_model, test_x, test_y, extra_test=False):
     y_hat = log_model.predict(test_x)
-    print("Testing Score is: " + str(accuracy_score(y_true=test_y, y_pred=y_hat)))
-
+    print("[Logistic] Testing Score is: " + str(accuracy_score(y_true=test_y, y_pred=y_hat)))
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=log_model, clf_name='Logistic_Regression')
-    top(log_model, test_x, test_y, "Logistic_Regression", extra_attempts=1)
-    top(log_model, test_x, test_y, "Logistic_Regression", extra_attempts=3)
+
+    if extra_test:
+        top(log_model, test_x, test_y, "Logistic_Regression", extra_attempts=1)
+        top(log_model, test_x, test_y, "Logistic_Regression", extra_attempts=3)
 
     with open("results.txt", "a") as my_file:
         my_file.write("[Logistic Regression] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
