@@ -172,11 +172,11 @@ def ids():
 
             # Sniff and test?
             if args == "sniff":
-                subprocess.run(["sudo", "tcpdump", "-c", "500", "-s0", "-i", "ens33" "-w", "sniff.pcap"])
+                subprocess.run(["sudo", "tcpdump", "-c", "500", "-s0", "-i", "ens33", "-w", "sniff.pcap"])
             elif args == "process":
-                subprocess.run(["python3", "collect.py", "sniff.pcap"])
+                subprocess.run(["python3", "../Sniffer/collect.py", "sniff.pcap"])
             elif args == "fix":
-                convert_tcpdump_to_text2pcap("outside.tcpdump", "outside.txt")
+                convert_tcpdump_to_text2pcap("../../outside.tcpdump", "outside.txt")
             elif args == "convert":
                 subprocess.run(["text2pcap", "-l", "101", "outside.txt", "outside.pcap"])
             elif args == "detect":
@@ -209,4 +209,4 @@ def ids():
 
 
 if __name__ == "__main__":
-    main()
+    ids()
