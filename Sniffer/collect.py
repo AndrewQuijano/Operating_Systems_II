@@ -18,6 +18,9 @@ import pyshark
    #  - NEED TO DERIVE 100 connection window features
    #  - Remove to_string pretty printers for packet/connection?
    #  - Catch Attribute Errors in packet extraction
+   #  - Add ICMP packet capture
+
+
 
 # An object for individual packets, with members for all relevant
 #    header information
@@ -135,7 +138,7 @@ class Connection:
         out_str = ('\nduration: ' + str(self.duration) +
             '\nprotocol: ' + self.protocol +
             '\nservice: ' + self.service + 
-            '\nflag: ' + str(self.flag) + 
+            '\nflag: ' + self.flag + 
             '\nsrc_bytes: ' + str(self.src_bytes) + 
             '\ndst_bytes: ' + str(self.dst_bytes) +
             '\nland: ' + str(self.land) + 
@@ -204,17 +207,21 @@ def collect_connections(pcap_file):
                 ( "FIN " if fin_flag else "" ) )
             
 
+            urgent = 0
+            if 'URG' in flags:
+                urgent = 1
+            
             pkt_obj = Packet(pkt.tcp.stream, 'TCP', pkt.highest_layer,
                     pkt.ip.src, pkt.ip.dst, pkt.tcp.srcport, pkt.tcp.dstport,
                     flags, pkt.tcp.time_relative,
-                    pkt.length, pkt.sniff_timestamp, 0) #pkt.tcp.flags.urg)
+                    pkt.length, pkt.sniff_timestamp, urgent)
+
         elif 'udp' in pkt:
-            # TODO: why doesn't pkt.udp.time_relative work?? didn't it used to?
             key = "udp_conn"+ str(udp_count)
             udp_count = udp_count + 1
             pkt_obj = Packet(pkt.udp.stream, 'UDP', pkt.highest_layer, 
                     pkt.ip.src, pkt.ip.dst,
-                    pkt.udp.srcport, pkt.udp.dstport, 0, 0,#pkt.udp.time_relative,
+                    pkt.udp.srcport, pkt.udp.dstport, 0, 0,
                     pkt.length, pkt.sniff_timestamp, 0)
         else:
             # do not record packets that aren't TCP/UDP
@@ -285,7 +292,7 @@ def collect_connections(pcap_file):
             if pkt.urgent == 1:
                 urgent += 1
 
-            # log changes to connecion status by reading packet flags
+            # log changes to connection status by reading packet flags
             if pkt.protocol == 'TCP':
                 if src_ip == pkt.src_ip:
                     if 'SYN' in pkt.flags:
@@ -310,7 +317,8 @@ def collect_connections(pcap_file):
                         if ((i > 0) and ('SYN ACK' in v[i-1].flags)):
                             resp_synackrst = True
             i = i + 1    
-        
+       
+        # TODO: Rethink the order of these/ if-elif structure, lots of things fall through 
         # now that connection status is aggregated from packet flags, 
         #   determine the status flag to set
         if protocol == 'UDP':
@@ -342,9 +350,12 @@ def collect_connections(pcap_file):
                 status_flag = 'SHR'
             elif (not orig_syn and not resp_syn):
                 status_flag = 'OTH'
-       
-        # TODO: wrong fragments bit, hardcoding as 0
+            else:
+                status_flag = 'OHMYGOD' # TODO: is this a bad default value? why do things fall through?
+      
 
+
+        # TODO: wrong fragments bit, hardcoding as 0
 
         # generate Connection with basic features
         record = Connection(src_ip, src_port, dst_ip, dst_port, timestamp, 
@@ -366,6 +377,7 @@ def collect_connections(pcap_file):
     # same-host/same-service feature derivation 
 
     #TODO: probably horribly inefficient (n^8 worst case)...what do?
+    #           change counters during first passthrough?
     for rec in connections:
         
         samehost_connections = []
@@ -398,15 +410,23 @@ def collect_connections(pcap_file):
                 same_srv_count = same_srv_count + 1
             else:
                 diff_srv_count = diff_srv_count + 1
-            # TODO: do syn errors, rej errors
-        
+
+            # TODO: Is this how you identify SYN errors?       
+            if (cmprec.flag == 'S0'):
+                serror_count = serror_count + 1
+            elif (cmprec.flag == 'REJ'):
+                rerror_count = rerror_count + 1
+
+        serror_rate = round(serror_count / count, 2)
+        rerror_rate = round(rerror_count / count, 2)
         same_srv_rate = round(same_srv_count / count, 2)
         diff_srv_rate = round(diff_srv_count / count, 2)
-        rec.add_samehost_timebased_features(count, None, None,
+
+        rec.add_samehost_timebased_features(count, serror_rate, rerror_rate,
                 same_srv_rate, diff_srv_rate)
 
         # process twosec sameservice connections
-        srv_countcount = len(twosec_samesrv_connections)
+        srv_count = len(twosec_samesrv_connections)
         srv_serror_count = 0
         srv_rerror_count = 0
         srv_diff_host_count = 0
@@ -414,14 +434,16 @@ def collect_connections(pcap_file):
         for cmprec in twosec_samesrv_connections:
             if (rec.dst_ip != cmprec.dst_ip):
                 srv_diff_host_count = srv_diff_host_count + 1
-            else:
-                continue
-            
-            # TODO: do syn errors, rej errors
-
-        srv_diff_host_rate = round(srv_diff_host_count / count, 2)
-        rec.add_sameservice_timebased_features(count, None, None,
-                srv_diff_host_rate)
+            if (cmprec.flag == 'S0'):
+                srv_serror_count = srv_serror_count + 1
+            elif (cmprec.flag == 'REJ'):
+                srv_rerror_count = srv_rerror_count + 1
+              
+        srv_serror_rate = round(srv_serror_count / srv_count, 2)
+        srv_rerror_rate = round(srv_rerror_count / srv_count, 2)
+        srv_diff_host_rate = round(srv_diff_host_count / srv_count, 2)
+        rec.add_sameservice_timebased_features(srv_count, srv_serror_rate,
+                srv_rerror_rate, srv_diff_host_rate)
 
 # ---------------------------------------------------------------------
 # Derive host-based traffic features (same host over 100 connections)
