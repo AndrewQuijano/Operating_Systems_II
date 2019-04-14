@@ -62,8 +62,8 @@ def naive_bayes_test(clf, clf_isotonic, clf_sigmoid, test_x, test_y, extra_test=
 
     # Sanity check to match with test score
     if extra_test:
-        top(clf, test_x, test_y, "Bayes with Sigmoid Calibration")
-        top(clf, test_x, test_y, "Bayes with Sigmoid Calibration", 3)
+        top(clf, test_x, test_y, "Bayes with Sigmoid Calibration", extra_test=1)
+        top(clf, test_x, test_y, "Bayes with Sigmoid Calibration", extra_test=3)
 
     with open("results.txt", "a") as my_file:
         my_file.write("[NB Sigmoid] Testing Mean Test Score: " + str(accuracy_score(test_y, prob_pos_sigmoid)))

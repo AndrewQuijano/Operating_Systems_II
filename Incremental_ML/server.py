@@ -10,21 +10,23 @@ import numpy as np
 
 
 # Return X, Y for training, or just X to be used for classifiers
+# This will ONLY WORK FOR ONE LINE!
 def parse_string_to_numpy(data, training_phase=True):
-    #try:
-
-    #if training_phase:
-    x = np.fromstring(data, dtype='float32', sep=',')
-    y = x[0]
-    x = x[1:]
-    x = x.reshape(1, -1)
-    y = y.reshape(1, -1)
-    return x, y
-    #else:
-    #   x = np.fromstring(args, dtype=float, sep=',')
-    #   return x, None
-    #except ValueError:
-    #    return None, None
+    try:
+        if training_phase:
+            x = np.fromstring(data, dtype='float32', sep=',')
+            y = x[0]
+            x = x[1:]
+            x = x.reshape(1, -1)
+            y = y.reshape(1, -1)
+            return x, y
+        else:
+            x = np.fromstring(data, dtype='float32', sep=',')
+            x = x[1:]
+            x = x.reshape(1, -1)
+            return x, None
+    except ValueError:
+        return None, None
 
 
 def server():
@@ -128,18 +130,14 @@ def main():
     # Train it
     with open("zip_train.csv", "r") as file:
         for line in file:
-            print(line)
             x, y = parse_string_to_numpy(line.rstrip())
-            print("NUMPY")
-            print(x)
-            print(y)
             # bayes.partial_fit(x, y, classes=classes)
             # WORKS
-            # percep.partial_fit(x, y, classes=classes)
+            percep.partial_fit(x, y, classes=classes)
             sgd_class.partial_fit(x, y, classes=classes)
             pa_classifier.partial_fit(x, y, classes=classes)
-            #sgd_regress.partial_fit(x, y, classes=classes)
-            #pa_regress.partial_fit(x, y, classes=classes)
+            sgd_regress.partial_fit(x, y)
+            pa_regress.partial_fit(x, y)
 
     # Now test it!
 

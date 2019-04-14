@@ -2,25 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f497d766-490f-48e3-82c5-f9f01f2114b3" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../Java_IDS/src/nids/Data_mining.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Java_IDS/src/nids/Sniffer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Java_IDS/src/nids/kdd.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Incremental_ML/.idea/Incremental_ML.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../Incremental_ML/.idea/Incremental_ML.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Incremental_ML/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Incremental_ML/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Incremental_ML/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Incremental_ML/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Incremental_ML/incremental_bayes.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Incremental_ML/network_setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Incremental_ML/network_setup.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Incremental_ML/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Incremental_ML/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Java_IDS/bin/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../Java_IDS/bin/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Java_IDS/bin/Start.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Java_IDS/src/Handlers/handler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Java_IDS/src/Start.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java_IDS/src/start/Start.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Incremental_ML/tuning.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KNN.py" beforeDir="false" afterPath="$PROJECT_DIR$/KNN.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bayes.py" beforeDir="false" afterPath="$PROJECT_DIR$/bayes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/decision_tree.py" beforeDir="false" afterPath="$PROJECT_DIR$/decision_tree.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/discriminant.py" beforeDir="false" afterPath="$PROJECT_DIR$/discriminant.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logistic_regression.py" beforeDir="false" afterPath="$PROJECT_DIR$/logistic_regression.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/neural_network.py" beforeDir="false" afterPath="$PROJECT_DIR$/neural_network.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/random_forest.py" beforeDir="false" afterPath="$PROJECT_DIR$/random_forest.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/svm.py" beforeDir="false" afterPath="$PROJECT_DIR$/svm.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -35,8 +23,8 @@
       <file leaf-file-name="bayes.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bayes.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-42">
-              <caret line="26" lean-forward="true" selection-start-line="26" selection-end-line="26" />
+            <state relative-caret-position="621">
+              <caret line="65" column="79" selection-start-line="65" selection-start-column="79" selection-end-line="65" selection-end-column="79" />
               <folding>
                 <element signature="e#0#42#0" expanded="true" />
               </folding>
@@ -47,8 +35,8 @@
       <file leaf-file-name="svm.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/svm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="553">
-              <caret line="80" lean-forward="true" selection-start-line="80" selection-end-line="80" />
+            <state relative-caret-position="757">
+              <caret line="92" column="103" selection-start-line="92" selection-start-column="103" selection-end-line="92" selection-end-column="103" />
             </state>
           </provider>
         </entry>
@@ -130,13 +118,13 @@
       <list>
         <option value="$PROJECT_DIR$/convert_tcpdump.py" />
         <option value="$PROJECT_DIR$/main_driver.py" />
-        <option value="$PROJECT_DIR$/bayes.py" />
         <option value="$PROJECT_DIR$/discriminant.py" />
         <option value="$PROJECT_DIR$/logistic_regression.py" />
         <option value="$PROJECT_DIR$/KNN.py" />
         <option value="$PROJECT_DIR$/random_forest.py" />
         <option value="$PROJECT_DIR$/neural_network.py" />
         <option value="$PROJECT_DIR$/decision_tree.py" />
+        <option value="$PROJECT_DIR$/bayes.py" />
         <option value="$PROJECT_DIR$/svm.py" />
       </list>
     </option>
@@ -305,16 +293,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bayes.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-42">
-          <caret line="26" lean-forward="true" selection-start-line="26" selection-end-line="26" />
-          <folding>
-            <element signature="e#0#42#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/misc.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
@@ -322,13 +300,6 @@
           <folding>
             <element signature="e#0#16#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/logistic_regression.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="33" column="22" selection-start-line="33" selection-start-column="22" selection-end-line="33" selection-end-column="22" />
         </state>
       </provider>
     </entry>
@@ -367,10 +338,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/logistic_regression.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="493">
+          <caret line="33" column="22" selection-start-line="33" selection-start-column="22" selection-end-line="33" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bayes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="621">
+          <caret line="65" column="79" selection-start-line="65" selection-start-column="79" selection-end-line="65" selection-end-column="79" />
+          <folding>
+            <element signature="e#0#42#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/svm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="553">
-          <caret line="80" lean-forward="true" selection-start-line="80" selection-end-line="80" />
+        <state relative-caret-position="757">
+          <caret line="92" column="103" selection-start-line="92" selection-start-column="103" selection-end-line="92" selection-end-column="103" />
         </state>
       </provider>
     </entry>

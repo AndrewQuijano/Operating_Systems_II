@@ -43,4 +43,3 @@ def valid_port(port):
     elif port_number > 65535:
         return False
     return True
-
