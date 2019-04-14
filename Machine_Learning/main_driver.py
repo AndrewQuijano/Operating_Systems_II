@@ -127,12 +127,13 @@ def ids():
     # 1- the raw PCAP with labels?
     # 2- just the raw CSV pre-processed using Stolfo's KDD Data mining techniques
 
-    if len(argv) == 2:
-        print("usage: python3 main_ids <training data set>")
+    if len(argv) != 2:
+        exit("usage: python3 main_ids <training data set>")
 
     if not is_valid_file_type(argv[1]):
         exit("Invalid file type! only accept.txt or .csv file extensions!")
 
+    print("Please wait...Training all ML models...")
     # With the training file ready, get all models trained!
     train_x, train_y = read_data(argv[1])
     # Now make a split between training and testing set from the input data
@@ -160,16 +161,18 @@ def ids():
     # 7- Decision Tree
     # tree = get_tree(train_x, train_y)
 
+    print("All models are trained...")
+
     # run python3 collect.py <.pcap>
     while True:
 
         try:
             # Read input from user
-            args = input("Input:")
+            args = input("Input: ")
 
             # Sniff and test?
             if args == "sniff":
-                subprocess.run(["sudo", "tcpdump", "-c", "500", "-s0", "-i", "enp0s3" "-w", "sniff.pcap"])
+                subprocess.run(["sudo", "tcpdump", "-c", "500", "-s0", "-i", "ens33" "-w", "sniff.pcap"])
             elif args == "process":
                 subprocess.run(["python3", "collect.py", "sniff.pcap"])
             elif args == "fix":
@@ -177,9 +180,6 @@ def ids():
             elif args == "convert":
                 subprocess.run(["text2pcap", "-l", "101", "outside.txt", "outside.pcap"])
             elif args == "detect":
-                # Force to wait until ready to analyze
-                # When done, read the test data generated from the packet sniffer
-
                 # Check if the correct CSV file exists, if so read it in!
                 if not is_valid_file_type("./record.csv"):
                     continue
