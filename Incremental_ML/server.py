@@ -5,17 +5,18 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import Perceptron, SGDClassifier, SGDRegressor
 from sklearn.linear_model import PassiveAggressiveRegressor, PassiveAggressiveClassifier
 from sklearn.metrics import accuracy_score, classification_report
-from misc import make_confusion_matrix, read_data, get_cv_set
+from misc import make_confusion_matrix, read_data
+from tuning import *
 import numpy as np
 
 # ORIGINAL PARTS WHICH ALREADY ARE INCREMENTAL!
 
 
-def init_classifiers(labels=None):
+def init_classifiers():
     # bayes = MultinomialNB()
     percep = Perceptron(warm_start=True)
     sgd_class = SGDClassifier(warm_start=True)
-    pa_classifier = PassiveAggressiveClassifier(warm_start=True)
+    pa_classifier = PassiveAggressiveClassifier(max_iter=1000, warm_start=True)
     sgd_regress = SGDRegressor(warm_start=True)
     pa_regress = PassiveAggressiveRegressor(warm_start=True)
     return [percep, sgd_class, pa_classifier]
@@ -131,7 +132,7 @@ def main():
     # Once server socket is ready get all classifiers up!
     # For Partial fit to work, I need to know all classes ahead of time!
     classes = [3.0, 5.0, 6.0, 8.0]
-    classifiers = init_classifiers(classes)
+    classifiers = init_classifiers()
 
     # Train it
     with open("zip_train_real.csv", "r") as file:
@@ -147,6 +148,11 @@ def main():
             # pa_regress.partial_fit(x, y)
 
     # ZIP Build permanent training/testing set
+    train_x, train_y = read_data("zip_train_real.csv")
+    tune_passive_aggressive(train_x, train_y)
+    tune_perceptron(train_x, train_y)
+    tune_perceptron(train_x, train_y)
+
     test_x, test_y = read_data("zip_test_real.csv")
 
     # Now make a split between training and testing set from the input data
@@ -160,10 +166,7 @@ def main():
 
 
 def incremental_test(clf, test_x, test_y):
-    if hasattr(clf, 'decision_function'):
-        y_hat = clf.decision_function(test_x)
-    else:
-        y_hat = clf.predict(test_x)
+    y_hat = clf.predict(test_x)
 
     print("Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=clf, clf_name='TEST')

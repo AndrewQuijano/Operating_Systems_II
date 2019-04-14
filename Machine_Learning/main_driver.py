@@ -82,30 +82,31 @@ def main():
     # Now train ALL classifiers!
 
     # 1- SVM
+    start_time = time.time()
     svm_line_clf = svm_linear(train_x, train_y, test_x, test_y)
     svm_rbf_clf = svm_rbf(train_x, train_y, test_x, test_y)
     svm_test(svm_line_clf, test_x, test_y, "Linear")
     svm_test(svm_rbf_clf, test_x, test_y, "Radial")
 
     # 2- Random Forest
-    forest_clf = get_forest(train_x, train_y, test_x, test_y)
+    forest_clf = get_forest(train_x, train_y)
     forest_test(forest_clf, test_x, test_y)
 
     # 3- Neural Networks
-    brain_clf = get_brain(train_x, train_y, test_x, test_y)
+    brain_clf = get_brain(train_x, train_y)
     brain_test(brain_clf, test_x, test_y)
 
     # 4- Logistic Regression
-    logit_clf = logistic_linear(train_x, train_y, test_x, test_y)
+    logit_clf = logistic_linear(train_x, train_y)
     log_linear_test(logit_clf, test_x, test_y)
 
     # 5- KNN
-    knn_clf = tune_knn(train_x, train_y, test_x, test_y)
+    knn_clf = tune_knn(train_x, train_y)
     knn_test(knn_clf, train_x, train_y)
 
     # 6- LDA/QDA
-    lda_clf = discriminant_line(train_x, train_y, test_x, test_y)
-    qda_clf = discriminant_quad(train_x, train_y, test_x, test_y)
+    lda_clf = discriminant_line(train_x, train_y)
+    qda_clf = discriminant_quad(train_x, train_y)
     lda_test(lda_clf, test_x, test_y)
     qda_test(qda_clf, test_x, test_y)
 
@@ -114,8 +115,9 @@ def main():
     naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
 
     # 8- Decision Tree
-    tree = get_tree(train_x, train_y, test_x, test_y)
+    tree = get_tree(train_x, train_y)
     tree_test(tree, test_x, test_y)
+    print("---Time to complete training everything!---" % (time.time() - start_time))
 
 
 # Use this to run IDS using Classifier!
@@ -125,59 +127,59 @@ def ids():
     # 1- the raw PCAP with labels?
     # 2- just the raw CSV pre-processed using Stolfo's KDD Data mining techniques
 
-    if len(argv) == 2:
-        print("usage: python3 main_ids <training data set>")
+    if len(argv) != 2:
+        exit("usage: python3 main_ids <training data set>")
 
     if not is_valid_file_type(argv[1]):
         exit("Invalid file type! only accept.txt or .csv file extensions!")
 
+    print("Please wait...Training all ML models...")
     # With the training file ready, get all models trained!
     train_x, train_y = read_data(argv[1])
     # Now make a split between training and testing set from the input data
 
     # 1- SVM
     svm_line_clf = svm_linear(train_x, train_y)
-    svm_rbf_clf = svm_rbf(train_x, train_y)
+    # svm_rbf_clf = svm_rbf(train_x, train_y)
 
     # 2- Random Forest
-    forest_clf = get_forest(train_x, train_y)
+    # forest_clf = get_forest(train_x, train_y)
 
     # 3- Logistic Regression
-    logistic_clf = logistic_linear(train_x, train_y)
+    # logistic_clf = logistic_linear(train_x, train_y)
 
     # 4- KNN
-    knn_clf = tune_knn(train_x, train_y)
+    # knn_clf = tune_knn(train_x, train_y)
 
     # 5- LDA/QDA
-    lda_clf = discriminant_line(train_x, train_y)
-    qda_clf = discriminant_quad(train_x, train_y)
+    # lda_clf = discriminant_line(train_x, train_y)
+    # qda_clf = discriminant_quad(train_x, train_y)
 
     # 6- Bayes
-    bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
+    # bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
 
     # 7- Decision Tree
-    tree = get_tree(train_x, train_y)
+    # tree = get_tree(train_x, train_y)
+
+    print("All models are trained...")
 
     # run python3 collect.py <.pcap>
     while True:
 
         try:
             # Read input from user
-            args = input("Input test PCAP file:")
+            args = input("Input: ")
 
             # Sniff and test?
             if args == "sniff":
-                subprocess.run(["sudo", "tcpdump", "-c", "500", "-s0", "-i", "enp0s3" "-w", "sniff.pcap"])
+                subprocess.run(["sudo", "tcpdump", "-c", "500", "-s0", "-i", "ens33", "-w", "sniff.pcap"])
             elif args == "process":
-                subprocess.run(["python3", "sniff.pcap"])
+                subprocess.run(["python3", "../Sniffer/collect.py", "sniff.pcap"])
             elif args == "fix":
-                convert_tcpdump_to_text2pcap("outside.tcpdump", "outside.txt")
+                convert_tcpdump_to_text2pcap("../../outside.tcpdump", "outside.txt")
             elif args == "convert":
                 subprocess.run(["text2pcap", "-l", "101", "outside.txt", "outside.pcap"])
             elif args == "detect":
-                # Force to wait until ready to analyze
-                # When done, read the test data generated from the packet sniffer
-
                 # Check if the correct CSV file exists, if so read it in!
                 if not is_valid_file_type("./record.csv"):
                     continue
@@ -186,14 +188,14 @@ def ids():
 
                 # Now test it and get results. Training is done, just get Test Score, Classification Report, etc.
                 svm_test(svm_line_clf, test_x, test_y, "Linear")
-                svm_test(svm_rbf_clf, test_x, test_y, "Radial")
-                forest_test(forest_clf, test_x, test_y)
-                log_linear_test(logistic_clf, test_x, test_y)
-                knn_test(knn_clf, train_x, train_y)
-                lda_test(lda_clf, test_x, test_y)
-                qda_test(qda_clf, test_x, test_y)
-                tree_test(tree, test_x, test_y)
-                naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
+                # svm_test(svm_rbf_clf, test_x, test_y, "Radial")
+                # forest_test(forest_clf, test_x, test_y)
+                # log_linear_test(logistic_clf, test_x, test_y)
+                # knn_test(knn_clf, train_x, train_y)
+                # lda_test(lda_clf, test_x, test_y)
+                # qda_test(qda_clf, test_x, test_y)
+                # tree_test(tree, test_x, test_y)
+                # naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
             elif input == "exit":
                 break
             else:
@@ -207,4 +209,4 @@ def ids():
 
 
 if __name__ == "__main__":
-    main()
+    ids()
