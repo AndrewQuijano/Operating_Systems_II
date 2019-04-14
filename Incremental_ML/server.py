@@ -4,9 +4,21 @@ from network_setup import *
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import Perceptron, SGDClassifier, SGDRegressor
 from sklearn.linear_model import PassiveAggressiveRegressor, PassiveAggressiveClassifier
+from sklearn.metrics import accuracy_score, classification_report
+from misc import make_confusion_matrix, read_data, get_cv_set
 import numpy as np
 
 # ORIGINAL PARTS WHICH ALREADY ARE INCREMENTAL!
+
+
+def init_classifiers(labels=None):
+    # bayes = MultinomialNB()
+    percep = Perceptron(warm_start=True)
+    sgd_class = SGDClassifier(warm_start=True)
+    pa_classifier = PassiveAggressiveClassifier(warm_start=True)
+    sgd_regress = SGDRegressor(warm_start=True)
+    pa_regress = PassiveAggressiveRegressor(warm_start=True)
+    return [percep, sgd_class, pa_classifier]
 
 
 # Return X, Y for training, or just X to be used for classifiers
@@ -117,29 +129,53 @@ def server():
 # Test with ZIP code data set
 def main():
     # Once server socket is ready get all classifiers up!
-    bayes = MultinomialNB(class_prior=None, fit_prior=True)
-    percep = Perceptron()
-    sgd_class = SGDClassifier()
-    pa_classifier = PassiveAggressiveClassifier()
-    sgd_regress = SGDRegressor()
-    pa_regress = PassiveAggressiveRegressor()
-
     # For Partial fit to work, I need to know all classes ahead of time!
     classes = [3.0, 5.0, 6.0, 8.0]
+    classifiers = init_classifiers(classes)
 
     # Train it
-    with open("zip_train.csv", "r") as file:
+    with open("zip_train_real.csv", "r") as file:
         for line in file:
             x, y = parse_string_to_numpy(line.rstrip())
+            for clf in classifiers:
+                clf.partial_fit(x, y, classes=classes)
             # bayes.partial_fit(x, y, classes=classes)
-            # WORKS
-            percep.partial_fit(x, y, classes=classes)
-            sgd_class.partial_fit(x, y, classes=classes)
-            pa_classifier.partial_fit(x, y, classes=classes)
-            sgd_regress.partial_fit(x, y)
-            pa_regress.partial_fit(x, y)
+            # percep.partial_fit(x, y, classes=classes)
+            # sgd_class.partial_fit(x, y, classes=classes)
+            # pa_classifier.partial_fit(x, y, classes=classes)
+            # sgd_regress.partial_fit(x, y)
+            # pa_regress.partial_fit(x, y)
 
-    # Now test it!
+    # ZIP Build permanent training/testing set
+    test_x, test_y = read_data("zip_test_real.csv")
+
+    # Now make a split between training and testing set from the input data
+    # train_x, train_y, test_x, test_y = get_cv_set(train_x, train_y)
+    # np.savetxt("zip_train_real.csv", train_x, delimiter=",")
+    # np.savetxt("zip_train_real_2.csv", train_y, delimiter=",")
+    # np.savetxt("zip_test_real.csv", test_x, delimiter=",")
+    # np.savetxt("zip_test_real_2.csv", test_y, delimiter=",")
+    for clf in classifiers:
+        incremental_test(clf, test_x, test_y)
+
+
+def incremental_test(clf, test_x, test_y):
+    if hasattr(clf, 'decision_function'):
+        y_hat = clf.decision_function(test_x)
+    else:
+        y_hat = clf.predict(test_x)
+
+    print("Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
+    make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=clf, clf_name='TEST')
+
+    with open("results.txt", "a") as my_file:
+        my_file.write("[]Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
+
+    with open("classification_reports.txt", "a") as my_file:
+        my_file.write("---[]---\n")
+        my_file.write(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i)
+                                                                                       for i in clf.classes_]))
+        my_file.write('\n')
 
 
 if __name__ == "__main__":

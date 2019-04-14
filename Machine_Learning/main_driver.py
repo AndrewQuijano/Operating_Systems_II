@@ -11,6 +11,7 @@ from decision_tree import *
 from sys import argv, exit
 from convert_tcpdump import convert_tcpdump_to_text2pcap
 
+
 def read_data(file, skip_head=True):
     if skip_head:
         features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=float, autostrip=True, converters=None)
@@ -201,7 +202,7 @@ def ids():
             print("CTRL-C detected, Closing now!")
             break
         except EOFError:
-            print("CTLD-D detected, Closing now!")
+            print("CTRL-D detected, Closing now!")
             break
 
 
