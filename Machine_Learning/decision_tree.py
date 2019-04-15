@@ -35,6 +35,7 @@ def tune_tree(train_features, train_labels, n_fold=10):
                                  max_depth=rf_distro.best_params_['max_depth'],
                                  min_samples_split=rf_min_split.best_params_['min_samples_split'],
                                  min_samples_leaf=rf_min_leaf.best_params_['min_samples_leaf'])
+    clf.fit(train_features, train_labels)
     return clf
 
 

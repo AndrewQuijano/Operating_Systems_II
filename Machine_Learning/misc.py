@@ -6,6 +6,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.model_selection import validation_curve
 from sklearn.metrics import confusion_matrix
+# Next two lines prevent issues with threading for printing plots
+import matplotlib
+matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 from collections import Counter
 from csv import reader

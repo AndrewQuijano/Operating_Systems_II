@@ -93,8 +93,8 @@ def main():
     forest_test(forest_clf, test_x, test_y)
 
     # 3- Neural Networks
-    brain_clf = get_brain(train_x, train_y)
-    brain_test(brain_clf, test_x, test_y)
+    # brain_clf = get_brain(train_x, train_y)
+    # brain_test(brain_clf, test_x, test_y)
 
     # 4- Logistic Regression
     logit_clf = logistic_linear(train_x, train_y)
@@ -117,7 +117,7 @@ def main():
     # 8- Decision Tree
     tree = get_tree(train_x, train_y)
     tree_test(tree, test_x, test_y)
-    print("---Time to complete training everything!---" % (time.time() - start_time))
+    print("---Time to complete training everything: %s seconds---" % (time.time() - start_time))
 
 
 # Use this to run IDS using Classifier!
