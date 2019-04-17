@@ -10,6 +10,7 @@ from svm import *
 from decision_tree import *
 from sys import argv, exit
 from convert_tcpdump import convert_tcpdump_to_text2pcap
+import subprocess
 
 
 def read_data(file, skip_head=True):
@@ -122,7 +123,6 @@ def main():
 
 # Use this to run IDS using Classifier!
 def ids():
-    import subprocess
     # To run the program I need either
     # 1- the raw PCAP with labels?
     # 2- just the raw CSV pre-processed using Stolfo's KDD Data mining techniques
@@ -163,27 +163,27 @@ def ids():
 
     print("All models are trained...")
 
-    # run python3 collect.py <.pcap>
+    # Here execute commands that are needed ahead of time
+    print("Running batch process of other tasks")
+    if is_valid_file_type("./batch.txt"):
+        with open("./batch.txt") as file:
+            for line in file:
+                print(line)
+    print("Complete!")
+
     while True:
 
         try:
             # Read input from user
             args = input("Input: ")
             # args = argv.split()
-    
-            # Sniff and test
-            if args == "sniff": #args: number of packets, interface, PCAP name
-                subprocess.run(["sudo", "tcpdump", "-c", "500", "-s0", "-i", "ens33", "-w", "sniff.pcap"])
-            elif args == "process": #args: pcap name
-                subprocess.run(["python3", "../Sniffer/collect.py", "sniff.pcap"])
-            elif args == "fix": #args: input .tcpdump output.txt 
-                convert_tcpdump_to_text2pcap("../../outside.tcpdump", "outside.txt")
-            elif args == "convert": #args: convert .txt .pcap
-                subprocess.run(["text2pcap", "-l", "101", "outside.txt", "outside.pcap"])
-            elif args == "detect": #args: csv type
+            if args == "exit":
+                break
+            # This argument is run the IDS with the test data
+            elif args == "detect":  # args: csv type
                 # Check if the correct CSV file exists, if so read it in!
                 if not is_valid_file_type("./record.csv"):
-                    continue
+                    return
 
                 test_x, test_y = read_data("./record.csv")
 
@@ -197,16 +197,52 @@ def ids():
                 # qda_test(qda_clf, test_x, test_y)
                 # tree_test(tree, test_x, test_y)
                 # naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
-            elif input == "exit":
-                break
             else:
-                continue
+                ids_shell_args(args)
         except KeyboardInterrupt:
             print("CTRL-C detected, Closing now!")
             break
         except EOFError:
             print("CTRL-D detected, Closing now!")
             break
+
+
+def ids_shell_args(args):
+    # The bottom arguments will conduct both packet sniffing and pre-processing for the ids
+    if args == "sniff":  # args: number of packets, interface, PCAP name
+        subprocess.run(["sudo", "tcpdump", "-c", "500", "-s0", "-i", "ens33", "-w", "sniff.pcap"])
+    elif args == "process":  # args: pcap name
+        subprocess.run(["python3", "../Sniffer/collect.py", "sniff.pcap"])
+
+    # These three must be executed in order to convert a normal tcpdump to .pcap automatically in order
+    elif args == "tcpdump2txt":  # args: file.tcpdump file.txt
+        subprocess.run(["tcpdump", "-r", "outside.tcpdump", "outside.txt"])
+    elif args == "fix":  # args: file.txt file_hex.txt
+        convert_tcpdump_to_text2pcap("../../outside.txt", "outside.txt")
+    elif args == "convert":  # args: convert .txt .pcap
+        subprocess.run(["text2pcap", "-l", "101", "outside.txt", "outside.pcap"])
+
+
+# dummy test, build label for training data
+def label_training_set(pcap_file):
+    import pyshark
+    capture = pyshark.FileCapture(pcap_file)
+    for packet in capture:
+        try:
+            print(packet)
+        except AttributeError:
+            continue
+
+
+# dummy test, build label
+def label_test_set(source_ip, destination_ip, pcap_file):
+    import pyshark
+    capture = pyshark.FileCapture(pcap_file)
+    for packet in capture:
+        try:
+            print(packet)
+        except AttributeError:
+            continue
 
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@ def logistic_linear(train_x, train_y, test_x=None, test_y=None, n_fold=10):
     start = time.time()
     n = np.logspace(-3, 3)
     param_grid = {'C': n}
-    log = LogisticRegression(warm_start=False, multi_class='auto', solver='lbfgs')
+    log = LogisticRegression(warm_start=False, max_iter=1000, multi_class='auto', solver='lbfgs')
     log_model = GridSearchCV(log, param_grid, n_jobs=-1, cv=n_fold)
     log_model.fit(train_x, train_y)
     plot_grid_search(log_model.cv_results_, n, 'Logistic_Regression_Cost')

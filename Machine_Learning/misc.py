@@ -6,12 +6,11 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.model_selection import validation_curve
 from sklearn.metrics import confusion_matrix
+from matplotlib import pyplot as plt
+from collections import Counter
 # Next two lines prevent issues with threading for printing plots
 import matplotlib
 matplotlib.use('Agg')
-from matplotlib import pyplot as plt
-from collections import Counter
-from csv import reader
 
 
 def summation(elements):
@@ -50,8 +49,7 @@ def std_dev(elements):
 def frequency_count(filename):
     # Read the input file into one long list
     objects = []
-    with open(filename, 'r') as file:
-        read_row = reader(filename)
+    with open(filename, 'r') as read_row:
         for row in read_row:
             objects.append(row)
     counter = Counter(objects)
