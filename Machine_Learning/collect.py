@@ -174,7 +174,6 @@ def collect_connections(pcap):
 
     cap = pyshark.FileCapture(pcap)
     raw_connections = {}
-    connections = []
 
 # ----------------------------------------------------------------
 # Collect packets from the same connection, create connection dict
@@ -214,7 +213,10 @@ def collect_connections(pcap):
                     flags, pkt.tcp.time_relative,
                     pkt.length, pkt.sniff_timestamp, urgent)
 
-            elif 'udp' == pkt.protocol:
+                # Test for fun to derive host data?
+                print(pkt.tcp.data)
+
+            elif pkt.protocol == 'udp':
                 key = "udp_conn" + str(udp_count)
                 udp_count = udp_count + 1
                 pkt_obj = Packet(pkt.udp.stream, 'UDP', pkt.highest_layer,
@@ -262,8 +264,8 @@ def collect_connections(pcap):
             output.write(rec.to_csv())
             output.write('\n')
             output.flush()
-    subprocess.run(["rm", "-rf", "*.log"])
     # Delete all .log files used intermediate
+    subprocess.run(["rm", "-rf", "*.log"])
 
 
 def generate_packet_data():
@@ -376,7 +378,7 @@ def generate_connection_records(raw_connections):
                 status_flag = 'RSTR'
             elif orig_syn and orig_fin and (not resp_syn):
                 status_flag = 'SH'
-            elif (resp_syn and resp_fin) and (not orig_syn):
+            elif resp_syn and resp_fin and (not orig_syn):
                 status_flag = 'SHR'
             elif not orig_syn and not resp_syn:
                 status_flag = 'OTH'
