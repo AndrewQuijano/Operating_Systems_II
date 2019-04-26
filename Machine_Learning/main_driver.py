@@ -4,13 +4,15 @@ from bayes import *
 from discriminant import *
 from KNN import *
 from logistic_regression import *
-from neural_network import *
+# from neural_network import *
 from random_forest import *
 from svm import *
 from decision_tree import *
 from sys import argv, exit
 from convert_tcpdump import convert_tcpdump_to_text2pcap
+from sklearn.preprocessing import LabelEncoder
 import subprocess
+import pyshark
 
 
 def read_data(file, skip_head=True):
@@ -129,7 +131,7 @@ def ids():
 
     if len(argv) != 2:
         exit("usage: python3 main_ids <training data set>")
-
+    # PCAP File not accepted for training!
     if not is_valid_file_type(argv[1]):
         exit("Invalid file type! only accept.txt or .csv file extensions!")
 
@@ -216,27 +218,39 @@ def ids_shell_args(args):
 
     # These three must be executed in order to convert a normal tcpdump to .pcap automatically in order
     elif args == "tcpdump2txt":  # args: file.tcpdump file.txt
-        subprocess.run(["tcpdump", "-r", "outside.tcpdump", "outside.txt"])
+        subprocess.run(["tcpdump", "-r", "outside.tcpdump", ">", "outside.txt"])
     elif args == "fix":  # args: file.txt file_hex.txt
         convert_tcpdump_to_text2pcap("../../outside.txt", "outside.txt")
     elif args == "convert":  # args: convert .txt .pcap
         subprocess.run(["text2pcap", "-l", "101", "outside.txt", "outside.pcap"])
 
 
+# Label the PCAP using ID in PCAP
+def label_training_set(labels, pcap_file, no_label_benign=False):
+    # labels is a dictionary of packet ID
+    # {1:"syn_flood", 2:"neptune",5:"syn_flood"}
+    le = LabelEncoder()
+    attacks = set(labels.values())
+    if no_label_benign:
+        attacks.add("Benign")
+    le.fit(attacks)
+    y = []
+    capture = pyshark.FileCapture(pcap_file)
+
+    for packet_id in len(capture):
+        if labels[packet_id] is not None:
+            y.add(labels[packet_id])
+        else:
+            y.add("Benign")
+
+    # Convert the List of classes to NP Array
+    # Then, turn to column vector!
+    np_y = np.asarray(le.transform(y))
+    np.transpose(np_y)
+
+
 # dummy test, build label for training data
 def label_training_set(pcap_file):
-    import pyshark
-    capture = pyshark.FileCapture(pcap_file)
-    for packet in capture:
-        try:
-            print(packet)
-        except AttributeError:
-            continue
-
-
-# dummy test, build label
-def label_test_set(source_ip, destination_ip, pcap_file):
-    import pyshark
     capture = pyshark.FileCapture(pcap_file)
     for packet in capture:
         try:
