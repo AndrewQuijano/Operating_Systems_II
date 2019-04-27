@@ -139,30 +139,30 @@ def ids():
     # With the training file ready, get all models trained!
     train_x, train_y = read_data(argv[1])
     # Now make a split between training and testing set from the input data
-
+    start_time = time.time()
     # 1- SVM
     svm_line_clf = svm_linear(train_x, train_y)
-    # svm_rbf_clf = svm_rbf(train_x, train_y)
+    svm_rbf_clf = svm_rbf(train_x, train_y)
 
     # 2- Random Forest
-    # forest_clf = get_forest(train_x, train_y)
+    forest_clf = get_forest(train_x, train_y)
 
     # 3- Logistic Regression
-    # logistic_clf = logistic_linear(train_x, train_y)
+    logistic_clf = logistic_linear(train_x, train_y)
 
     # 4- KNN
-    # knn_clf = tune_knn(train_x, train_y)
+    knn_clf = tune_knn(train_x, train_y)
 
     # 5- LDA/QDA
-    # lda_clf = discriminant_line(train_x, train_y)
-    # qda_clf = discriminant_quad(train_x, train_y)
+    lda_clf = discriminant_line(train_x, train_y)
+    qda_clf = discriminant_quad(train_x, train_y)
 
     # 6- Bayes
-    # bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
+    bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
 
     # 7- Decision Tree
-    # tree = get_tree(train_x, train_y)
-
+    tree = get_tree(train_x, train_y)
+    print("--- Model Training Time: %s seconds ---" % (time.time() - start_time))
     print("All models are trained...")
 
     # Here execute commands that are needed ahead of time
@@ -191,14 +191,14 @@ def ids():
 
                 # Now test it and get results. Training is done, just get Test Score, Classification Report, etc.
                 svm_test(svm_line_clf, test_x, test_y, "Linear")
-                # svm_test(svm_rbf_clf, test_x, test_y, "Radial")
-                # forest_test(forest_clf, test_x, test_y)
-                # log_linear_test(logistic_clf, test_x, test_y)
-                # knn_test(knn_clf, train_x, train_y)
-                # lda_test(lda_clf, test_x, test_y)
-                # qda_test(qda_clf, test_x, test_y)
-                # tree_test(tree, test_x, test_y)
-                # naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
+                svm_test(svm_rbf_clf, test_x, test_y, "Radial")
+                forest_test(forest_clf, test_x, test_y)
+                log_linear_test(logistic_clf, test_x, test_y)
+                knn_test(knn_clf, train_x, train_y)
+                lda_test(lda_clf, test_x, test_y)
+                qda_test(qda_clf, test_x, test_y)
+                tree_test(tree, test_x, test_y)
+                naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
             else:
                 ids_shell_args(args)
         except KeyboardInterrupt:
@@ -299,8 +299,8 @@ def kdd_prep(file="../../kddcup.csv"):
     protocol_type = LabelEncoder()
 
     # Have list of stuff
-    y = ["back.", "buffer_overflow.", "ftp_write.", "guess_passwd.",
-                 "imap.", "ipsweep.", "land.", "loadmodule.", "multihop.", "neptune.", "normal.",
+    y = ["normal.", "back.", "buffer_overflow.", "ftp_write.", "guess_passwd.",
+                 "imap.", "ipsweep.", "land.", "loadmodule.", "multihop.", "neptune.",
                  "nmap.", "perl.", "phf.", "pod.", "portsweep.", "rootkit.", "satan.", "smurf.",
                  "spy.", "teardrop.", "warezclient.", "warezmaster."]
     proto = ["tcp", "udp", "icmp"]
@@ -312,7 +312,9 @@ def kdd_prep(file="../../kddcup.csv"):
                "pm_dump", "IRC", "Z39_50", "netbios_dgm", "ldap", "sunrpc", "courier", "exec", "bgp",
                "csnet_ns", "http_443", "klogin", "printer", "netbios_ssn", "pop_2", "nnsp", "efs",
                "hostnames", "uucp_path", "sql_net", "vmnet", "iso_tsap", "netbios_ns", "kshell",
-               "urh_i", "http_2784", "harvest", "aol"]
+               "urh_i", "http_2784", "harvest", "aol",
+                "tftp_u", "http_8001", "tim_i", "red_i"]
+    print(len(serv))
     # Fit them with the known classes
     classes.fit(y)
     protocol_type.fit(proto)
@@ -328,14 +330,22 @@ def kdd_prep(file="../../kddcup.csv"):
     encode_protocol = dict(zip(proto, proto_hat))
     encode_fl = dict(zip(fl, fl_hat))
     encode_service = dict(zip(serv, serv_hat))
-    with open("../../labels.txt") as f:
-        f.write(encode_class + '\n')
-        f.write(encode_protocol + '\n')
-        f.write(encode_fl + '\n')
-        f.write(encode_service + '\n')
+    with open("../../labels.txt", "w") as f:
+        for k, v in encode_class.items():
+            f.write(k + "," + str(v) + '\n')
+        f.write('\n')
+        for k, v in encode_protocol.items():
+            f.write(k + "," + str(v) + '\n')
+        f.write('\n')
+        for k, v in encode_fl.items():
+            f.write(k + "," + str(v) + '\n')
+        f.write('\n')
+        for k, v in encode_service.items():
+            f.write(k + "," + str(v) + '\n')
+        f.write('\n')
 
     with open(file) as read_kdd_data:
-        with open("../../kdd_prep.csv", "w") as write_kdd:
+        with open("../../kdd_prep_2.csv", "w") as write_kdd:
             for line in read_kdd_data:
                 # Swap using encoder
                 line = line.rstrip()
@@ -350,6 +360,8 @@ def kdd_prep(file="../../kddcup.csv"):
                 swap_positions(parts, 0, 41)
                 new_line = ','.join(parts)
                 write_kdd.write(new_line + '\n')
+                write_kdd.flush()
+    print("KDD Label encoding complete!")
 
 
 def swap_positions(l, pos1, pos2):
@@ -359,4 +371,5 @@ def swap_positions(l, pos1, pos2):
 
 if __name__ == "__main__":
     # main()
-    kdd_prep()
+    # kdd_prep()
+    ids()
