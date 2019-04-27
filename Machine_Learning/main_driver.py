@@ -12,7 +12,7 @@ from sys import argv, exit
 from convert_tcpdump import convert_tcpdump_to_text2pcap
 from sklearn.preprocessing import LabelEncoder
 import subprocess
-import pyshark
+# import pyshark
 
 
 def read_data(file, skip_head=True):
@@ -259,5 +259,72 @@ def label_training_set(pcap_file):
             continue
 
 
+def kdd_prep(file="../../kddcup.csv"):
+    # I know that there are some features that need to be encoded
+    classes = LabelEncoder()
+    services = LabelEncoder()
+    flags = LabelEncoder()
+    protocol_type = LabelEncoder()
+
+    # Have list of stuff
+    y = ["back.", "buffer_overflow.", "ftp_write.", "guess_passwd.",
+                 "imap.", "ipsweep.", "land.", "loadmodule.", "multihop.", "neptune.", "normal.",
+                 "nmap.", "perl.", "phf.", "pod.", "portsweep.", "rootkit.", "satan.", "smurf.",
+                 "spy.", "teardrop.", "warezclient.", "warezmaster."]
+    proto = ["tcp", "udp", "icmp"]
+    fl = ["SF", "S2", "S1", "S3", "OTH", "REJ", "RSTO", "S0", "RSTR", "RSTOS0", "SH"]
+    serv = ["http", "smtp", "domain_u", "auth", "finger", "telnet", "eco_i", "ftp", "ntp_u",
+               "ecr_i", "other", "urp_i", "private", "pop_3", "ftp_data", "netstat", "daytime", "ssh",
+               "echo", "time", "name", "whois", "domain", "mtp", "gopher", "remote_job", "rje", "ctf",
+               "supdup", "link", "systat", "discard", "X11", "shell", "login", "imap4", "nntp", "uucp",
+               "pm_dump", "IRC", "Z39_50", "netbios_dgm", "ldap", "sunrpc", "courier", "exec", "bgp",
+               "csnet_ns", "http_443", "klogin", "printer", "netbios_ssn", "pop_2", "nnsp", "efs",
+               "hostnames", "uucp_path", "sql_net", "vmnet", "iso_tsap", "netbios_ns", "kshell",
+               "urh_i", "http_2784", "harvest", "aol"]
+    # Fit them with the known classes
+    classes.fit(y)
+    protocol_type.fit(proto)
+    flags.fit(fl)
+    services.fit(serv)
+    y_hat = classes.transform(y)
+    proto_hat = protocol_type.transform(proto)
+    fl_hat = flags.transform(fl)
+    serv_hat = services.transform(serv)
+
+    # Build dictionary!
+    encode_class = dict(zip(y, y_hat))
+    encode_protocol = dict(zip(proto, proto_hat))
+    encode_fl = dict(zip(fl, fl_hat))
+    encode_service = dict(zip(serv, serv_hat))
+    with open("../../labels.txt") as file:
+        file.write(encode_class + '\n')
+        file.write(encode_protocol + '\n')
+        file.write(encode_fl + '\n')
+        file.write(encode_service + '\n')
+
+    with open(file, "r") as read_kdd_data:
+        with open("../../kdd_prep.csv", "w") as write_kdd:
+            for line in read_kdd_data:
+                # Swap using encoder
+                line = line.rstrip()
+                parts = line.split(",")
+                # Starting from 0..
+                # I must edit Column 1, 2, 3, 41
+                parts[1] = str(encode_protocol[parts[1]])
+                parts[2] = str(encode_service[parts[2]])
+                parts[3] = str(encode_fl[parts[3]])
+                parts[41] = str(encode_class[parts[41]])
+                # As my ML stuff excepts class on first column
+                swap_positions(parts, 0, 41)
+                new_line = ','.join(parts)
+                write_kdd.write(new_line + '\n')
+
+
+def swap_positions(l, pos1, pos2):
+    l[pos1], l[pos2] = l[pos2], l[pos1]
+    return l
+
+
 if __name__ == "__main__":
-    main()
+    # main()
+    kdd_prep()

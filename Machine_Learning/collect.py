@@ -478,6 +478,7 @@ def generate_time_data(connections, seconds=2):
         for cmprec in samehost_connections:
             break
 
+
 # pass control to collect_connections(), take all the credit
 if __name__ == '__main__':
     if len(argv) == 1:

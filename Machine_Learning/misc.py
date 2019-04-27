@@ -10,7 +10,7 @@ from matplotlib import pyplot as plt
 from collections import Counter
 # Next two lines prevent issues with threading for printing plots
 import matplotlib
-matplotlib.use('Agg')
+# matplotlib.use('Agg')
 
 
 def summation(elements):
