@@ -259,6 +259,38 @@ def label_training_set(pcap_file):
             continue
 
 
+def stat_column(data_set, label, column_number=2, check_label=False):
+    freq = {}
+    with open(data_set, "r") as f:
+        for line in f:
+            try:
+                # Get the right column
+                row = line.split(",")
+                if row[0] != label and check_label:
+                    continue
+                key = row[column_number]
+                if key in freq:
+                    freq[key] = freq[key] + 1
+                else:
+                    freq[key] = 1
+            except ValueError:
+                exit("NAN FOUND!")
+
+    # Using frequency map compute mean and std dev
+    n = sum(list(freq.values()))
+    miu = 0
+    for key, value in freq.items():
+         miu = miu + float(key) * value
+    miu = miu/n
+
+    # compe sigma
+    sigma = 0
+    for key, value in freq.items():
+        sigma = sigma + value * (float(key) - miu) * (float(key) - miu)
+    sigma = sigma/(n - 1)
+    # Print it and plot a histogram to view distribution...
+
+
 def kdd_prep(file="../../kddcup.csv"):
     # I know that there are some features that need to be encoded
     classes = LabelEncoder()
@@ -296,13 +328,13 @@ def kdd_prep(file="../../kddcup.csv"):
     encode_protocol = dict(zip(proto, proto_hat))
     encode_fl = dict(zip(fl, fl_hat))
     encode_service = dict(zip(serv, serv_hat))
-    with open("../../labels.txt") as file:
-        file.write(encode_class + '\n')
-        file.write(encode_protocol + '\n')
-        file.write(encode_fl + '\n')
-        file.write(encode_service + '\n')
+    with open("../../labels.txt") as f:
+        f.write(encode_class + '\n')
+        f.write(encode_protocol + '\n')
+        f.write(encode_fl + '\n')
+        f.write(encode_service + '\n')
 
-    with open(file, "r") as read_kdd_data:
+    with open(file) as read_kdd_data:
         with open("../../kdd_prep.csv", "w") as write_kdd:
             for line in read_kdd_data:
                 # Swap using encoder
