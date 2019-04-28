@@ -165,7 +165,7 @@ class Connection:
             str(self.srv_rerror_rate) + ',' +
             str(self.same_srv_rate) + ',' +
             str(self.diff_srv_rate) + ',' +
-            str(self.srv_diff_host_rate) + ',')
+            str(self.srv_diff_host_rate))
         return out_str
 
 
