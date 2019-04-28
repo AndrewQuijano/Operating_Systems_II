@@ -47,7 +47,6 @@ class Packet:
     def to_string(self):
         out_str = ('\nconnection_number: ' + str(self.con_no) + 
             '\nprotocol: ' + self.protocol +
-            '\nservice: ' + self.service + 
             '\nsource IP: ' + str(self.src_ip) +
             '\ndestination IP: ' + str(self.dst_ip) +
             '\nsource port: ' + str(self.src_port) +
@@ -207,19 +206,43 @@ def collect_connections(pcap):
                 urgent = 0
                 if 'URG' in flags:
                     urgent = 1
-            
-                pkt_obj = Packet(pkt.tcp.stream, 'TCP', pkt.highest_layer,
+                
+                if 'HTTP' in pkt:
+                    service = 'http'
+                elif 'SSH' in pkt:
+                    service = 'ssh'
+                elif 'HTTPS' in pkt:
+                    service = 'https'
+                elif 'SMTP' in pkt:
+                    service = 'smtp'
+                elif 'IMAP' in pkt:
+                    service = 'imap4'
+                elif 'ECHO' in pkt:
+                    service = 'echo'
+                elif 'DISCARD' in pkt:
+                    service = 'discard'
+                elif 'DAYTIME' in pkt:
+                    service = 'daytime'
+                else:
+                    service = pkt.highest_layer
+
+                pkt_obj = Packet(pkt.tcp.stream, 'tcp', service,
                     pkt.ip.src, pkt.ip.dst, pkt.tcp.srcport, pkt.tcp.dstport,
                     flags, pkt.tcp.time_relative,
                     pkt.length, pkt.sniff_timestamp, urgent)
 
-                # Test for fun to derive host data?
-                #print(pkt.tcp.data)
 
             elif 'udp' in pkt:
                 key = "udp_conn" + str(udp_count)
                 udp_count = udp_count + 1
-                pkt_obj = Packet(pkt.udp.stream, 'UDP', pkt.highest_layer,
+
+
+                if 'DNS' in pkt:
+                    service = 'dns'
+                else:
+                    service = pkt.highest_layer
+
+                pkt_obj = Packet(pkt.udp.stream, 'udp', service,
                     pkt.ip.src, pkt.ip.dst,
                     pkt.udp.srcport, pkt.udp.dstport, 0, 0,
                     pkt.length, pkt.sniff_timestamp, 0)
@@ -227,7 +250,7 @@ def collect_connections(pcap):
             elif 'icmp' in pkt:
                 key = "icmp_conn" + str(icmp_count)
                 icmp_count = icmp_count + 1
-                pkt_obj = Packet(pkt.icmp.stream, 'ICMP', pkt.highest_layer,
+                pkt_obj = Packet(pkt.icmp.stream, 'icmp', pkt.highest_layer,
                                 pkt.ip.src, pkt.ip.dst,
                                 pkt.icmp.srcport, pkt.icmp.dstport, 0, 0,
                                 pkt.length, pkt.sniff_timestamp, 0)
@@ -281,7 +304,6 @@ def generate_connection_records(raw_connections):
         wrong_frag = 0
         urgent = 0
         protocol = v[0].protocol
-        service = v[0].service
         duration = float(v[-1].time_elapsed)
         duration = int(duration / 1.0)
         src_ip = v[0].src_ip
@@ -309,6 +331,76 @@ def generate_connection_records(raw_connections):
         else:
             land = 0
 
+
+        # TODO: Doesn't work with ports, doing it with pyshark above 
+#        if v[0].dst_port == 7:
+#            service = "echo"
+#        elif v[0].dst_port == 9:
+#            service = "discard"
+#        elif v[0].dst_port == 13:
+#            service = "daytime"
+#        elif v[0].dst_port == 20:
+#            service = "ftp_data"
+#        
+#        elif v[0].dst_port == 22:
+#            service = "ssh"
+#        elif v[0].dst_port == 23:
+#            service = "telnet"
+#        elif v[0].dst_port == 25:
+#            service = "smtp"
+#        elif v[0].dst_port == 37:
+#            service = "time"
+#        elif v[0].dst_port == 42:
+#            service = "hostnames"
+#        elif v[0].dst_port == 43:
+#            service = "whois"
+#        elif v[0].dst_port == 53:
+#           service = "dns"
+#        elif v[0].dst_port == 69:
+#            service = "tftp_u"
+#        elif v[0].dst_port == 80:
+#            service = "http"
+#        elif v[0].dst_port == 101:
+#            service = "iso_tsap"
+#        elif v[0].dst_port == 109:
+#            service = "pop_2"
+#        elif v[0].dst_port == 110:
+#            service = "pop_3"
+#        elif v[0].dst_port == 111:
+#            service = "sunrpc"
+#        elif v[0].dst_port == 113:
+#            service = "auth"
+#        elif v[0].dst_port == 117:
+#            service = "uucp_path"
+#        elif v[0].dst_port == 540:
+#            service = "uucp"
+#        elif v[0].dst_port == 1527:
+#            service = "sql_net"
+#        elif v[0].dst_port == 119:
+#            service = "nntp"
+#        elif v[0].dst_port == 123:
+#            service = "ntp"
+#        elif v[0].dst_port == 137:
+#            service  = "netbios_ns"
+#        elif v[0].dst_port == 138:
+#            service - "netbios_dgm"
+#        elif v[0].dst_port == 139:
+#            service = "netbios_ssn"
+#        elif v[0].dst_port == 143:
+#            service = "imap4"
+#        elif v[0].dst_port == 179:
+#            service = "bgp"
+#        elif v[0].dst_port == 389:
+#            service = "ldap"
+#        elif v[0].dst_port == 443:
+#            service = "https"
+#        else:
+#            service = v[int(len(v)/2)].highest_layer
+
+
+
+        service = v[int(len(v)/2)].service
+    
         # traverse packets, aggregate urgent packet count, byte counts,
         # and higher-level connection/termination status (as described
         # by Wenke "Data Mining Approachces for Intrusion Detection ",
@@ -386,8 +478,7 @@ def generate_connection_records(raw_connections):
         # Maybe all flags above are TCP ONLY?
         else:
             # TODO: are there flags for ICMP?
-            print("ICMP")
-
+            status_flag = 'SF'
 
         # TODO: wrong fragments bit, hard-coding as 0
 
