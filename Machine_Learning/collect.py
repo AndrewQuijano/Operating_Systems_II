@@ -156,8 +156,8 @@ class Connection:
             str(self.dst_bytes) + ',' +
             str(self.land) + ',' +
             str(self.wrong_fragments) + ',' +
-            str(self.urgent) + ','
-            'THIS IS WHERE CONTENT-FEATURES GO,' +
+            str(self.urgent) + ',' +
+#'THIS IS WHERE CONTENT-FEATURES GO,' +
             str(self.count) + ',' +
             str(self.srv_count) + ',' +
             str(self.serror_rate) + ',' +
@@ -182,7 +182,7 @@ def collect_connections(pcap):
     icmp_count = 0
     for pkt in cap:
         try:
-            if 'tcp' == pkt.protocol:
+            if 'tcp' in pkt:
                 key = "tcp_conn" + pkt.tcp.stream
                 raw_flags = int(str(pkt.tcp.flags), 16)
 
@@ -214,9 +214,9 @@ def collect_connections(pcap):
                     pkt.length, pkt.sniff_timestamp, urgent)
 
                 # Test for fun to derive host data?
-                print(pkt.tcp.data)
+                #print(pkt.tcp.data)
 
-            elif pkt.protocol == 'udp':
+            elif 'udp' in pkt:
                 key = "udp_conn" + str(udp_count)
                 udp_count = udp_count + 1
                 pkt_obj = Packet(pkt.udp.stream, 'UDP', pkt.highest_layer,
@@ -224,14 +224,13 @@ def collect_connections(pcap):
                     pkt.udp.srcport, pkt.udp.dstport, 0, 0,
                     pkt.length, pkt.sniff_timestamp, 0)
 
-            elif pkt.protocol == 'ICMP':
+            elif 'icmp' in pkt:
                 key = "icmp_conn" + str(icmp_count)
                 icmp_count = icmp_count + 1
-                pkt_obj = Packet(pkt.udp.stream, 'ICMP', pkt.highest_layer,
+                pkt_obj = Packet(pkt.icmp.stream, 'ICMP', pkt.highest_layer,
                                 pkt.ip.src, pkt.ip.dst,
-                                pkt.udp.srcport, pkt.udp.dstport, 0, 0,
+                                pkt.icmp.srcport, pkt.icmp.dstport, 0, 0,
                                 pkt.length, pkt.sniff_timestamp, 0)
-            # do not record packets that aren't TCP/UDP
             else:
                 continue
 
@@ -386,7 +385,10 @@ def generate_connection_records(raw_connections):
                 status_flag = 'OHMYGOD'  # TODO: is this a bad default value? why do things fall through?
         # Maybe all flags above are TCP ONLY?
         else:
+            # TODO: are there flags for ICMP?
             print("ICMP")
+
+
         # TODO: wrong fragments bit, hard-coding as 0
 
         # generate Connection with basic features
@@ -395,15 +397,15 @@ def generate_connection_records(raw_connections):
                             dst_bytes, land, 0, urgent)
         connections.append(record)
 
-        dummy_fn = str(k) + ".log"
-        with open(dummy_fn, "w") as dummy:
-            dummy.write(record.to_string())
-            dummy.flush()
+#        dummy_fn = str(k) + ".log"
+#        with open(dummy_fn, "w") as dummy:
+#            dummy.write(record.to_string())
+#           dummy.flush()
 
     return connections
 
 
-def generate_time_data(connections, seconds=2):
+def generate_time_data(connections, seconds=2.0):
     # TODO: probably horribly inefficient (n^8 worst case)...what do?
     #           change counters during first passthrough?
     for rec in connections:
@@ -416,11 +418,11 @@ def generate_time_data(connections, seconds=2):
             time_delta = float(rec.timestamp) - float(cmprec.timestamp)
             if rec.dst_ip == cmprec.dst_ip:
                 samehost_connections.append(cmprec)
-                if (time_delta <= 2.0) and (time_delta >= 0.0):
+                if (time_delta <= seconds) and (time_delta >= 0.0):
                     twosec_samehost_connections.append(cmprec)
 
             if rec.service == cmprec.service:
-                if (time_delta <= 2.0) and (time_delta >= 0.0):
+                if (time_delta <= seconds) and (time_delta >= 0.0):
                     twosec_samesrv_connections.append(cmprec)
             else:
                 continue
