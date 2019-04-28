@@ -483,14 +483,17 @@ def generate_time_data(connections, seconds=2.0):
 
 # pass control to collect_connections(), take all the credit
 if __name__ == '__main__':
-    if len(argv) == 1:
+    if len(argv) == 2:
+        pcap_file = argv[1]
+    elif len(argv) == 1:
         pcap_file = 'sniff.pcap'
-        if not path.exists(pcap_file):
-            exit("PCAP file not found!")
-        if not path.isfile(pcap_file):
-            exit("Not a File!")
-        if pcap_file.lower().endswith('.pcap'):
-            collect_connections(pcap_file)
-            print('\nConnection records generated, written to records.csv\n')
     else:
         exit("usage: python3 collect.py <input.pcap>")
+
+    if not path.exists(pcap_file):
+        exit("PCAP file not found: " + pcap_file)
+    if not path.isfile(pcap_file):
+        exit("Not a File: " + pcap_file)
+    if pcap_file.lower().endswith('.pcap'):
+        collect_connections(pcap_file)
+        print('\nConnection records generated, written to records.csv\n')
