@@ -135,70 +135,70 @@ def ids():
     if not is_valid_file_type(argv[1]):
         exit("Invalid file type! only accept.txt or .csv file extensions!")
 
-    print("Please wait...Training all ML models...")
-    # With the training file ready, get all models trained!
-    train_x, train_y = read_data(argv[1])
+    print("Please wait...Reading the Training Data ML...")
+    # train_x, train_y = read_data(argv[1])
+    print("Please wait...Training Data read! Setting up ML Models!")
+
     # Now make a split between training and testing set from the input data
     start_time = time.time()
     # 1- SVM
-    svm_line_clf = svm_linear(train_x, train_y)
-    svm_rbf_clf = svm_rbf(train_x, train_y)
+    # svm_line_clf = svm_linear(train_x, train_y)
+    # svm_rbf_clf = svm_rbf(train_x, train_y)
 
     # 2- Random Forest
-    forest_clf = get_forest(train_x, train_y)
+    # forest_clf = get_forest(train_x, train_y)
 
     # 3- Logistic Regression
-    logistic_clf = logistic_linear(train_x, train_y)
+    # logistic_clf = logistic_linear(train_x, train_y)
 
     # 4- KNN
-    knn_clf = tune_knn(train_x, train_y)
+    # knn_clf = tune_knn(train_x, train_y)
 
     # 5- LDA/QDA
-    lda_clf = discriminant_line(train_x, train_y)
-    qda_clf = discriminant_quad(train_x, train_y)
+    # lda_clf = discriminant_line(train_x, train_y)
+    # qda_clf = discriminant_quad(train_x, train_y)
 
     # 6- Bayes
-    bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
+    # bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
 
     # 7- Decision Tree
-    tree = get_tree(train_x, train_y)
+    # tree = get_tree(train_x, train_y)
     print("--- Model Training Time: %s seconds ---" % (time.time() - start_time))
     print("All models are trained...")
 
     # Here execute commands that are needed ahead of time
     print("Running batch process of other tasks")
-    if is_valid_file_type("./batch.txt"):
-        with open("./batch.txt") as file:
-            for line in file:
-                print(line)
+    if is_valid_file_type("batch.txt"):
+        with open("batch.txt") as f:
+            for line in f:
+                ids_shell_args(line.split())
     print("Complete!")
 
     while True:
 
         try:
             # Read input from user
-            args = input("Input: ")
-            # args = argv.split()
-            if args == "exit":
+            arg = input("Input: ")
+            args = arg.split()
+            if args[0] == "exit":
                 break
             # This argument is run the IDS with the test data
-            elif args == "detect":  # args: csv type
+            elif args[0] == "detect":  # args: csv type
                 # Check if the correct CSV file exists, if so read it in!
-                if not is_valid_file_type("./record.csv"):
-                    return
-
-                test_x, test_y = read_data("./record.csv")
+                if not is_valid_file_type(args[1]):
+                    continue
+                test_x, test_y = read_data(args[1])
 
                 # Now test it and get results. Training is done, just get Test Score, Classification Report, etc.
-                svm_test(svm_line_clf, test_x, test_y, "Linear")
-                svm_test(svm_rbf_clf, test_x, test_y, "Radial")
-                forest_test(forest_clf, test_x, test_y)
-                log_linear_test(logistic_clf, test_x, test_y)
-                knn_test(knn_clf, train_x, train_y)
-                lda_test(lda_clf, test_x, test_y)
-                qda_test(qda_clf, test_x, test_y)
-                tree_test(tree, test_x, test_y)
-                naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
+                # svm_test(svm_line_clf, test_x, test_y, "Linear")
+                # svm_test(svm_rbf_clf, test_x, test_y, "Radial")
+                # forest_test(forest_clf, test_x, test_y)
+                # log_linear_test(logistic_clf, test_x, test_y)
+                # knn_test(knn_clf, train_x, train_y)
+                # lda_test(lda_clf, test_x, test_y)
+                # qda_test(qda_clf, test_x, test_y)
+                # tree_test(tree, test_x, test_y)
+                # naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
             else:
                 ids_shell_args(args)
         except KeyboardInterrupt:
@@ -210,19 +210,55 @@ def ids():
 
 
 def ids_shell_args(args):
-    # The bottom arguments will conduct both packet sniffing and pre-processing for the ids
-    if args == "sniff":  # args: number of packets, interface, PCAP name
-        subprocess.run(["sudo", "tcpdump", "-c", "500", "-s0", "-i", "ens33", "-w", "sniff.pcap"])
-    elif args == "process":  # args: pcap name
-        subprocess.run(["python3", "../Sniffer/collect.py", "sniff.pcap"])
+    try:
+        # The bottom arguments will conduct both packet sniffing and pre-processing for the ids
+        if args[0] == "sniff":  # args: number of packets, interface, PCAP name
+            int(args[1]) # Check if it is an integer
+            subprocess.run(["sudo", "tcpdump", "-c", args[1], "-s0", "-i", args[2], "-w", args[3]])
+        elif args[0] == "process":  # args: pcap name
+            subprocess.run(["python3", "../Sniffer/collect.py", args[1]])
 
-    # These three must be executed in order to convert a normal tcpdump to .pcap automatically in order
-    elif args == "tcpdump2txt":  # args: file.tcpdump file.txt
-        subprocess.run(["tcpdump", "-r", "outside.tcpdump", ">", "outside.txt"])
-    elif args == "fix":  # args: file.txt file_hex.txt
-        convert_tcpdump_to_text2pcap("../../outside.txt", "outside.txt")
-    elif args == "convert":  # args: convert .txt .pcap
-        subprocess.run(["text2pcap", "-l", "101", "outside.txt", "outside.pcap"])
+        # DO NOT USE THIS! THIS ASSUMES TEXT TO PCAP
+        # YOU DONT NEED THIS IF YOU HAVE TCPDUMP
+        elif args[0] == "convert":  # args: file.tcpdump
+            file_parts = args[1].split('.')
+            if len(file_parts) != 2:
+                print("Not valid file name!")
+                print(file_parts[0])
+                print(file_parts[1])
+                return
+            if (file_parts[1] != "tcpdump"):
+                print("Not a tcpdump file!")
+                return
+            # Step 1- Convert tcpdump to textfile that can be read!
+            with open(file_parts[0] + ".txt", "w") as f:
+                subprocess.call(["tcpdump", "-r", file_parts[0] + ".tcpdump"], stdout=f)
+            print(file_parts[1] + ".txt is generated!") 
+
+            # Step 2- convert the readable tcpdump to the right format
+            convert_tcpdump_to_text2pcap(file_parts[0] + ".txt", file_parts[0] + "2.txt")
+            print(file_parts[1] + "2.txt is generated")
+
+            # Step 3- complete conversion to PCAP format
+            subprocess.run(["text2pcap", file_parts[0] + "2.txt", file_parts[0] + ".pcap"])
+            print("Conversion Complete!")
+        
+        elif args[0] == "pcap":
+            file_parts = args[1].split('.')
+            if len(file_parts) != 2:
+                print("Not valid file name!")
+                return
+            if (file_parts[1] != "tcpdump"):
+                print("Not a tcpdump file!")
+                return
+            subprocess.call(["tcpdump", "-r", args[1], "-w", file_parts[0] + ".pcap"])
+
+    except ValueError:
+        print("Number Format Exception!")
+        return
+    except IOError:
+        print("PCAP file not found!")
+        return
 
 
 # Label the PCAP using ID in PCAP

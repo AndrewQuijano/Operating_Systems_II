@@ -12,21 +12,30 @@ def grouper(iterable, count, fillvalue=None):
 
 
 def convert_tcpdump_to_text2pcap(in_filename, out_filename):
-    with open(in_filename) as input, open(out_filename, 'w') as output:
-        for line in input:
-            time = TIMESTAMP.match(line)
-            if time:
-                output.write('{}\n'.format(time.group()))
-                continue
-            payload = PAYLOAD.match(line)
-            if payload:
-                address = payload.group(1)
-                hex_data = payload.group(2).replace(' ', '')
-                ascii_data = payload.group(3)
+    with open(in_filename) as original:
+        with open(out_filename, 'w') as output:
+            for line in original:
+                print(line)
+                time = TIMESTAMP.match(line)
+                if time:
+                    output.write('{}\n'.format(time.group()))
+                    continue
+                payload = PAYLOAD.match(line)
+                if payload:
+                    address = payload.group(1)
+                    hex_data = payload.group(2).replace(' ', '')
+                    ascii_data = payload.group(3)
+                    hex_data = ' '.join(''.join(part) for part in grouper(hex_data, 2, ' '))
+                    output.write('\t{:0>6}:  {:<47}  {}\n'.format(address, hex_data, ascii_data))
 
-                hex_data = ' '.join(''.join(part) for part in grouper(hex_data, 2, ' '))
-                output.write('\t{:0>6}:  {:<47}  {}\n'.format(address, hex_data, ascii_data))
+
+def reader(in_filename, out_filename):
+    with open(in_filename) as original:
+        for line in original:
+            print(line)
 
 
-#if __name__ == '__main__':
-#    convert_tcpdump_to_text2pcap('../Traffic/traffic1.txt', '../Traffic/txt2.txt')
+if __name__ == '__main__':
+    convert_tcpdump_to_text2pcap('./outside.txt', './outside2.txt')
+    # reader('./outside.txt', './outside-temp.txt')
+
