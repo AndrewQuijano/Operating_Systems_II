@@ -11,6 +11,7 @@ from decision_tree import *
 from sys import argv, exit
 from convert_tcpdump import convert_tcpdump_to_text2pcap
 from sklearn.preprocessing import LabelEncoder
+from data_set_manipulation import merge_csv
 import subprocess
 # import pyshark
 
@@ -136,33 +137,33 @@ def ids():
         exit("Invalid file type! only accept.txt or .csv file extensions!")
 
     print("Please wait...Reading the Training Data ML...")
-    # train_x, train_y = read_data(argv[1])
+    train_x, train_y = read_data(argv[1])
     print("Please wait...Training Data read! Setting up ML Models!")
 
     # Now make a split between training and testing set from the input data
     start_time = time.time()
     # 1- SVM
-    # svm_line_clf = svm_linear(train_x, train_y)
-    # svm_rbf_clf = svm_rbf(train_x, train_y)
+    svm_line_clf = svm_linear(train_x, train_y)
+    svm_rbf_clf = svm_rbf(train_x, train_y)
 
     # 2- Random Forest
-    # forest_clf = get_forest(train_x, train_y)
+    forest_clf = get_forest(train_x, train_y)
 
     # 3- Logistic Regression
-    # logistic_clf = logistic_linear(train_x, train_y)
+    logistic_clf = logistic_linear(train_x, train_y)
 
     # 4- KNN
-    # knn_clf = tune_knn(train_x, train_y)
+    knn_clf = tune_knn(train_x, train_y)
 
     # 5- LDA/QDA
-    # lda_clf = discriminant_line(train_x, train_y)
-    # qda_clf = discriminant_quad(train_x, train_y)
+    lda_clf = discriminant_line(train_x, train_y)
+    qda_clf = discriminant_quad(train_x, train_y)
 
     # 6- Bayes
-    # bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
+    bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
 
     # 7- Decision Tree
-    # tree = get_tree(train_x, train_y)
+    tree = get_tree(train_x, train_y)
     print("--- Model Training Time: %s seconds ---" % (time.time() - start_time))
     print("All models are trained...")
 
@@ -190,15 +191,15 @@ def ids():
                 test_x, test_y = read_data(args[1])
 
                 # Now test it and get results. Training is done, just get Test Score, Classification Report, etc.
-                # svm_test(svm_line_clf, test_x, test_y, "Linear")
-                # svm_test(svm_rbf_clf, test_x, test_y, "Radial")
-                # forest_test(forest_clf, test_x, test_y)
-                # log_linear_test(logistic_clf, test_x, test_y)
-                # knn_test(knn_clf, train_x, train_y)
-                # lda_test(lda_clf, test_x, test_y)
-                # qda_test(qda_clf, test_x, test_y)
-                # tree_test(tree, test_x, test_y)
-                # naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
+                svm_test(svm_line_clf, test_x, test_y, "Linear")
+                svm_test(svm_rbf_clf, test_x, test_y, "Radial")
+                forest_test(forest_clf, test_x, test_y)
+                log_linear_test(logistic_clf, test_x, test_y)
+                knn_test(knn_clf, train_x, train_y)
+                lda_test(lda_clf, test_x, test_y)
+                qda_test(qda_clf, test_x, test_y)
+                tree_test(tree, test_x, test_y)
+                naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
             else:
                 ids_shell_args(args)
         except KeyboardInterrupt:
@@ -327,7 +328,7 @@ def stat_column(data_set, label, column_number=2, check_label=False):
     # Print it and plot a histogram to view distribution...
 
 
-def kdd_prep(file="../../kddcup.csv"):
+def kdd_prep(file="./datasets./KDD/kddcup.csv"):
     # I know that there are some features that need to be encoded
     classes = LabelEncoder()
     services = LabelEncoder()
@@ -381,7 +382,7 @@ def kdd_prep(file="../../kddcup.csv"):
         f.write('\n')
 
     with open(file) as read_kdd_data:
-        with open("../../kdd_prep_2.csv", "w") as write_kdd:
+        with open("../../kdd_prep.csv", "w") as write_kdd:
             for line in read_kdd_data:
                 # Swap using encoder
                 line = line.rstrip()
@@ -407,5 +408,7 @@ def swap_positions(l, pos1, pos2):
 
 if __name__ == "__main__":
     # main()
-    # kdd_prep()
-    ids()
+    # Real stuff, merge and encode. Then run ids()
+    merge_csv("kddcup")
+    kdd_prep()
+    # ids()
