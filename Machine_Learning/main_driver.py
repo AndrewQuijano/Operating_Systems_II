@@ -227,7 +227,7 @@ def ids_shell_args(args):
                 print(file_parts[0])
                 print(file_parts[1])
                 return
-            if (file_parts[1] != "tcpdump"):
+            if file_parts[1] != "tcpdump":
                 print("Not a tcpdump file!")
                 return
             # Step 1- Convert tcpdump to textfile that can be read!
@@ -248,7 +248,7 @@ def ids_shell_args(args):
             if len(file_parts) != 2:
                 print("Not valid file name!")
                 return
-            if (file_parts[1] != "tcpdump"):
+            if file_parts[1] != "tcpdump":
                 print("Not a tcpdump file!")
                 return
             subprocess.call(["tcpdump", "-r", args[1], "-w", file_parts[0] + ".pcap"])
