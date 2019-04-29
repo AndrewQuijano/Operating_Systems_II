@@ -144,36 +144,36 @@ def ids():
     start_time = time.time()
    
     # 1- Bayes
-    bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
+    bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y, 5)
     print("Bayes classifier ready!")
 
-    # 2- SVM
-    svm_line_clf = svm_linear(train_x, train_y)
-    print("SVM Linear Model Ready!")
-    svm_rbf_clf = svm_rbf(train_x, train_y)
-    print("SVM RBF Kernel Ready!")
-
-    # 3- Random Forest
-    forest_clf = get_forest(train_x, train_y)
-    print("Random Forest Ready!")
-
-    # 4- Logistic Regression
-    logistic_clf = logistic_linear(train_x, train_y)
-    print("Logistic Regression Ready!")
-
-    # 5- KNN
-    knn_clf = tune_knn(train_x, train_y)
-    print("KNN ready!")
-
-    # 6- LDA/QDA
+    # 2- LDA/QDA
     lda_clf = discriminant_line(train_x, train_y)
     print("LDA ready!")
     qda_clf = discriminant_quad(train_x, train_y)
     print("QDA ready!")
 
+    # 3- SVM
+    svm_line_clf = svm_linear(train_x, train_y, n_fold=5, slow=False)
+    print("SVM Linear Model Ready!")
+    svm_rbf_clf = svm_rbf(train_x, train_y, n_fold=5, slow=False)
+    print("SVM RBF Kernel Ready!")
+
+    # 4- Random Forest
+    forest_clf = get_forest(train_x, train_y, n_fold=5, slow=False)
+    print("Random Forest Ready!")
+
+    # 5- Logistic Regression
+    logistic_clf = logistic_linear(train_x, train_y, n_fold=5, slow=False)
+    print("Logistic Regression Ready!")
+
+    # 6- KNN
+    knn_clf = tune_knn(train_x, train_y, n_fold=5, slow=False)
+    print("KNN ready!")
+
     # 7- Decision Tree
-    tree = get_tree(train_x, train_y)
-    print("Decicion tree ready!")
+    tree = get_tree(train_x, train_y, n_fold=5, slow=False)
+    print("Decision tree ready!")
 
     print("--- Model Training Time: %s seconds ---" % (time.time() - start_time))
     print("All models are trained...")
