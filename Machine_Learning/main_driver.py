@@ -142,28 +142,39 @@ def ids():
 
     # Now make a split between training and testing set from the input data
     start_time = time.time()
-    # 1- SVM
-    svm_line_clf = svm_linear(train_x, train_y)
-    svm_rbf_clf = svm_rbf(train_x, train_y)
-
-    # 2- Random Forest
-    forest_clf = get_forest(train_x, train_y)
-
-    # 3- Logistic Regression
-    logistic_clf = logistic_linear(train_x, train_y)
-
-    # 4- KNN
-    knn_clf = tune_knn(train_x, train_y)
-
-    # 5- LDA/QDA
-    lda_clf = discriminant_line(train_x, train_y)
-    qda_clf = discriminant_quad(train_x, train_y)
-
-    # 6- Bayes
+   
+    # 1- Bayes
     bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
+    print("Bayes classifier ready!")
+
+    # 2- SVM
+    svm_line_clf = svm_linear(train_x, train_y)
+    print("SVM Linear Model Ready!")
+    svm_rbf_clf = svm_rbf(train_x, train_y)
+    print("SVM RBF Kernel Ready!")
+
+    # 3- Random Forest
+    forest_clf = get_forest(train_x, train_y)
+    print("Random Forest Ready!")
+
+    # 4- Logistic Regression
+    logistic_clf = logistic_linear(train_x, train_y)
+    print("Logistic Regression Ready!")
+
+    # 5- KNN
+    knn_clf = tune_knn(train_x, train_y)
+    print("KNN ready!")
+
+    # 6- LDA/QDA
+    lda_clf = discriminant_line(train_x, train_y)
+    print("LDA ready!")
+    qda_clf = discriminant_quad(train_x, train_y)
+    print("QDA ready!")
 
     # 7- Decision Tree
     tree = get_tree(train_x, train_y)
+    print("Decicion tree ready!")
+
     print("--- Model Training Time: %s seconds ---" % (time.time() - start_time))
     print("All models are trained...")
 
@@ -328,7 +339,7 @@ def stat_column(data_set, label, column_number=2, check_label=False):
     # Print it and plot a histogram to view distribution...
 
 
-def kdd_prep(file="./datasets./KDD/kddcup.csv"):
+def kdd_prep(file="./datasets/KDD/kddcup.csv"):
     # I know that there are some features that need to be encoded
     classes = LabelEncoder()
     services = LabelEncoder()
@@ -351,7 +362,7 @@ def kdd_prep(file="./datasets./KDD/kddcup.csv"):
                "hostnames", "uucp_path", "sql_net", "vmnet", "iso_tsap", "netbios_ns", "kshell",
                "urh_i", "http_2784", "harvest", "aol",
                 "tftp_u", "http_8001", "tim_i", "red_i"]
-    print(len(serv))
+
     # Fit them with the known classes
     classes.fit(y)
     protocol_type.fit(proto)
@@ -367,7 +378,7 @@ def kdd_prep(file="./datasets./KDD/kddcup.csv"):
     encode_protocol = dict(zip(proto, proto_hat))
     encode_fl = dict(zip(fl, fl_hat))
     encode_service = dict(zip(serv, serv_hat))
-    with open("../../labels.txt", "w") as f:
+    with open("./labels.txt", "w") as f:
         for k, v in encode_class.items():
             f.write(k + "," + str(v) + '\n')
         f.write('\n')
@@ -381,8 +392,7 @@ def kdd_prep(file="./datasets./KDD/kddcup.csv"):
             f.write(k + "," + str(v) + '\n')
         f.write('\n')
 
-    with open(file) as read_kdd_data:
-        with open("../../kdd_prep.csv", "w") as write_kdd:
+    with open(file) as read_kdd_data, open("./kdd_prep.csv", "w") as write_kdd:
             for line in read_kdd_data:
                 # Swap using encoder
                 line = line.rstrip()
@@ -409,6 +419,7 @@ def swap_positions(l, pos1, pos2):
 if __name__ == "__main__":
     # main()
     # Real stuff, merge and encode. Then run ids()
-    merge_csv("kddcup")
-    kdd_prep()
-    # ids()
+    # merge_csv("kddcup")
+    # kdd_prep()
+    ids()
+
