@@ -17,10 +17,11 @@ def drop_columns(file, begin=0, end=9, begin_2=23, end_2=42):
     df = pd.read_csv(file, usecols=usecols)
     df.to_csv("modified_" + file)
 
+
 # Remember Github's Limit is 100 MB or 100,000 KB
-def split_csv(file, size=1000000):
+def split_csv(file, size=500000):
     file_part = 0
-    idx = 1
+    idx = 0
     lines = []
     with open(file, 'r') as big_file:
         for line in big_file:
@@ -36,8 +37,8 @@ def split_csv(file, size=1000000):
 
 def merge_csv(file):
     file_part = 1
-    for j in range(6):
-        with open(file + "_" + file_part + ".csv", 'r') as chunk:
+    for j in range(9):
+        with open(str(file_part) + "_" + file + ".csv", 'r') as chunk:
             with open(file + ".csv", 'a+') as big_file:
                 for line in chunk:
                     big_file.write(line)
@@ -45,5 +46,6 @@ def merge_csv(file):
 
 
 if __name__ == "__main__":
-    drop_columns("kdd_prep.csv")
-    split_csv("kdd_prep.csv")
+    # drop_columns("kddcup.csv")
+    # split_csv("kddcup.csv")
+    merge_csv("kddcup")
