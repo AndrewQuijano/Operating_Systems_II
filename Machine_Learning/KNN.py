@@ -7,7 +7,7 @@ from misc import *
 
 def raw_knn(train_x, train_y):
     start = time.time()
-    knn = KNeighborsClassifier(n=3).fit(train_x, train_y)
+    knn = KNeighborsClassifier(n_neighbors=3).fit(train_x, train_y)
     print("[INFO] KNN fit took {:.2f} seconds".format(time.time() - start))
     return knn
 

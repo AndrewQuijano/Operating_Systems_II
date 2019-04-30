@@ -124,43 +124,50 @@ def ids():
 
     # 1- Bayes
     print("Fitting Bayes Classifiers...")
-    # bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y, n_fold=kf)
+    bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y, n_fold=kf)
     print("Bayes classifier ready!")
 
     # 2- LDA/QDA
     print("Fitting LDA and QDA...")
-    # lda_clf = discriminant_line(train_x, train_y)
+    lda_clf = discriminant_line(train_x, train_y)
     print("LDA ready!")
     # Something aboult 1 sample of class 4? Find out and maybe delete it???
-    # qda_clf = discriminant_quad(train_x, train_y)
+    qda_clf = discriminant_quad(train_x, train_y)
     print("QDA ready!")
 
     # 3- SVM
     print("Fitting Linear SVM...")
     # svm_line_clf = svm_linear(train_x, train_y, n_fold=kf, slow=False)
+    svm_line_clf = svm_linear_raw(train_x, train_y)
+
     print("SVM Linear Model Ready!")
     print("Fitting RBF SVM...")
     # svm_rbf_clf = svm_rbf(train_x, train_y, n_fold=kf, slow=False)
+    svm_rbf_clf = svm_rbf_raw(train_x, train_y)
     print("SVM RBF Kernel Ready!")
 
     # 4- Random Forest
     print("Fitting Random Forest...")
     # forest_clf = get_forest(train_x, train_y, n_fold=kf, slow=False)
+    forest_clf = get_forest_raw(train_x, train_y)
     print("Random Forest Ready!")
 
     # 5- Logistic Regression
     print("Fitting Logistic Regression...")
     # logistic_clf = logistic_linear(train_x, train_y, n_fold=kf, slow=False)
+    logistic_clf = logistic_raw(train_x, train_y)
     print("Logistic Regression Ready!")
 
     # 6- KNN
     print("Fitting KNN...")
+    knn_clf = raw_knn(train_x, train_y)
     # knn_clf = tune_knn(train_x, train_y, n_fold=5, slow=False)
     print("KNN ready!")
 
     # 7- Decision Tree
     print("Fitting Decision tree...")
-    # tree = get_tree(train_x, train_y, n_fold=5, slow=False)
+    # tree = get_tree(train_x, train_y, n_fold=5, slow=False)\
+    tree = decision_tree_raw(train_x, train_y)
     print("Decision tree ready!")
 
     print("--- Model Training Time: %s seconds ---" % (time.time() - start_time))
@@ -190,15 +197,15 @@ def ids():
                 test_x, test_y = read_data(args[1])
 
                 # Now test it and get results. Training is done, just get Test Score, Classification Report, etc.
-                # svm_test(svm_line_clf, test_x, test_y, "Linear")
-                # svm_test(svm_rbf_clf, test_x, test_y, "Radial")
-                # forest_test(forest_clf, test_x, test_y)
-                # log_linear_test(logistic_clf, test_x, test_y)
-                # knn_test(knn_clf, train_x, train_y)
-                # lda_test(lda_clf, test_x, test_y)
-                # qda_test(qda_clf, test_x, test_y)
-                # tree_test(tree, test_x, test_y)
-                # naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
+                svm_test(svm_line_clf, test_x, test_y, "Linear")
+                svm_test(svm_rbf_clf, test_x, test_y, "Radial")
+                forest_test(forest_clf, test_x, test_y)
+                log_linear_test(logistic_clf, test_x, test_y)
+                knn_test(knn_clf, train_x, train_y)
+                lda_test(lda_clf, test_x, test_y)
+                qda_test(qda_clf, test_x, test_y)
+                tree_test(tree, test_x, test_y)
+                naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
             else:
                 ids_shell_args(args)
         except KeyboardInterrupt:

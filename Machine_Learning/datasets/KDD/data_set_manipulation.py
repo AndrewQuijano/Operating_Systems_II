@@ -40,8 +40,19 @@ def merge_csv(file):
 
 
 # For QDA it requires one class with only one sample be dropped? Find it and kill it!
-def drop_class():
-    return True
+def drop_class(file, drop):
+    counter = 0
+    with open(file, "r") as fd, open("n_" + file, "w") as wr:
+        for line in fd:
+            line = line.rstrip()
+            args = line.split(',')
+            if args[41] == drop:
+                counter += 1
+            else:
+                print(line)
+                wr.write(line + '\n')
+                wr.flush()
+    print("Number of " + drop + " found and dropped is: " + str(counter))
 
 
 def kdd_prep(file):
@@ -127,7 +138,8 @@ def swap_positions(l, pos1, pos2):
 # 3- Split into parts
 # **To use it, just merge it, use raw file name w/o extension!**
 if __name__ == "__main__":
-    kdd_prep("kddcup.csv")
-    drop_columns("kddcup_prep.csv")
-    split_csv("modified_kddcup_prep.csv")
+    drop_class("kddcup.csv", "imap.")
+    # kdd_prep("kddcup.csv")
+    # drop_columns("kddcup_prep.csv")
+    # split_csv("modified_kddcup_prep.csv")
     # merge_csv("kddcup")
