@@ -91,11 +91,6 @@ def frequency_count(filename):
     return dict(counter)
 
 
-
-
-
-
-
 # Input: A Hash Map <K, V> Key is item, Value is Frequency
 # Plot a Histogram!
 def frequency_histogram(hash_map):
@@ -126,6 +121,7 @@ def frequency_histogram(hash_map):
     plt.savefig(str('./histogram.png'))
     plt.show()
     plt.close()
+
 
 def dual_frequency_histogram(hash_map1, hash_map2):
     fig, ax = plt.subplots()

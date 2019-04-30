@@ -15,34 +15,7 @@ from sklearn.model_selection import KFold
 import subprocess
 # import pyshark
 import collections
-
-
-import misc
-
-def read_data(file, skip_head=True):
-    if skip_head:
-        features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=float, autostrip=True, converters=None)
-    else:
-        features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=float, autostrip=True, converters=None)
-
-    if np.isnan(features).any():
-        if skip_head:
-            features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=str, autostrip=True, converters=None)
-        else:
-            features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=str, autostrip=True, converters=None)
-        classes = features[:, 0]
-        features = features[:, 1:]
-        # Now you have NaN in your features, ok now you have issues!
-        if np.isnan(features).any():
-            print("There are NaNs found in your features at: " + str(list(map(tuple, np.where(np.isnan(features))))))
-            exit(0)
-        else:
-            features.astype(float)
-    else:
-        classes = features[:, 0]
-        features = features[:, 1:]
-
-    return features, classes
+from misc import read_data
 
 
 # Just test functionality of script!
@@ -104,11 +77,11 @@ def main():
     # brain_test(brain_clf, test_x, test_y)
 
     # 4- Logistic Regression
-    logit_clf = logistic_linear(train_x, train_y)
+    logit_clf = get_logistic(train_x, train_y)
     log_linear_test(logit_clf, test_x, test_y)
 
     # 5- KNN
-    knn_clf = tune_knn(train_x, train_y)
+    knn_clf = get_knn(train_x, train_y)
     knn_test(knn_clf, train_x, train_y)
 
     # 6- LDA/QDA
@@ -143,12 +116,12 @@ def ids():
     train_x, train_y = read_data(argv[1])
     print("Please wait...Training Data read! Setting up ML Models!")
 
-    print("FIT TIME FOR ONE CLASS THAT GETS TUNED")
-    fit_time(train_x, train_y)
-    print("Now start tuning!")
+    # print("FIT TIME FOR ONE CLASS THAT GETS TUNED")
+    # fit_time(train_x, train_y)
+    # print("Now start tuning!")
 
     # Now make a split between training and testing set from the input data
-    start_time = time.time()
+    # start_time = time.time()
     kf = KFold(n_splits=2)
 
     # 1- Bayes
@@ -163,52 +136,57 @@ def ids():
     # Something aboult 1 sample of class 4? Find out and maybe delete it???
     qda_clf = discriminant_quad(train_x, train_y)
     print("QDA ready!")
-
+    svm_line_clf = None
+    svm_rbf_clf = None
+    forest_clf = None
+    logistic_clf = None
+    knn_clf = None
+    tree = None
     # 3- SVM
-    print("Fitting Linear SVM...")
+    # print("Fitting Linear SVM...")
     # svm_line_clf = svm_linear(train_x, train_y, n_fold=kf, slow=False)
-    svm_line_clf = svm_linear_raw(train_x, train_y)
+    # svm_line_clf = svm_linear_raw(train_x, train_y)
 
-    print("SVM Linear Model Ready!")
-    print("Fitting RBF SVM...")
+    # print("SVM Linear Model Ready!")
+    # print("Fitting RBF SVM...")
     # svm_rbf_clf = svm_rbf(train_x, train_y, n_fold=kf, slow=False)
-    svm_rbf_clf = svm_rbf_raw(train_x, train_y)
-    print("SVM RBF Kernel Ready!")
+    # svm_rbf_clf = svm_rbf_raw(train_x, train_y)
+    # print("SVM RBF Kernel Ready!")
 
     # 4- Random Forest
-    print("Fitting Random Forest...")
+    # print("Fitting Random Forest...")
     # forest_clf = get_forest(train_x, train_y, n_fold=kf, slow=False)
-    forest_clf = get_forest_raw(train_x, train_y)
-    print("Random Forest Ready!")
+    # forest_clf = get_forest_raw(train_x, train_y)
+    # print("Random Forest Ready!")
 
     # 5- Logistic Regression
-    print("Fitting Logistic Regression...")
+    # print("Fitting Logistic Regression...")
     # logistic_clf = logistic_linear(train_x, train_y, n_fold=kf, slow=False)
-    logistic_clf = logistic_raw(train_x, train_y)
-    print("Logistic Regression Ready!")
+    # logistic_clf = logistic_raw(train_x, train_y)
+    # print("Logistic Regression Ready!")
 
     # 6- KNN
-    print("Fitting KNN...")
-    knn_clf = raw_knn(train_x, train_y)
+    # print("Fitting KNN...")
+    # knn_clf = raw_knn(train_x, train_y)
     # knn_clf = tune_knn(train_x, train_y, n_fold=5, slow=False)
-    print("KNN ready!")
+    # print("KNN ready!")
 
     # 7- Decision Tree
-    print("Fitting Decision tree...")
+    # print("Fitting Decision tree...")
     # tree = get_tree(train_x, train_y, n_fold=5, slow=False)\
-    tree = decision_tree_raw(train_x, train_y)
-    print("Decision tree ready!")
+    # tree = decision_tree_raw(train_x, train_y)
+    # print("Decision tree ready!")
 
-    print("--- Model Training Time: %s seconds ---" % (time.time() - start_time))
-    print("All models are trained...")
+    # print("--- Model Training Time: %s seconds ---" % (time.time() - start_time))
+    # print("All models are trained...")
 
     # Here execute commands that are needed ahead of time
-    print("Running batch process of other tasks")
-    if is_valid_file_type("batch.txt"):
-        with open("batch.txt") as f:
-            for line in f:
-                ids_shell_args(line.split())
-    print("Complete!")
+    # print("Running batch process of other tasks")
+    # if is_valid_file_type("batch.txt"):
+    #    with open("batch.txt") as f:
+    #        for line in f:
+    #            ids_shell_args(line.split())
+    # print("Complete!")
 
     while True:
 
@@ -225,24 +203,89 @@ def ids():
                     continue
                 test_x, test_y = read_data(args[1])
 
-                # Now test it and get results. Training is done, just get Test Score, Classification Report, etc.
-                svm_test(svm_line_clf, test_x, test_y, "Linear")
-                svm_test(svm_rbf_clf, test_x, test_y, "Radial")
-                forest_test(forest_clf, test_x, test_y)
-                log_linear_test(logistic_clf, test_x, test_y)
-                knn_test(knn_clf, train_x, train_y)
+                naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
                 lda_test(lda_clf, test_x, test_y)
                 qda_test(qda_clf, test_x, test_y)
-                tree_test(tree, test_x, test_y)
-                naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
+
+                if svm_line_clf is not None:
+                    svm_test(svm_line_clf, test_x, test_y, "Linear")
+                if svm_rbf_clf is not None:
+                    svm_test(svm_rbf_clf, test_x, test_y, "Radial")
+                if forest_clf is not None:
+                    forest_test(forest_clf, test_x, test_y)
+                if logistic_clf is not None:
+                    log_linear_test(logistic_clf, test_x, test_y)
+                if knn_clf is not None:
+                    knn_test(knn_clf, train_x, train_y)
+                if tree is not None:
+                    tree_test(tree, test_x, test_y)
+
+            # Bring new ML model!
+            elif args[0] == "train":
+                if args[1] == "raw":
+                    if args[2] == "line_svm":
+                        print("Fitting Linear SVM...")
+                        svm_line_clf = svm_linear_raw(train_x, train_y)
+                        print("SVM Linear Linear Ready!")
+                    elif args[2] == "line_svm":
+                        print("Fitting RBF SVM...")
+                        svm_rbf_clf = svm_rbf_raw(train_x, train_y)
+                        print("SVM RBF Kernel Ready!")
+                    elif args[2] == "forest":
+                        print("Fitting Random Forest...")
+                        forest_clf = get_forest_raw(train_x, train_y)
+                        print("Random Forest Ready!")
+                    elif args[2] == "log":
+                        print("Fitting Logistic Regression...")
+                        logistic_clf = logistic_raw(train_x, train_y)
+                        print("Logistic Regression Ready!")
+                    elif args[2] == "knn":
+                        print("Fitting KNN...")
+                        knn_clf = raw_knn(train_x, train_y)
+                        print("KNN ready!")
+                    elif args[2] == "tree":
+                        print("Fitting Decision tree...")
+                        tree = decision_tree_raw(train_x, train_y)
+                        print("Decision tree ready!")
+                    else:
+                        continue
+                elif args[1] == "tune":
+                    if args[2] == "line_svm":
+                        print("Fitting Linear SVM...")
+                        svm_line_clf = svm_linear(train_x, train_y)
+                        print("SVM Linear Linear Ready!")
+                    elif args[2] == "line_svm":
+                        print("Fitting RBF SVM...")
+                        svm_rbf_clf = svm_rbf(train_x, train_y)
+                        print("SVM RBF Kernel Ready!")
+                    elif args[2] == "forest":
+                        print("Fitting Random Forest...")
+                        forest_clf = get_forest(train_x, train_y)
+                        print("Random Forest Ready!")
+                    elif args[2] == "log":
+                        print("Fitting Logistic Regression...")
+                        logistic_clf = get_logistic(train_x, train_y)
+                        print("Logistic Regression Ready!")
+                    elif args[2] == "knn":
+                        print("Fitting KNN...")
+                        knn_clf = get_knn(train_x, train_y)
+                        print("KNN ready!")
+                    elif args[2] == "tree":
+                        print("Fitting Decision tree...")
+                        tree = get_tree(train_x, train_y)
+                        print("Decision tree ready!")
+                    else:
+                        continue
+                else:
+                    continue
             else:
                 ids_shell_args(args)
-        except KeyboardInterrupt:
-            print("CTRL-C detected, Closing now!")
-            break
         except EOFError:
             print("CTRL-D detected, Closing now!")
             break
+        except ValueError
+            print("Number Format Exception")
+            continue
 
 
 def ids_shell_args(args):
@@ -321,17 +364,7 @@ def label_training_set(labels, pcap_file, no_label_benign=False):
     np.transpose(np_y)
 
 
-# dummy test, build label for training data
-# def label_training_set(pcap_file):
-#    capture = pyshark.FileCapture(pcap_file)
-#    for packet in capture:
-#        try:
-#            print(packet)
-#        except AttributeError:
-#            continue
-
-
-def stat_column(data_set, label, column_number=2, check_label=False):
+def stat_column(data_set, label, column_number=2):
     freq_n = {}
     freq_a = {}
     with open(data_set, "r") as f:
@@ -354,39 +387,41 @@ def stat_column(data_set, label, column_number=2, check_label=False):
             except ValueError:
                 exit("NAN FOUND!")
 
-
     odfreq_n = collections.OrderedDict(sorted(freq_n.items()))
     odfreq_a = collections.OrderedDict(sorted(freq_a.items()))
-   
-    print('normal')
-    for k,v in odfreq_n.items():
-       print(k)
-       print(v)
-
-    print('\n\n\n')
-    print('anomaly')
-    for k,v in odfreq_a.items():
-       print(k)
-       print(v) 
 
     # Using frequency map compute mean and std dev
-#    n = sum(list(freq.values()))
+    n = sum(list(freq_n.values()))
     miu = 0
-#    for key, value in freq.items():
-#         miu = miu + float(key) * value
-#    miu = miu/n
+    for key, value in freq_n.items():
+        miu = miu + float(key) * value
+    miu = miu/n
 
-    # compe sigma
     sigma = 0
-#    for key, value in freq.items():
-#        sigma = sigma + value * (float(key) - miu) * (float(key) - miu)
-#    sigma = sigma/(n - 1)
+    for key, value in freq_n.items():
+        sigma = sigma + value * (float(key) - miu) * (float(key) - miu)
+    sigma = sigma/(n - 1)
     # Print it and plot a histogram to view distribution...
+    print("Normal, Mean: " + str(miu) + " Std Dev: " + str(sigma))
+
+    n = sum(list(freq_a.values()))
+    miu = 0
+    for key, value in freq_a.items():
+        miu = miu + float(key) * value
+    miu = miu/n
+
+    sigma = 0
+    for key, value in freq_a.items():
+        sigma = sigma + value * (float(key) - miu) * (float(key) - miu)
+    sigma = sigma/(n - 1)
+    # Print it and plot a histogram to view distribution...
+    print("Anomaly, Mean: " + str(miu) + " Std Dev: " + str(sigma))
 
     if len(freq_a.keys()) == 0:
         frequency_histogram(odfreq_n)
     else:
         dual_frequency_histogram(odfreq_n, odfreq_a)
+
 
 # This was created because lack of time
 # I need to know how long it takes to fit each classifier.
