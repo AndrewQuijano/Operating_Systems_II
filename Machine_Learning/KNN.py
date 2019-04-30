@@ -13,7 +13,7 @@ def raw_knn(train_x, train_y):
 
 
 # https://www.pyimagesearch.com/2016/08/15/how-to-tune-hyperparameters-with-python-and-scikit-learn/
-def tune_knn(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=True):
+def get_knn(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=True):
     # Get Number of features
     rows = np.shape(train_x)[0]
 

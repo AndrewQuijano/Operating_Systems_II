@@ -13,7 +13,7 @@ def logistic_raw(train_x, train_y):
     return log
 
 
-def logistic_linear(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=True):
+def get_logistic(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=True):
     start = time.time()
     n = np.logspace(-3, 3)
     param_grid = {'C': n}
