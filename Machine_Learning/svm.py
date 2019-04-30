@@ -38,11 +38,14 @@ def svc_rbf_param_selection(x, y, n_folds=10, slow=True):
 
 
 # Default is 10...
-def svc_linear_param_selection(x, y, n_folds=10):
+def svc_linear_param_selection(x, y, n_folds=10, slow=False):
     c = np.arange(0.1, 1, 0.1)
     param_grid = {'C': c}
     model = svm.SVC(kernel='linear')
-    svm_line = GridSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise')
+    if slow:
+        svm_line = GridSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise')
+    else:
+        svm_line = RandomizedSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise')
     svm_line.fit(x, y)
     plot_grid_search(svm_line.cv_results_, c, 'SVM_Linear_Cost')
     return svm_line

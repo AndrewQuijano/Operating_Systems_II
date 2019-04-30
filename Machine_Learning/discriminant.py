@@ -1,6 +1,5 @@
 from sklearn.metrics import accuracy_score, classification_report
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
 from misc import *
 import time
 
@@ -43,7 +42,7 @@ def lda_test(lda, test_x, test_y, extra_test=False):
 
 
 def discriminant_quad(train_x, train_y, test_x=None, test_y=None):
-    qda = QuadraticDiscriminantAnalysis(store_covariance=True)
+    qda = QuadraticDiscriminantAnalysis(store_covariance=False)
     start_time = time.time()
     qda.fit(train_x, train_y)
     print("--- Time to fit QDA: %s seconds ---" % (time.time() - start_time))

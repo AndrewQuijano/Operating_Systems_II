@@ -9,8 +9,9 @@ from random_forest import *
 from svm import *
 from decision_tree import *
 from sys import argv, exit
-from convert_tcpdump import convert_tcpdump_to_text2pcap
+# from convert_tcpdump import convert_tcpdump_to_text2pcap
 from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import KFold
 from data_set_manipulation import merge_csv
 import subprocess
 # import pyshark
@@ -139,40 +140,42 @@ def ids():
     print("Please wait...Reading the Training Data ML...")
     train_x, train_y = read_data(argv[1])
     print("Please wait...Training Data read! Setting up ML Models!")
+    kf = KFold(n_splits=5)
 
     # Now make a split between training and testing set from the input data
     start_time = time.time()
    
     # 1- Bayes
-    bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y, 5)
+    # bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y, n_fold=kf)
     print("Bayes classifier ready!")
 
     # 2- LDA/QDA
-    lda_clf = discriminant_line(train_x, train_y)
+    # lda_clf = discriminant_line(train_x, train_y)
     print("LDA ready!")
-    qda_clf = discriminant_quad(train_x, train_y)
+    # Something aboult 1 sample of class 4? Find out and maybe delete it???
+    # qda_clf = discriminant_quad(train_x, train_y)
     print("QDA ready!")
 
     # 3- SVM
-    svm_line_clf = svm_linear(train_x, train_y, n_fold=5, slow=False)
+    #svm_line_clf = svm_linear(train_x, train_y, n_fold=kf, slow=False)
     print("SVM Linear Model Ready!")
-    svm_rbf_clf = svm_rbf(train_x, train_y, n_fold=5, slow=False)
+    #svm_rbf_clf = svm_rbf(train_x, train_y, n_fold=kf, slow=False)
     print("SVM RBF Kernel Ready!")
 
     # 4- Random Forest
-    forest_clf = get_forest(train_x, train_y, n_fold=5, slow=False)
+    forest_clf = get_forest(train_x, train_y, n_fold=kf, slow=False)
     print("Random Forest Ready!")
 
     # 5- Logistic Regression
-    logistic_clf = logistic_linear(train_x, train_y, n_fold=5, slow=False)
+    # logistic_clf = logistic_linear(train_x, train_y, n_fold=kf, slow=False)
     print("Logistic Regression Ready!")
 
     # 6- KNN
-    knn_clf = tune_knn(train_x, train_y, n_fold=5, slow=False)
+    # knn_clf = tune_knn(train_x, train_y, n_fold=5, slow=False)
     print("KNN ready!")
 
     # 7- Decision Tree
-    tree = get_tree(train_x, train_y, n_fold=5, slow=False)
+    # tree = get_tree(train_x, train_y, n_fold=5, slow=False)
     print("Decision tree ready!")
 
     print("--- Model Training Time: %s seconds ---" % (time.time() - start_time))

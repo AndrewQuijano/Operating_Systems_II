@@ -50,20 +50,21 @@ def tune_forest(train_features, train_labels, n_fold=10, slow=True):
     # First create the base model to tune
     rf = RandomForestClassifier(warm_start=False, n_estimators=100)
     if slow:
-        rf_estimate = GridSearchCV(estimator=rf, param_grid={'n_estimators': n_estimators}, cv=n_fold, n_jobs=-1)
+        rf_estimate = GridSearchCV(estimator=rf, param_grid={'n_estimators': n_estimators}, 
+                                    cv=n_fold, n_jobs=-1, pre_dispatch=None, verbose=2)
     else:
         rf_estimate = RandomizedSearchCV(estimator=rf, param_distributions={'n_estimators': n_estimators},
-                                         cv=n_fold, n_jobs=-1)
+                                         cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs', verbose=2)
     rf_estimate.fit(train_features, train_labels)
     plot_grid_search(rf_estimate.cv_results_, n_estimators, 'n_estimators')
 
     rf = RandomForestClassifier(warm_start=False, n_estimators=100)
     if slow:
         rf_max = GridSearchCV(estimator=rf, param_grid={'max_features': max_features},
-                              cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs')
+                              cv=n_fold, n_jobs=-1, pre_dispatch=None, verbose=2)
     else:
         rf_max = RandomizedSearchCV(estimator=rf, param_distributions={'max_features': max_features},
-                                    cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs')
+                                    cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs', verbose=2)
     rf_max.fit(train_features, train_labels)
     plot_grid_search(rf_max.cv_results_, max_features, 'max_features')
 
@@ -72,27 +73,27 @@ def tune_forest(train_features, train_labels, n_fold=10, slow=True):
         rf_distro = GridSearchCV(estimator=rf, param_grid={'max_depth': max_depth}, cv=n_fold, n_jobs=-1)
     else:
         rf_distro = RandomizedSearchCV(estimator=rf, param_distributions={'max_depth': max_depth},
-                                       cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs')
+                                       cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs', verbose=2)
     rf_distro.fit(train_features, train_labels)
     plot_grid_search(rf_distro.cv_results_, max_depth, 'max_depth')
 
     rf = RandomForestClassifier(warm_start=False, n_estimators=100)
     if slow:
         rf_min_split = GridSearchCV(estimator=rf, param_grid={'min_samples_split': min_samples_split},
-                                    cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs')
+                                    cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs', verbose=2)
     else:
         rf_min_split = RandomizedSearchCV(estimator=rf, param_distributions={'min_samples_split': min_samples_split}
-                                          , cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs')
+                                          , cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs',verbose=2)
     rf_min_split.fit(train_features, train_labels)
     plot_grid_search(rf_min_split.cv_results_, min_samples_split, 'min_samples_split')
 
     rf = RandomForestClassifier(warm_start=False, n_estimators=100)
     if slow:
         rf_min_leaf = GridSearchCV(estimator=rf, param_grid={'min_samples_leaf': min_samples_leaf},
-                                   cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs')
+                                   cv=n_fold, n_jobs=-1, pre_dispatch=None, verbose=2)
     else:
         rf_min_leaf = RandomizedSearchCV(estimator=rf, param_distributions={'min_samples_leaf': min_samples_leaf},
-                                         cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs')
+                                         cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs', verbose=2)
     rf_min_leaf.fit(train_features, train_labels)
     plot_grid_search(rf_min_leaf.cv_results_, min_samples_leaf, 'min_samples_leaf')
 
