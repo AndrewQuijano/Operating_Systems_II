@@ -283,7 +283,7 @@ def ids():
         except EOFError:
             print("CTRL-D detected, Closing now!")
             break
-        except ValueError
+        except ValueError:
             print("Number Format Exception")
             continue
 
@@ -461,10 +461,37 @@ def fit_time(train_x, train_y):
     svm_rbf_raw(train_x, train_y)
 
 
+def basic_ids():
+
+    # Here execute commands that are needed ahead of time
+    print("Running batch process of other tasks")
+    if is_valid_file_type("batch.txt"):
+        with open("batch.txt") as f:
+            for line in f:
+                ids_shell_args(line.split())
+    print("Complete!")
+
+    while True:
+        try:
+            # Read input from user
+            arg = input("Input: ")
+            args = arg.split()
+            if args[0] == "exit":
+                break
+            else:
+                ids_shell_args(args)
+        except EOFError:
+            print("CTRL-D detected, Closing now!")
+            break
+        except ValueError:
+            print("Number Format Exception")
+            continue
+
 if __name__ == "__main__":
     # main()
     # kdd_prep()
-    #ids()
-#    stat_column('kdd_prep_2.csv', '11', column_number=1, check_label=True) 
-#    stat_column('kddcup.data', 'normal.', column_number=1, check_label=True) 
-    stat_column('KDDTrain+.txt', 'normal', column_number=6)
+    # ids()
+    # stat_column('kdd_prep_2.csv', '11', column_number=1, check_label=True)
+    # stat_column('kddcup.data', 'normal.', column_number=1, check_label=True)
+    # stat_column('KDDTrain+.txt', 'normal', column_number=6)
+    basic_ids()
