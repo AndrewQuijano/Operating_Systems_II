@@ -69,6 +69,22 @@ def svm_linear(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=False
     return svm_line
 
 
+def svm_linear_raw(train_x, train_y):
+    start_time = time.time()
+    svm_line = svm.SVC(kernel='linear')
+    svm_line.fit(train_x, train_y)
+    print("--- Linear SVM time w/o tuning: %s seconds ---" % (time.time() - start_time))
+    return svm_line
+
+
+def svm_rbf_raw(train_x, train_y):
+    start_time = time.time()
+    svm_line = svm.SVC(kernel='rbf')
+    svm_line.fit(train_x, train_y)
+    print("--- RBF SVM time w/o tuning: %s seconds ---" % (time.time() - start_time))
+    return svm_line
+
+
 def svm_rbf(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=False):
     start_time = time.time()
     svm_radial = svc_rbf_param_selection(train_x, train_y, n_fold, slow)

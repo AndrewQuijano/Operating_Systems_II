@@ -5,6 +5,13 @@ from sklearn.neighbors import KNeighborsClassifier
 from misc import *
 
 
+def raw_knn(train_x, train_y):
+    start = time.time()
+    knn = KNeighborsClassifier(n=3).fit(train_x, train_y)
+    print("[INFO] KNN fit took {:.2f} seconds".format(time.time() - start))
+    return knn
+
+
 # https://www.pyimagesearch.com/2016/08/15/how-to-tune-hyperparameters-with-python-and-scikit-learn/
 def tune_knn(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=True):
     # Get Number of features
@@ -32,7 +39,7 @@ def tune_knn(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=True):
 
     # evaluate the best randomized searched model on the testing data
     print("[INFO] KNN-Best Parameters: " + str(best_knn.best_params_))
-    print("[INFO] randomized search took {:.2f} seconds".format(time.time() - start))
+    print("[INFO] Tuning took {:.2f} seconds".format(time.time() - start))
     print("[KNN] Training Score is: " + str(best_knn.score(train_x, train_y)))
 
     with open("results.txt", "a+") as my_file:

@@ -9,7 +9,6 @@ def discriminant_line(train_x, train_y, test_x=None, test_y=None):
     start_time = time.time()
     lda.fit(train_x, train_y)
     print("--- Time to fit LDA: %s seconds ---" % (time.time() - start_time))
-
     print("Training Score (LDA): " + str(lda.score(train_x, train_y)))
 
     with open("results.txt", "a+") as my_file:
@@ -18,7 +17,6 @@ def discriminant_line(train_x, train_y, test_x=None, test_y=None):
 
     if test_x is not None and test_y is not None:
         lda_test(lda, test_x, test_y)
-    # print(classification_report(test_y, y_hat, target_names=[str(i) for i in lda.classes_]))
     return lda
 
 
@@ -52,7 +50,6 @@ def discriminant_quad(train_x, train_y, test_x=None, test_y=None):
         my_file.write("[QDA] Best Parameters: " + str(qda.get_params()) + '\n')
         my_file.write("[QDA] Training Mean Test Score: " + str(qda.score(train_x, train_y)) + '\n')
 
-    # print(classification_report(test_y, y_hat, target_names=[str(i) for i in qda.classes_]))
     if test_x is not None and test_y is not None:
         qda_test(qda, test_x, test_y)
     return qda

@@ -5,6 +5,14 @@ from misc import *
 import time
 
 
+def logistic_raw(train_x, train_y):
+    start = time.time()
+    log = LogisticRegression(warm_start=False, max_iter=1000, multi_class='auto', solver='lbfgs')
+    log.fit(train_x, train_y)
+    print("[INFO] Generating Logistic Classifier took {:.2f} seconds".format(time.time() - start))
+    return log
+
+
 def logistic_linear(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=True):
     start = time.time()
     n = np.logspace(-3, 3)

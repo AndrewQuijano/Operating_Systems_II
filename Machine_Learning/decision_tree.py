@@ -5,6 +5,13 @@ from misc import *
 import time
 
 
+def decision_tree_raw(train_x, train_y):
+    start = time.time()
+    tree = DecisionTreeClassifier().fit(train_x, train_y)
+    print("[INFO] Time to fit Decision tree is {:.2f} seconds".format(time.time() - start))
+    return tree
+
+
 def tune_tree(train_features, train_labels, n_fold=10, slow=True, n_iter_search=10):
     # Minimum number of samples required to split a node
     min_samples_split = np.arange(5, 20, 1)
