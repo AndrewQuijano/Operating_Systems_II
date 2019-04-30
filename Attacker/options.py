@@ -6,6 +6,7 @@ from os import popen
 import urllib.request
 import urllib.error
 import requests
+from probe import *
 counter = 0
 
 
@@ -148,7 +149,7 @@ def pid_to_port():
                     port_to_pid[s_port] = pid
                     port_to_pid[d_port] = pid
                     print("Source IP/Port" + str(s_ip)+":" + str(s_port))
-                    print("Destintation IP/Port" + str(d_ip)+":" + str(d_port))
+                    print("Destination IP/Port" + str(d_ip)+":" + str(d_port))
                     print("Process ID: " + pid + " Name: " + process_name)
     return port_to_pid
 
