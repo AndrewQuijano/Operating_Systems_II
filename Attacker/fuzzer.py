@@ -192,7 +192,7 @@ def main():
                 args = line.split()
                 # parse_args(args)
                 parse_dos(args)
-        
+
     while True:
         try:
             var = input("Shell> ")
