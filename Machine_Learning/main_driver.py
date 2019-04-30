@@ -373,7 +373,7 @@ def stat_column(data_set, label, column_number=2):
                 # Get the right column
                 row = line.split(",")
                 key = row[column_number]
-                if row[0] != label:
+                if row[41] != label:
                     if key in freq_a:
                         freq_a[key] = freq_a[key] + 1
                     else:
@@ -438,5 +438,7 @@ def fit_time(train_x, train_y):
 if __name__ == "__main__":
     # main()
     # kdd_prep()
-    ids()
-    # stat_column('kdd_prep_2.csv', '11', column_number=2)
+    #ids()
+#    stat_column('kdd_prep_2.csv', '11', column_number=1, check_label=True) 
+#    stat_column('kddcup.data', 'normal.', column_number=1, check_label=True) 
+    stat_column('KDDTrain+.txt', 'normal', column_number=6)

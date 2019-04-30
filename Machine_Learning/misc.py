@@ -133,13 +133,13 @@ def dual_frequency_histogram(hash_map1, hash_map2):
     rects1 = ax.bar(ind1 - width/2, hash_map1.values(), width=width, color='g', label='Normal')
     rects2 = ax.bar(ind2 + width/2, hash_map2.values(), width=width, color='b', label='Anomalous')
 
-    ax.set_xlabel('Service')
+    ax.set_xlabel('Land Flag')
     ax.set_ylabel('Number of Connections')
     ax.set_xticks(ind2)
 #    ax.set_xticklabels(('ICMP', 'TCP', 'UDP'))
-#    ax.set_xticklabels(('OTH', 'REJ', 'RSTO', 'RSTOS0', 'RSTR', 'S0', '
+#    ax.set_xticklabels(('OTH', 'REJ', 'RSTO', 'RSTOS0', 'RSTR', 'S0', 'S1', 'S2', 'S3', 'SF', 'SH'))
 #    ax.set_xticklabels(("SF", "S2", "S1", "S3", "OTH", "REJ", "RSTO", "S0", "RSTR", "RSTOS0", "SH"))
-    ax.set_title('Protocol Distribution')
+    ax.set_title('Land Distribution')
     ax.legend()
 
     def autolabel(rects, xpos='center'):
@@ -161,9 +161,14 @@ def dual_frequency_histogram(hash_map1, hash_map2):
 
     autolabel(rects1)
     autolabel(rects2)
+    fig.tight_layout()
     plt.savefig(str('./histogram.png'))
     plt.show()
     plt.close()
+
+
+def percent_histogram(hash_map1, hash_map2):
+    fig, ax = plt.subplots()
 
 
 def get_cv_set(training_set, test_set, percentile=0.2):
