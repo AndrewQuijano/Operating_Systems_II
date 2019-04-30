@@ -340,7 +340,7 @@ def stat_column(data_set, label, column_number=2, check_label=False):
                 # Get the right column
                 row = line.split(",")
                 key = row[column_number]
-                if row[0] != label:
+                if row[41] != label:
                     if key in freq_a:
                         freq_a[key] = freq_a[key] + 1
                     else:
@@ -357,7 +357,17 @@ def stat_column(data_set, label, column_number=2, check_label=False):
 
     odfreq_n = collections.OrderedDict(sorted(freq_n.items()))
     odfreq_a = collections.OrderedDict(sorted(freq_a.items()))
-    
+   
+    print('normal')
+    for k,v in odfreq_n.items():
+       print(k)
+       print(v)
+
+    print('\n\n\n')
+    print('anomaly')
+    for k,v in odfreq_a.items():
+       print(k)
+       print(v) 
 
     # Using frequency map compute mean and std dev
 #    n = sum(list(freq.values()))
@@ -394,5 +404,6 @@ if __name__ == "__main__":
     # main()
     # kdd_prep()
     #ids()
-    stat_column('kdd_prep_2.csv', '11', column_number=3, check_label=True) 
+#    stat_column('kdd_prep_2.csv', '11', column_number=1, check_label=True) 
 #    stat_column('kddcup.data', 'normal.', column_number=1, check_label=True) 
+    stat_column('KDDTrain+.txt', 'normal', column_number=6)
