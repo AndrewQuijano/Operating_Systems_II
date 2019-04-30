@@ -9,8 +9,43 @@ from sklearn.metrics import confusion_matrix
 from matplotlib import pyplot as plt
 from collections import Counter
 # Next two lines prevent issues with threading for printing plots
-import matplotlib
+import pandas as pd
 # matplotlib.use('Agg')
+
+
+def read_data(file, skip_head=True):
+    if skip_head:
+        features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=float, autostrip=True, converters=None)
+    else:
+        features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=float, autostrip=True, converters=None)
+
+    if np.isnan(features).any():
+        if skip_head:
+            features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=str, autostrip=True, converters=None)
+        else:
+            features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=str, autostrip=True, converters=None)
+        classes = features[:, 0]
+        features = features[:, 1:]
+        # Now you have NaN in your features, ok now you have issues!
+        if np.isnan(features).any():
+            print("There are NaNs found in your features at: " + str(list(map(tuple, np.where(np.isnan(features))))))
+            exit(0)
+        else:
+            features.astype(float)
+    else:
+        classes = features[:, 0]
+        features = features[:, 1:]
+    return features, classes
+
+
+# KDD has 27 columns
+def read_data_pandas(file_name, n_col=27):
+    range2 = [i for i in range(1, n_col)]
+    x = pd.read_csv(file_name, usecols=range2)
+    y = pd.read_csv(file_name, usecols=0)
+    x = x.to_numpy()
+    y = y.to_numpy()
+    return x, y
 
 
 def summation(elements):

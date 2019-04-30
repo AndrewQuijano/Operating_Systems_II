@@ -1,16 +1,27 @@
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from misc import *
 import time
 
 
-def logistic_linear(train_x, train_y, test_x=None, test_y=None, n_fold=10):
+def logistic_raw(train_x, train_y):
+    start = time.time()
+    log = LogisticRegression(warm_start=False, max_iter=1000, multi_class='auto', solver='lbfgs')
+    log.fit(train_x, train_y)
+    print("[INFO] Generating Logistic Classifier took {:.2f} seconds".format(time.time() - start))
+    return log
+
+
+def logistic_linear(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=True):
     start = time.time()
     n = np.logspace(-3, 3)
     param_grid = {'C': n}
     log = LogisticRegression(warm_start=False, max_iter=1000, multi_class='auto', solver='lbfgs')
-    log_model = GridSearchCV(log, param_grid, n_jobs=-1, cv=n_fold)
+    if slow:
+        log_model = GridSearchCV(log, param_grid, n_jobs=-1, cv=n_fold, pre_dispatch='2*n_jobs', verbose=2)
+    else:
+        log_model = RandomizedSearchCV(log, param_grid, n_jobs=-1, cv=n_fold, pre_dispatch='2*n_jobs', verbose=2)
     log_model.fit(train_x, train_y)
     plot_grid_search(log_model.cv_results_, n, 'Logistic_Regression_Cost')
 
@@ -18,12 +29,11 @@ def logistic_linear(train_x, train_y, test_x=None, test_y=None, n_fold=10):
     print("[INFO] randomized search took {:.2f} seconds".format(time.time() - start))
     print("[Logistic] Training Score is: " + str(log_model.score(train_x, train_y)))
 
-    with open("results.txt", "a") as my_file:
+    with open("results.txt", "a+") as my_file:
         my_file.write("[Logistic Regression] Best Parameters: " + str(log_model.get_params()) + '\n')
         my_file.write("[Logistic Regression] Training Mean Test Score: " +
                       str(log_model.score(train_x, train_y)) + '\n')
 
-    # print(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i) for i in log_model.classes_]))
     if test_x is not None and test_y is not None:
         log_linear_test(log_model, test_x, test_y)
     return log_model
@@ -38,10 +48,10 @@ def log_linear_test(log_model, test_x, test_y, extra_test=False):
         top(log_model, test_x, test_y, "Logistic_Regression", extra_attempts=1)
         top(log_model, test_x, test_y, "Logistic_Regression", extra_attempts=3)
 
-    with open("results.txt", "a") as my_file:
+    with open("results.txt", "a+") as my_file:
         my_file.write("[Logistic Regression] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 
-    with open("classification_reports.txt", "a") as my_file:
+    with open("classification_reports.txt", "a+") as my_file:
         my_file.write("---[Logistic Regression]---")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
                                             target_names=[str(i) for i in log_model.classes_]))

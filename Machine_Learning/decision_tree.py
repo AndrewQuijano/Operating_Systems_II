@@ -1,11 +1,18 @@
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import accuracy_score, classification_report
 from misc import *
 import time
 
 
-def tune_tree(train_features, train_labels, n_fold=10):
+def decision_tree_raw(train_x, train_y):
+    start = time.time()
+    tree = DecisionTreeClassifier().fit(train_x, train_y)
+    print("[INFO] Time to fit Decision tree is {:.2f} seconds".format(time.time() - start))
+    return tree
+
+
+def tune_tree(train_features, train_labels, n_fold=10, slow=True, n_iter_search=10):
     # Minimum number of samples required to split a node
     min_samples_split = np.arange(5, 20, 1)
     # Minimum number of samples required at each leaf node
@@ -14,18 +21,35 @@ def tune_tree(train_features, train_labels, n_fold=10):
     max_depth = np.arange(3, 20, 1)
 
     # Tune min split, taken from Random Forest
-    rf_min_split = GridSearchCV(estimator=DecisionTreeClassifier(), param_grid={'min_samples_split': min_samples_split},
-                                cv=n_fold, verbose=2, n_jobs=-1)
+    if slow:
+        rf_min_split = GridSearchCV(estimator=DecisionTreeClassifier(),
+                                    param_grid={'min_samples_split': min_samples_split},
+                                    cv=n_fold, verbose=2, n_jobs=-1, pre_dispatch='2*n_jobs')
+    else:
+        rf_min_split = RandomizedSearchCV(estimator=DecisionTreeClassifier(),
+                                          param_distributions={'min_samples_split': min_samples_split},
+                                          cv=n_fold, n_iter=n_iter_search, n_jobs=-1, pre_dispatch='2*n_jobs')
     rf_min_split.fit(train_features, train_labels)
     plot_grid_search(rf_min_split.cv_results_, min_samples_split, 'min_samples_split')
 
     # Tune min_sample_leaf, taken from Random Forest
-    rf_min_leaf = GridSearchCV(estimator=DecisionTreeClassifier(), param_grid={'min_samples_leaf': min_samples_leaf},
-                               cv=n_fold, verbose=2,  n_jobs=-1)
+    if slow:
+        rf_min_leaf = GridSearchCV(estimator=DecisionTreeClassifier(),
+                                   param_grid={'min_samples_leaf': min_samples_leaf},
+                                   cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs')
+    else:
+        rf_min_leaf = RandomizedSearchCV(estimator=DecisionTreeClassifier(),
+                                         param_distributions={'min_samples_leaf': min_samples_leaf},
+                                         cv=n_fold, n_iter=n_iter_search, n_jobs=-1, pre_dispatch='2*n_jobs')
     rf_min_leaf.fit(train_features, train_labels)
     plot_grid_search(rf_min_leaf.cv_results_, min_samples_leaf, 'min_samples_leaf')
 
-    rf_distro = GridSearchCV(estimator=DecisionTreeClassifier(), param_grid={'max_depth': max_depth}, cv=n_fold, verbose=2, n_jobs=-1)
+    if slow:
+        rf_distro = GridSearchCV(estimator=DecisionTreeClassifier(), param_grid={'max_depth': max_depth},
+                                 cv=n_fold, verbose=2, n_jobs=-1, pre_dispatch='2*n_jobs')
+    else:
+        rf_distro = RandomizedSearchCV(estimator=DecisionTreeClassifier(), param_distributions={'max_depth': max_depth},
+                                       cv=n_fold, n_iter=n_iter_search, n_jobs=-1, pre_dispatch='2*n_jobs')
     rf_distro.fit(train_features, train_labels)
     plot_grid_search(rf_distro.cv_results_, max_depth, 'max_depth')
 
@@ -39,14 +63,14 @@ def tune_tree(train_features, train_labels, n_fold=10):
     return clf
 
 
-def get_tree(train_x, train_y, test_x=None, test_y=None):
+def get_tree(train_x, train_y, test_x=None, test_y=None, n_fold=5, slow=False):
     start_time = time.time()
-    tree = tune_tree(train_x, train_y)
+    tree = tune_tree(train_x, train_y, n_fold, slow)
     print("--- Best Parameter Decision Tree Time: %s seconds ---" % (time.time() - start_time))
     print("Best Decision Tree Parameters: " + str(tree.get_params()))
     print("[Decision_Tree] Training Mean Test Score: " + str(tree.score(train_x, train_y)))
 
-    with open("results.txt", "a") as my_file:
+    with open("results.txt", "a+") as my_file:
         my_file.write("[Decision Tree] Best Parameters: " + str(tree.get_params()) + '\n')
         my_file.write("[Decision Tree] Training Mean Test Score: " + str(tree.score(train_x, train_y)) + '\n')
 
@@ -66,10 +90,10 @@ def tree_test(tree, test_x, test_y, extra_test=False):
         top(tree, test_x, test_y, "Decision Tree", extra_attempts=1)
         top(tree, test_x, test_y, "Decision Tree", extra_attempts=3)
 
-    with open("results.txt", "a") as my_file:
+    with open("results.txt", "a+") as my_file:
         my_file.write("[Decision_Tree] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 
-    with open("classification_reports.txt", "a") as my_file:
+    with open("classification_reports.txt", "a+") as my_file:
         my_file.write("---[Decision Tree]---\n")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
                                             target_names=[str(i) for i in tree.classes_]))
