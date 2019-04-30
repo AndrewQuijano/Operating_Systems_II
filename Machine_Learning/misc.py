@@ -92,6 +92,47 @@ def frequency_histogram(hash_map):
     plt.show()
     plt.close()
 
+def dual_frequency_histogram(hash_map1, hash_map2):
+    fig, ax = plt.subplots()
+
+    ind1 = np.arange(len(hash_map1.keys()))  # the x locations for the groups
+    ind2 = np.arange(len(hash_map2.keys()))
+    width = 0.40  # the width of the bars
+
+    rects1 = ax.bar(ind1 - width/2, hash_map1.values(), width=width, color='g', label='Normal')
+    rects2 = ax.bar(ind2 + width/2, hash_map2.values(), width=width, color='b', label='Anomalous')
+
+    ax.set_xlabel('Service')
+    ax.set_ylabel('Number of Connections')
+    ax.set_xticks(ind2)
+#    ax.set_xticklabels(('ICMP', 'TCP', 'UDP'))
+#    ax.set_xticklabels(('OTH', 'REJ', 'RSTO', 'RSTOS0', 'RSTR', 'S0', '
+#    ax.set_xticklabels(("SF", "S2", "S1", "S3", "OTH", "REJ", "RSTO", "S0", "RSTR", "RSTOS0", "SH"))
+    ax.set_title('Protocol Distribution')
+    ax.legend()
+
+    def autolabel(rects, xpos='center'):
+        """
+        Attach a text label above each bar in *rects*, displaying its height.
+
+        *xpos* indicates which side to place the text w.r.t. the center of
+        the bar. It can be one of the following {'center', 'right', 'left'}.
+          """
+
+        xpos = xpos.lower()  # normalize the case of the parameter
+        ha = {'center': 'center', 'right': 'left', 'left': 'right'}
+        offset = {'center': 0.5, 'right': 0.57, 'left': 0.43}  # x_txt = x + w*off
+
+        for rect in rects:
+            height = rect.get_height()
+            ax.text(rect.get_x() + rect.get_width()*offset[xpos], 1.01*height,
+                    '{}'.format(height), ha=ha[xpos], va='bottom')
+
+    autolabel(rects1)
+    autolabel(rects2)
+    plt.savefig(str('./histogram.png'))
+    plt.show()
+    plt.close()
 
 
 def get_cv_set(training_set, test_set, percentile=0.2):

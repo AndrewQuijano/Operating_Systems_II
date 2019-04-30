@@ -13,7 +13,10 @@ from convert_tcpdump import convert_tcpdump_to_text2pcap
 from sklearn.preprocessing import LabelEncoder
 import subprocess
 # import pyshark
+import collections
 
+
+import misc
 
 def read_data(file, skip_head=True):
     if skip_head:
@@ -296,36 +299,51 @@ def label_training_set(pcap_file):
 
 
 def stat_column(data_set, label, column_number=2, check_label=False):
-    freq = {}
+    freq_n = {}
+    freq_a = {}
     with open(data_set, "r") as f:
         for line in f:
             try:
                 # Get the right column
                 row = line.split(",")
-                if row[0] != label and check_label:
-                    continue
                 key = row[column_number]
-                if key in freq:
-                    freq[key] = freq[key] + 1
+                if row[0] != label:
+                    if key in freq_a:
+                        freq_a[key] = freq_a[key] + 1
+                    else:
+                        freq_a[key] = 1
                 else:
-                    freq[key] = 1
+                    if key in freq_n:
+                        freq_n[key] = freq_n[key] + 1
+                    else:
+                        freq_n[key] = 1
+
             except ValueError:
                 exit("NAN FOUND!")
 
+
+    odfreq_n = collections.OrderedDict(sorted(freq_n.items()))
+    odfreq_a = collections.OrderedDict(sorted(freq_a.items()))
+    
+
     # Using frequency map compute mean and std dev
-    n = sum(list(freq.values()))
+#    n = sum(list(freq.values()))
     miu = 0
-    for key, value in freq.items():
-         miu = miu + float(key) * value
-    miu = miu/n
+#    for key, value in freq.items():
+#         miu = miu + float(key) * value
+#    miu = miu/n
 
     # compe sigma
     sigma = 0
-    for key, value in freq.items():
-        sigma = sigma + value * (float(key) - miu) * (float(key) - miu)
-    sigma = sigma/(n - 1)
+#    for key, value in freq.items():
+#        sigma = sigma + value * (float(key) - miu) * (float(key) - miu)
+#    sigma = sigma/(n - 1)
     # Print it and plot a histogram to view distribution...
 
+    if len(freq_a.keys()) == 0:
+        frequency_histogram(odfreq_n)
+    else:
+        dual_frequency_histogram(odfreq_n, odfreq_a)
 
 def kdd_prep(file="../../kddcup.csv"):
     # I know that there are some features that need to be encoded
@@ -408,4 +426,7 @@ def swap_positions(l, pos1, pos2):
 if __name__ == "__main__":
     # main()
     # kdd_prep()
-    ids()
+    #ids()
+    stat_column('kdd_prep_2.csv', '11', column_number=3, check_label=True) 
+#    stat_column('kddcup.data', 'normal.', column_number=1, check_label=True) 
+
