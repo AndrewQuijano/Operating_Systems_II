@@ -2,8 +2,8 @@
 # KDD Cup Data Set
 # As the KDD Cup does NOT use TTL, I will use that to "label" Test PCAPs
 # This will increase by increments of 10....
-from scapy.all import *
-
+# from scapy.all import *
+from kamene import *
 
 # Denial of service attack against apache web server where a client
 # requests a URL containing many backslashes
