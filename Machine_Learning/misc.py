@@ -336,7 +336,7 @@ def make_confusion_matrix(y_true, y_pred, clf, clf_name, directory="Confusion_Ma
     #    print("Directory ", directory, " already exists")
 
     # Compute confusion matrix
-    cnf_matrix = confusion_matrix(y_true, y_pred)
+    cnf_matrix = confusion_matrix(y_true, y_pred, labels=[str(i) for i in clf.classes_])
     np.set_printoptions(precision=2)
     # Plot non-normalized confusion matrix
     plt.figure()
