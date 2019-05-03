@@ -1,10 +1,11 @@
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
+from sys import argv
 
 
 # For kdd, we skip columns 10 - 22
 # In our version, the label is in 0, so don't drop that!
-def drop_columns(file, begin=0, end=9, begin_2=23, end_2=42):
+def drop_columns(file, begin=0, end=9, begin_2=21, end_2=41):
     range1 = [i for i in range(begin, end)]
     range2 = [i for i in range(begin_2, end_2)]
     use_cols = range1 + range2
@@ -119,8 +120,14 @@ def kdd_prep(file):
                 parts[2] = str(encode_service[parts[2]])
                 parts[3] = str(encode_fl[parts[3]])
                 parts[41] = str(encode_class[parts[41]])
+
+                # SHIFT COLUMN!
                 # As my ML stuff excepts class on first column
-                swap_positions(parts, 0, 41)
+                last_column = parts[len(parts) - 1]
+                parts.remove(parts[len(parts) - 1])
+                parts.insert(0, last_column)
+
+                # As my ML stuff excepts class on first column
                 new_line = ','.join(parts)
                 write_kdd.write(new_line + '\n')
                 write_kdd.flush()
@@ -132,14 +139,77 @@ def swap_positions(l, pos1, pos2):
     return l
 
 
+def swap_column(file_name, column_1=0, column_2=41):
+    with open(file_name) as read_kdd_data, open("./kddcup_swap.csv", "w") as write_kdd:
+        for line in read_kdd_data:
+            # Swap using encoder
+            line = line.rstrip()
+            parts = line.split(",")
+            # As my ML stuff excepts class on first column
+            swap_positions(parts, column_1, column_2)
+            new_line = ','.join(parts)
+            write_kdd.write(new_line + '\n')
+            write_kdd.flush()
+
+
+def shift_column(file_name):
+    with open(file_name) as read_kdd_data, open("./kddcup_swap.csv", "w") as write_kdd:
+        for line in read_kdd_data:
+            # Swap using encoder
+            line = line.rstrip()
+            parts = line.split(",")
+            # As my ML stuff excepts class on first column
+            last_column = parts[len(parts) - 1]
+            parts.remove(parts[len(parts) - 1])
+            parts.insert(0, last_column)
+            # Write
+            new_line = ','.join(parts)
+            write_kdd.write(new_line + '\n')
+            write_kdd.flush()
+
+
+def n_col(file_name):
+    with open(file_name) as read_kdd_data:
+        for line in read_kdd_data:
+            line = line.rstrip()
+            parts = line.split(",")
+            print(len(parts))
+            if len(parts) > 0:
+                break
+
+
+def remove_rows(file_name, remove_labels):
+    with open(file_name) as read_kdd_data, open("./kddcup_filtered.csv", "w") as write_kdd:
+        for line in read_kdd_data:
+            # Swap using encoder
+            line = line.rstrip()
+            parts = line.split(",")
+            # As my ML stuff excepts class on first column
+            if line[0] in remove_labels:
+                continue
+            # Write
+            new_line = ','.join(parts)
+            write_kdd.write(new_line + '\n')
+            write_kdd.flush()
+
+
 # To convert KDD
-# 1- First encode
-# 2- Drop Columns
+# 1- First Swap columns
+# 2- Encode it
+# 2- Drop Columns that are content related
 # 3- Split into parts
 # **To use it, just merge it, use raw file name w/o extension!**
 if __name__ == "__main__":
-    drop_class("kddcup.csv", "imap.")
-    # kdd_prep("kddcup.csv")
-    # drop_columns("kddcup_prep.csv")
-    # split_csv("modified_kddcup_prep.csv")
-    # merge_csv("kddcup")
+    try:
+        if argv[1] == "save":
+            kdd_prep("kddcup.csv")
+            drop_columns("kddcup_prep.csv")
+            split_csv("modified_kddcup_prep.csv")
+        elif argv[1] == "merge":
+            merge_csv("modified_kddcup_prep")
+
+    except IndexError:
+        kdd_prep("kddcup.csv")
+        drop_columns("kddcup_prep.csv")
+        split_csv("modified_kddcup_prep.csv")
+        exit(0)

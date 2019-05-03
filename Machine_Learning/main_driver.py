@@ -115,12 +115,8 @@ def ids():
     train_x, train_y = read_data(argv[1])
     print("Please wait...Training Data read! Setting up ML Models!")
 
-    # print("FIT TIME FOR ONE CLASS THAT GETS TUNED")
-    # fit_time(train_x, train_y)
-    # print("Now start tuning!")
-
     # Now make a split between training and testing set from the input data
-    # start_time = time.time()
+    start_time = time.time()
     kf = KFold(n_splits=5)
 
     # 1- Bayes
@@ -141,6 +137,7 @@ def ids():
     logistic_clf = None
     knn_clf = None
     tree = None
+
     # 3- SVM
     print("Fitting Linear SVM...")
     svm_line_clf = svm_linear(train_x, train_y, n_fold=kf, slow=False)
