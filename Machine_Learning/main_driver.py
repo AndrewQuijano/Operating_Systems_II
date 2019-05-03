@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 from bayes import *
 from discriminant import *
 from KNN import *
@@ -13,7 +12,7 @@ from convert_tcpdump import convert_tcp_dump_to_text
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import KFold
 import subprocess
-# import pyshark
+import pyshark
 import collections
 from misc import read_data
 

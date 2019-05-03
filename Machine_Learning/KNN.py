@@ -3,6 +3,7 @@ from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 from misc import *
+from joblib import dump
 
 
 def raw_knn(train_x, train_y):
@@ -28,19 +29,20 @@ def get_knn(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=True):
     # tune the hyper parameters via a randomized search
     if slow:
         best_knn = GridSearchCV(estimator=KNeighborsClassifier(), param_grid={'n_neighbors': n},
-                                n_jobs=-1, cv=n_fold, pre_dispatch='2*n_jobs')
+                                n_jobs=-1, cv=n_fold, verbose=2)
     else:
         best_knn = RandomizedSearchCV(estimator=KNeighborsClassifier(), param_distributions={'n_neighbors': n},
-                                      n_jobs=-1, cv=n_fold, pre_dispatch='2*n_jobs')
+                                      n_jobs=-1, cv=n_fold, verbose=2)
     best_knn.fit(train_x, train_y)
 
     # Plot the CV-Curve
-    plot_grid_search(best_knn.cv_results_, n, 'KNN_n_neighbors')
+    # plot_grid_search(best_knn.cv_results_, n, 'KNN_n_neighbors')
 
     # evaluate the best randomized searched model on the testing data
     print("[INFO] KNN-Best Parameters: " + str(best_knn.best_params_))
     print("[INFO] Tuning took {:.2f} seconds".format(time.time() - start))
     print("[KNN] Training Score is: " + str(best_knn.score(train_x, train_y)))
+    dump(best_knn, "knn.joblib")
 
     with open("results.txt", "a+") as my_file:
         my_file.write("[KNN] KNN-Best Parameters: " + str(best_knn.best_params_))

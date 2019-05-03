@@ -3,6 +3,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from misc import *
 import time
+from joblib import dump
 
 
 def logistic_raw(train_x, train_y):
@@ -19,15 +20,16 @@ def get_logistic(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=Tru
     param_grid = {'C': n}
     log = LogisticRegression(warm_start=False, max_iter=1000, multi_class='auto', solver='lbfgs')
     if slow:
-        log_model = GridSearchCV(log, param_grid, n_jobs=-1, cv=n_fold, pre_dispatch='2*n_jobs', verbose=2)
+        log_model = GridSearchCV(log, param_grid, n_jobs=-1, cv=n_fold, verbose=2)
     else:
-        log_model = RandomizedSearchCV(log, param_grid, n_jobs=-1, cv=n_fold, pre_dispatch='2*n_jobs', verbose=2)
+        log_model = RandomizedSearchCV(log, param_grid, n_jobs=-1, cv=n_fold, verbose=2)
     log_model.fit(train_x, train_y)
-    plot_grid_search(log_model.cv_results_, n, 'Logistic_Regression_Cost')
+    # plot_grid_search(log_model.cv_results_, n, 'Logistic_Regression_Cost')
 
     print("[INFO] Logistic Regression-Best Parameters: " + str(log_model.best_params_))
     print("[INFO] randomized search took {:.2f} seconds".format(time.time() - start))
     print("[Logistic] Training Score is: " + str(log_model.score(train_x, train_y)))
+    dump(log_model, "logistic.joblib")
 
     with open("results.txt", "a+") as my_file:
         my_file.write("[Logistic Regression] Best Parameters: " + str(log_model.get_params()) + '\n')

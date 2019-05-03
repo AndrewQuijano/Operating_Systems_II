@@ -3,6 +3,7 @@ from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import accuracy_score, classification_report
 from misc import *
 import time
+from joblib import dump
 
 
 def decision_tree_raw(train_x, train_y):
@@ -12,7 +13,7 @@ def decision_tree_raw(train_x, train_y):
     return tree
 
 
-def tune_tree(train_features, train_labels, n_fold=10, slow=True, n_iter_search=10):
+def tune_tree(train_x, train_y, n_fold=10, slow=True, n_iter_search=10):
     # Minimum number of samples required to split a node
     min_samples_split = np.arange(5, 20, 1)
     # Minimum number of samples required at each leaf node
@@ -20,47 +21,24 @@ def tune_tree(train_features, train_labels, n_fold=10, slow=True, n_iter_search=
     # Maximum number of levels in tree
     max_depth = np.arange(3, 20, 1)
 
-    # Tune min split, taken from Random Forest
-    if slow:
-        rf_min_split = GridSearchCV(estimator=DecisionTreeClassifier(),
-                                    param_grid={'min_samples_split': min_samples_split},
-                                    cv=n_fold, verbose=2, n_jobs=-1, pre_dispatch='2*n_jobs')
-    else:
-        rf_min_split = RandomizedSearchCV(estimator=DecisionTreeClassifier(),
-                                          param_distributions={'min_samples_split': min_samples_split},
-                                          cv=n_fold, n_iter=n_iter_search, n_jobs=-1, pre_dispatch='2*n_jobs')
-    rf_min_split.fit(train_features, train_labels)
-    plot_grid_search(rf_min_split.cv_results_, min_samples_split, 'min_samples_split')
-
-    # Tune min_sample_leaf, taken from Random Forest
-    if slow:
-        rf_min_leaf = GridSearchCV(estimator=DecisionTreeClassifier(),
-                                   param_grid={'min_samples_leaf': min_samples_leaf},
-                                   cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs')
-    else:
-        rf_min_leaf = RandomizedSearchCV(estimator=DecisionTreeClassifier(),
-                                         param_distributions={'min_samples_leaf': min_samples_leaf},
-                                         cv=n_fold, n_iter=n_iter_search, n_jobs=-1, pre_dispatch='2*n_jobs')
-    rf_min_leaf.fit(train_features, train_labels)
-    plot_grid_search(rf_min_leaf.cv_results_, min_samples_leaf, 'min_samples_leaf')
+    random_grid = {
+        'min_samples_split': min_samples_split,
+        'min_samples_leaf': min_samples_leaf,
+        'max_depth': max_depth
+    }
 
     if slow:
-        rf_distro = GridSearchCV(estimator=DecisionTreeClassifier(), param_grid={'max_depth': max_depth},
-                                 cv=n_fold, verbose=2, n_jobs=-1, pre_dispatch='2*n_jobs')
+        tree = GridSearchCV(estimator=DecisionTreeClassifier(), param_grid=random_grid,
+                            cv=n_fold, verbose=2, n_jobs=-1)
     else:
-        rf_distro = RandomizedSearchCV(estimator=DecisionTreeClassifier(), param_distributions={'max_depth': max_depth},
-                                       cv=n_fold, n_iter=n_iter_search, n_jobs=-1, pre_dispatch='2*n_jobs')
-    rf_distro.fit(train_features, train_labels)
-    plot_grid_search(rf_distro.cv_results_, max_depth, 'max_depth')
-
-    # Build the classifier with all tuned parameters!
-    # For the Project I am using this code, I should use entropy
-    clf = DecisionTreeClassifier(criterion="entropy",
-                                 max_depth=rf_distro.best_params_['max_depth'],
-                                 min_samples_split=rf_min_split.best_params_['min_samples_split'],
-                                 min_samples_leaf=rf_min_leaf.best_params_['min_samples_leaf'])
-    clf.fit(train_features, train_labels)
-    return clf
+        tree = RandomizedSearchCV(estimator=DecisionTreeClassifier(), param_distributions=random_grid,
+                                  cv=n_fold, verbose=2, n_iter=n_iter_search, n_jobs=-1)
+    tree.fit(train_x, train_y)
+    # plot_grid_search(tree.cv_results_, min_samples_split, 'min_samples_split')
+    # plot_grid_search(tree.cv_results_, min_samples_leaf, 'min_samples_leaf')
+    # plot_grid_search(tree.cv_results_, max_depth, 'max_depth')
+    tree.fit(train_x, train_y)
+    return tree
 
 
 def get_tree(train_x, train_y, test_x=None, test_y=None, n_fold=5, slow=False):
@@ -69,6 +47,7 @@ def get_tree(train_x, train_y, test_x=None, test_y=None, n_fold=5, slow=False):
     print("--- Best Parameter Decision Tree Time: %s seconds ---" % (time.time() - start_time))
     print("Best Decision Tree Parameters: " + str(tree.get_params()))
     print("[Decision_Tree] Training Mean Test Score: " + str(tree.score(train_x, train_y)))
+    dump(tree, "tree.joblib")
 
     with open("results.txt", "a+") as my_file:
         my_file.write("[Decision Tree] Best Parameters: " + str(tree.get_params()) + '\n')

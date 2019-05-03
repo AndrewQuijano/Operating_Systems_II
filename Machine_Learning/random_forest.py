@@ -4,6 +4,7 @@ from sklearn.model_selection import RandomizedSearchCV
 from sklearn.model_selection import GridSearchCV
 from misc import *
 import time
+from joblib import dump
 
 
 def get_forest_raw(train_x, train_y):
@@ -19,6 +20,7 @@ def get_forest(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=False
     print("--- Best Parameter Random Forest Time: %s seconds ---" % (time.time() - start_time))
     print("Best Random Forest Parameters: " + str(best_forest.get_params()))
     print("[Random_Forest]Training Mean Test Score: " + str(best_forest.score(train_x, train_y)))
+    dump(best_forest, "random_forest.joblib")
 
     with open("results.txt", "a+") as my_file:
         my_file.write("[Random_Forest] Best Parameters: " + str(best_forest.get_params()) + '\n')
@@ -45,73 +47,29 @@ def tune_forest(train_features, train_labels, n_fold=10, slow=True):
     # Minimum number of samples required at each leaf node
     min_samples_leaf = np.arange(5, 20, 1)
 
-    # random_grid = {
-    #    'n_estimators': n_estimators,
-    #    'max_features': max_features,
-    #    'max_depth': max_depth,
-    #    'min_samples_split': min_samples_split,
-    #    'min_samples_leaf': min_samples_leaf,
-    #    }
+    random_grid = {
+        'n_estimators': n_estimators,
+        'max_features': max_features,
+        'max_depth': max_depth,
+        'min_samples_split': min_samples_split,
+        'min_samples_leaf': min_samples_leaf,
+    }
 
     # Step 1: Use the random grid to search for best hyper parameters
     # First create the base model to tune
     rf = RandomForestClassifier(warm_start=False, n_estimators=100)
     if slow:
-        rf_estimate = GridSearchCV(estimator=rf, param_grid={'n_estimators': n_estimators}, 
-                                    cv=n_fold, n_jobs=-1, pre_dispatch=None, verbose=2)
+        tune_rf = GridSearchCV(estimator=rf, param_grid=random_grid, cv=n_fold, n_jobs=-1, verbose=2)
     else:
-        rf_estimate = RandomizedSearchCV(estimator=rf, param_distributions={'n_estimators': n_estimators},
-                                         cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs', verbose=2)
-    rf_estimate.fit(train_features, train_labels)
-    plot_grid_search(rf_estimate.cv_results_, n_estimators, 'n_estimators')
-
-    rf = RandomForestClassifier(warm_start=False, n_estimators=100)
-    if slow:
-        rf_max = GridSearchCV(estimator=rf, param_grid={'max_features': max_features},
-                              cv=n_fold, n_jobs=-1, pre_dispatch=None, verbose=2)
-    else:
-        rf_max = RandomizedSearchCV(estimator=rf, param_distributions={'max_features': max_features},
-                                    cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs', verbose=2)
-    rf_max.fit(train_features, train_labels)
-    plot_grid_search(rf_max.cv_results_, max_features, 'max_features')
-
-    rf = RandomForestClassifier(warm_start=False, n_estimators=100)
-    if slow:
-        rf_distro = GridSearchCV(estimator=rf, param_grid={'max_depth': max_depth}, cv=n_fold, n_jobs=-1)
-    else:
-        rf_distro = RandomizedSearchCV(estimator=rf, param_distributions={'max_depth': max_depth},
-                                       cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs', verbose=2)
-    rf_distro.fit(train_features, train_labels)
-    plot_grid_search(rf_distro.cv_results_, max_depth, 'max_depth')
-
-    rf = RandomForestClassifier(warm_start=False, n_estimators=100)
-    if slow:
-        rf_min_split = GridSearchCV(estimator=rf, param_grid={'min_samples_split': min_samples_split},
-                                    cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs', verbose=2)
-    else:
-        rf_min_split = RandomizedSearchCV(estimator=rf, param_distributions={'min_samples_split': min_samples_split}
-                                          , cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs',verbose=2)
-    rf_min_split.fit(train_features, train_labels)
-    plot_grid_search(rf_min_split.cv_results_, min_samples_split, 'min_samples_split')
-
-    rf = RandomForestClassifier(warm_start=False, n_estimators=100)
-    if slow:
-        rf_min_leaf = GridSearchCV(estimator=rf, param_grid={'min_samples_leaf': min_samples_leaf},
-                                   cv=n_fold, n_jobs=-1, pre_dispatch=None, verbose=2)
-    else:
-        rf_min_leaf = RandomizedSearchCV(estimator=rf, param_distributions={'min_samples_leaf': min_samples_leaf},
-                                         cv=n_fold, n_jobs=-1, pre_dispatch='2*n_jobs', verbose=2)
-    rf_min_leaf.fit(train_features, train_labels)
-    plot_grid_search(rf_min_leaf.cv_results_, min_samples_leaf, 'min_samples_leaf')
-
-    random_forest = RandomForestClassifier(warm_start=False,
-                                           n_estimators=rf_estimate.best_params_['n_estimators'],
-                                           max_features=rf_max.best_params_['max_features'],
-                                           max_depth=rf_distro.best_params_['max_depth'],
-                                           min_samples_split=rf_min_split.best_params_['min_samples_split'],
-                                           min_samples_leaf=rf_min_leaf.best_params_['min_samples_leaf'])
-    random_forest.fit(train_features, train_labels)
-    return random_forest
+        tune_rf = RandomizedSearchCV(estimator=rf, param_distributions=random_grid,
+                                     cv=n_fold, n_jobs=-1, verbose=2)
+    # plot_grid_search(rf_estimate.cv_results_, n_estimators, 'n_estimators')
+    # plot_grid_search(rf_max.cv_results_, max_features, 'max_features')
+    # plot_grid_search(rf_distro.cv_results_, max_depth, 'max_depth')
+    # plot_grid_search(rf_min_split.cv_results_, min_samples_split, 'min_samples_split')
+    # plot_grid_search(rf_min_leaf.cv_results_, min_samples_leaf, 'min_samples_leaf')
+    tune_rf.fit(train_features, train_labels)
+    return tune_rf
 
 
 def forest_test(best_forest, test_x, test_y, extra_test=False):
