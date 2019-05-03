@@ -56,5 +56,6 @@ def log_linear_test(log_model, test_x, test_y, extra_test=False):
     with open("classification_reports.txt", "a+") as my_file:
         my_file.write("---[Logistic Regression]---")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
+                                            labels=[str(i) for i in clf.classes_],
                                             target_names=[str(i) for i in log_model.classes_]))
         my_file.write('\n')

@@ -2,6 +2,7 @@ from sklearn.metrics import accuracy_score, classification_report
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
 from misc import *
 import time
+from joblib import dump
 
 
 def discriminant_line(train_x, train_y, test_x=None, test_y=None):
@@ -14,6 +15,7 @@ def discriminant_line(train_x, train_y, test_x=None, test_y=None):
     with open("results.txt", "a+") as my_file:
         my_file.write("[LDA] Best Parameters: " + str(lda.get_params()) + '\n')
         my_file.write("[LDA] Training Mean Test Score: " + str(lda.score(train_x, train_y)))
+    dump(lda, "LDA.joblib")
 
     if test_x is not None and test_y is not None:
         lda_test(lda, test_x, test_y)
@@ -30,6 +32,7 @@ def lda_test(lda, test_x, test_y, extra_test=False):
     with open("classification_reports.txt", "a+") as my_file:
         my_file.write("---[LDA]---")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
+                                            labels=[str(i) for i in lda.classes_],
                                             target_names=[str(i) for i in lda.classes_]))
 
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=lda, clf_name='LDA')
@@ -49,7 +52,7 @@ def discriminant_quad(train_x, train_y, test_x=None, test_y=None):
     with open("results.txt", "a+") as my_file:
         my_file.write("[QDA] Best Parameters: " + str(qda.get_params()) + '\n')
         my_file.write("[QDA] Training Mean Test Score: " + str(qda.score(train_x, train_y)) + '\n')
-
+    dump(qda, "QDA.joblib")
     if test_x is not None and test_y is not None:
         qda_test(qda, test_x, test_y)
     return qda
@@ -70,5 +73,6 @@ def qda_test(qda, test_x, test_y, extra_test=False):
     with open("classification_reports.txt", "a") as my_file:
         my_file.write("---[QDA]---")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
+                                            labels=[str(i) for i in qda.classes_],
                                             target_names=[str(i) for i in qda.classes_]))
         my_file.write('\n')

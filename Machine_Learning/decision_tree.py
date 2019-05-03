@@ -75,5 +75,6 @@ def tree_test(tree, test_x, test_y, extra_test=False):
     with open("classification_reports.txt", "a+") as my_file:
         my_file.write("---[Decision Tree]---\n")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
+                                            labels=[str(i) for i in tree.classes_],
                                             target_names=[str(i) for i in tree.classes_]))
         my_file.write('\n')

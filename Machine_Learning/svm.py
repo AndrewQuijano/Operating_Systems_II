@@ -106,6 +106,7 @@ def svm_test(svm_clf, test_x, test_y, kernel, extra_test=False):
 
     with open("classification_reports.txt", "a+") as my_file:
         my_file.write("---[SVM_" + str(kernel) + "]---\n")
-        my_file.write(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i)
-                                                                                       for i in svm_clf.classes_]))
+        my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
+                                            labels=[str(i) for i in svm.classes_],
+                                            target_names=[str(i) for i in svm_clf.classes_]))
         my_file.write('\n')
