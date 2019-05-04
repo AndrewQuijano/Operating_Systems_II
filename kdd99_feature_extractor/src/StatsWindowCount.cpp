@@ -5,7 +5,7 @@
 #include "FeatureUpdaterCount.h"
 
 
-//TODO: Change this
+//TODO: Edit window_size below to increase conversation window
 
 
 namespace FeatureExtractor {

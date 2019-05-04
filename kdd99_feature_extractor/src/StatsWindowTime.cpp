@@ -5,7 +5,7 @@
 #include "FeatureUpdaterTime.h"
 
 
-//TODO: Change this!!
+//TODO: Edit window_size_ms below to change time window
 
 namespace FeatureExtractor {
 	template<class TStatsPerHost, class TStatsPerService>
