@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="kdd99extractor"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\cmake\;CMake Files\src\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/al/kdd99_feature_extractor/build-files"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/al/kdd99_feature_extractor/build-files"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/al/kdd99_feature_extractor/build-files"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="kdd99extractor">
+				<Option output="/home/al/kdd99_feature_extractor/build-files/src/kdd99extractor" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/al/kdd99_feature_extractor/build-files/src"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/src/Makefile&quot;  VERBOSE=1 kdd99extractor"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="kdd99extractor/fast">
+				<Option output="/home/al/kdd99_feature_extractor/build-files/src/kdd99extractor" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/al/kdd99_feature_extractor/build-files/src"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/src/Makefile&quot;  VERBOSE=1 kdd99extractor/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/al/kdd99_feature_extractor/build-files/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/Config.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/Config.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/Conversation.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/Conversation.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/ConversationFeatures.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/ConversationFeatures.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/ConversationReconstructor.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/ConversationReconstructor.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/FeatureUpdater.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/FeatureUpdaterCount.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/FeatureUpdaterCount.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/FeatureUpdaterTime.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/FeatureUpdaterTime.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/FiveTuple.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/FiveTuple.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/IcmpConversation.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/IcmpConversation.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/IntervalKeeper.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/IntervalKeeper.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/IpDatagram.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/IpDatagram.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/IpFragment.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/IpFragment.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/IpReassembler.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/IpReassembler.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/IpReassemblyBuffer.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/IpReassemblyBuffer.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/IpReassemblyBufferHoleList.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/IpReassemblyBufferHoleList.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/Packet.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/Packet.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/ReferenceCounter.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/ReferenceCounter.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/Sniffer.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/Sniffer.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/StatsCollector.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/StatsEngine.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/StatsEngine.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/StatsPerHost.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/StatsPerHost.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/StatsPerService.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/StatsPerService.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/StatsPerServiceWithSrcPort.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/StatsPerServiceWithSrcPort.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/StatsWindow.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/StatsWindow.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/StatsWindowCount.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/StatsWindowCount.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/StatsWindowTime.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/StatsWindowTime.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/TcpConnection.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/TcpConnection.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/Timestamp.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/Timestamp.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/UdpConversation.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/UdpConversation.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/main.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/net.cpp">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/net.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/types.h">
+			<Option target="kdd99extractor"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/cmake/FindPCAP.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+		<Unit filename="/home/al/kdd99_feature_extractor/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
