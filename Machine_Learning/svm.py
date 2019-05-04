@@ -48,7 +48,7 @@ def svm_linear(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=False
     dump(svm_line, "svm_line.joblib")
 
     with open("results.txt", "a+") as my_file:
-        my_file.write("[SVM_Linear] Best Parameters: " + str(svm_line.get_params()) + '\n')
+        my_file.write("[SVM_Linear] Best Parameters: " + str(svm_line.best_params_) + '\n')
         my_file.write("[SVM_Linear] Training Mean Test Score: " + str(svm_line.score(train_x, train_y)) + '\n')
 
     if test_x is not None and test_y is not None:
@@ -79,10 +79,10 @@ def svm_rbf(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=False):
     print("--- Best Parameter RBF Time to complete: %s seconds ---" % (time.time() - start_time))
     print("Best RBF Parameters: " + str(svm_radial.get_params()))
     print("[SVM_Radial] Training Mean Test Score: " + str(svm_radial.score(train_x, train_y)))
-    dump(svm_radial, "svm_line.joblib")
+    dump(svm_radial, "svm_rbf.joblib")
 
     with open("results.txt", "a+") as my_file:
-        my_file.write("[SVM_Radial] Best Parameters: " + str(svm_radial.get_params()) + '\n')
+        my_file.write("[SVM_Radial] Best Parameters: " + str(svm_radial.best_params_) + '\n')
         my_file.write("[SVM Radial] Training Mean Test Score: " + str(svm_radial.score(train_x, train_y)) + '\n')
 
     # print(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i) for i in svm_radial.classes_]))

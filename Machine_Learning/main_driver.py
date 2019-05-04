@@ -15,6 +15,7 @@ import subprocess
 import pyshark
 import collections
 from misc import read_data
+from joblib import load
 
 
 # Just test functionality of script!
@@ -140,18 +141,18 @@ def ids():
 
     # 3- SVM
     print("Fitting Linear SVM...")
-    svm_line_clf = svm_linear(train_x, train_y, n_fold=kf, slow=False)
+    # svm_line_clf = svm_linear(train_x, train_y, n_fold=kf, slow=False)
     # svm_line_clf = svm_linear_raw(train_x, train_y)
 
     # print("SVM Linear Model Ready!")
     print("Fitting RBF SVM...")
-    svm_rbf_clf = svm_rbf(train_x, train_y, n_fold=kf, slow=False)
+    # svm_rbf_clf = svm_rbf(train_x, train_y, n_fold=kf, slow=False)
     # svm_rbf_clf = svm_rbf_raw(train_x, train_y)
     # print("SVM RBF Kernel Ready!")
 
     # 4- Random Forest
     print("Fitting Random Forest...")
-    forest_clf = get_forest(train_x, train_y, n_fold=kf, slow=False)
+    # forest_clf = get_forest(train_x, train_y, n_fold=kf, slow=False)
     # forest_clf = get_forest_raw(train_x, train_y)
     # print("Random Forest Ready!")
 
@@ -183,6 +184,8 @@ def ids():
     #        for line in f:
     #            ids_shell_args(line.split())
     # print("Complete!")
+
+    svm_line_clf, svm_rbf_clf, forest_clf, logistic_clf, knn_clf, tree = load_classifiers()
 
     while True:
 
@@ -555,12 +558,26 @@ def kdd_prep_test(file):
     print("KDD Label encoding complete!")
 
 
+def load_classifiers():
+    svm_line_clf = load('svm_line.joblib')
+    svm_rbf_clf = load('svm_rbf.joblib')
+    forest_clf = load('random_forest.joblib')
+    logistic_clf = load('logistic.joblib')
+    knn_clf = load('knn.joblib')
+    tree = load('tree.joblib')
+    return svm_line_clf, svm_rbf_clf, forest_clf, logistic_clf, knn_clf, tree
+
+
+def test_lib():
+    forest_clf = load('random_forest.joblib')
+    print(forest_clf.best_params_)
+    # print(forest_clf.cv_results_)
+
+
 # TODO: Learn to train with generators
 if __name__ == "__main__":
-    # main()
-    # kdd_prep()
-    # ids()
     # stat_column('kdd_prep_2.csv', '11', column_number=1, check_label=True)
     # stat_column('kddcup.data', 'normal.', column_number=1, check_label=True)
     # stat_column('KDDTrain+.txt', 'normal', column_number=6)
-    ids()
+    # ids()
+    test_lib()
