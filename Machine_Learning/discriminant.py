@@ -3,6 +3,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticD
 from misc import *
 import time
 from joblib import dump
+# from sklearn.externals.joblib import dump
 
 
 def discriminant_line(train_x, train_y, test_x=None, test_y=None):

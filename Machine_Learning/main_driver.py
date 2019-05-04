@@ -3,7 +3,6 @@ from bayes import *
 from discriminant import *
 from KNN import *
 from logistic_regression import *
-# from neural_network import *
 from random_forest import *
 from svm import *
 from decision_tree import *
@@ -15,6 +14,7 @@ import subprocess
 import pyshark
 import collections
 from misc import read_data
+# from sklearn.externals.joblib import load
 from joblib import load
 
 
@@ -158,13 +158,13 @@ def ids():
 
     # 5- Logistic Regression
     print("Fitting Logistic Regression...")
-    logistic_clf = get_logistic(train_x, train_y, n_fold=kf, slow=False)
+    # logistic_clf = get_logistic(train_x, train_y, n_fold=kf, slow=False)
     # logistic_clf = logistic_raw(train_x, train_y)
     # print("Logistic Regression Ready!")
 
     # 6- KNN
     print("Fitting KNN...")
-    knn_clf = get_knn(train_x, train_y)
+    knn_clf = get_knn(train_x, train_y, slow=False)
     # knn_clf = tune_knn(train_x, train_y, n_fold=5, slow=False)
     # print("KNN ready!")
 
@@ -185,7 +185,7 @@ def ids():
     #            ids_shell_args(line.split())
     # print("Complete!")
 
-    svm_line_clf, svm_rbf_clf, forest_clf, logistic_clf, knn_clf, tree = load_classifiers()
+    # svm_line_clf, svm_rbf_clf, forest_clf, logistic_clf, knn_clf, tree = load_classifiers()
 
     while True:
 
@@ -568,16 +568,11 @@ def load_classifiers():
     return svm_line_clf, svm_rbf_clf, forest_clf, logistic_clf, knn_clf, tree
 
 
-def test_lib():
-    forest_clf = load('random_forest.joblib')
-    print(forest_clf.best_params_)
-    # print(forest_clf.cv_results_)
-
-
 # TODO: Learn to train with generators
 if __name__ == "__main__":
     # stat_column('kdd_prep_2.csv', '11', column_number=1, check_label=True)
     # stat_column('kddcup.data', 'normal.', column_number=1, check_label=True)
     # stat_column('KDDTrain+.txt', 'normal', column_number=6)
     # ids()
-    test_lib()
+    forest_clf = load('LDA.joblib')
+    print(forest_clf.classes_)

@@ -4,6 +4,7 @@ from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 from misc import *
 from joblib import dump
+# from sklearn.externals.joblib import dump
 
 
 def raw_knn(train_x, train_y):
@@ -18,13 +19,13 @@ def get_knn(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=True):
     # Get Number of features
     rows = np.shape(train_x)[0]
 
-    if rows > 101:
-        rows = 101
-    else:
-        rows = int((rows/2) - 1)
+    # if rows > 101:
+    #     rows = 101
+    # else:
+    #    rows = int((rows/2) - 1)
 
     # print("Highest value of k to tune up to is: " + str(rows) + " features")
-    n = np.arange(3, rows, 2)
+    n = np.arange(3, 18, 2)
     start = time.time()
     # tune the hyper parameters via a randomized search
     if slow:

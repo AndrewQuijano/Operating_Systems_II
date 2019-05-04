@@ -2,8 +2,9 @@ from sklearn.metrics import accuracy_score, classification_report
 from sklearn import svm
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from misc import *
-from joblib import dump
 import time
+# from sklearn.externals.joblib import dump
+from joblib import dump
 
 
 def svc_rbf_param_selection(x, y, n_folds=10, slow=True):
