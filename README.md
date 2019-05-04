@@ -5,6 +5,10 @@ Creating an Intrusion Detection System
 
 Please use the installation script to build the pre-processor when the respository is cloned.
 
+To change time window and connection window for traffic-based features, edit
+StatsWindowTime.cpp and StatsWindowCount.cpp, respectively. See kdd99_feature_
+extractor/src.
+
 The repository can be found at:
 https://github.com/AI-IDS/kdd99_feature_extractor
 
