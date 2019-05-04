@@ -32,7 +32,7 @@ def get_logistic(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=Tru
     dump(log_model, "logistic.joblib")
 
     with open("results.txt", "a+") as my_file:
-        my_file.write("[Logistic Regression] Best Parameters: " + str(log_model.get_params()) + '\n')
+        my_file.write("[Logistic Regression] Best Parameters: " + str(log_model.best_params_) + '\n')
         my_file.write("[Logistic Regression] Training Mean Test Score: " +
                       str(log_model.score(train_x, train_y)) + '\n')
 

@@ -45,7 +45,7 @@ def get_tree(train_x, train_y, test_x=None, test_y=None, n_fold=5, slow=False):
     start_time = time.time()
     tree = tune_tree(train_x, train_y, n_fold, slow)
     print("--- Best Parameter Decision Tree Time: %s seconds ---" % (time.time() - start_time))
-    print("Best Decision Tree Parameters: " + str(tree.get_params()))
+    print("Best Decision Tree Parameters: " + str(tree.best_params_))
     print("[Decision_Tree] Training Mean Test Score: " + str(tree.score(train_x, train_y)))
     dump(tree, "tree.joblib")
 

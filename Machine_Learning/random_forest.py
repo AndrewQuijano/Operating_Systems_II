@@ -23,7 +23,7 @@ def get_forest(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=False
     dump(best_forest, "random_forest.joblib")
 
     with open("results.txt", "a+") as my_file:
-        my_file.write("[Random_Forest] Best Parameters: " + str(best_forest.get_params()) + '\n')
+        my_file.write("[Random_Forest] Best Parameters: " + str(best_forest.best_params_) + '\n')
         my_file.write("[Random_Forest] Training Mean Test Score: " + str(best_forest.score(train_x, train_y)) + '\n')
 
     if test_x is not None and test_y is not None:
