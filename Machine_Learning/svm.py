@@ -7,7 +7,7 @@ import time
 
 
 def svc_rbf_param_selection(x, y, n_folds=10, slow=True):
-    c = np.arange(0.01, 1, 0.01)
+    c = np.arange(0.1, 1, 0.1)
     gammas = np.arange(0.1, 1, 0.1)
     random_grid = {
         'C': c,
@@ -26,13 +26,13 @@ def svc_rbf_param_selection(x, y, n_folds=10, slow=True):
 
 
 def svc_linear_param_selection(x, y, n_folds=10, slow=False):
-    c = np.arange(0.01, 1, 0.01)
+    c = np.arange(0.1, 1, 0.1)
     param_grid = {'C': c}
     model = svm.SVC(kernel='linear')
     if slow:
-        svm_line = GridSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise')
+        svm_line = GridSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
     else:
-        svm_line = RandomizedSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', )
+        svm_line = RandomizedSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
     svm_line.fit(x, y)
     # plot_grid_search(svm_line.cv_results_, c, 'SVM_Linear_Cost')
     return svm_line

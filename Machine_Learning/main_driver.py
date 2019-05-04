@@ -555,6 +555,7 @@ def kdd_prep_test(file):
     print("KDD Label encoding complete!")
 
 
+# TODO: Learn to train with generators
 if __name__ == "__main__":
     # main()
     # kdd_prep()

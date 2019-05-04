@@ -1,6 +1,8 @@
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sys import argv
+from os.path import basename
+from subprocess import call
 
 
 # For kdd, we skip columns 10 - 22
@@ -193,6 +195,26 @@ def remove_rows(file_name, remove_labels):
             write_kdd.flush()
 
 
+def pcap(file_path, new_file=None):
+    file_name = basename(file_path)
+    file_parts = file_name.split('.')
+    if new_file is not None:
+        call(["tcpdump", "-r", file_path, "-w", new_file])
+    else:
+        call(["tcpdump", "-r", file_path, "-w", str(file_parts[0]) + ".pcap"])
+
+
+def process(file_path, new_file=None):
+    file_name = basename(file_path)
+    file_parts = file_name.split('.')
+    if new_file is None:
+        with open(file_parts[0] + ".csv", "w") as f:
+            call(["sudo", "../kdd99extractor", file_path], stdout=f)
+    else:
+        with open(new_file, "w") as f:
+            call(["sudo", "../kdd99extractor", file_path], stdout=f)
+
+
 # To convert KDD
 # 1- First Swap columns
 # 2- Encode it
@@ -200,16 +222,17 @@ def remove_rows(file_name, remove_labels):
 # 3- Split into parts
 # **To use it, just merge it, use raw file name w/o extension!**
 if __name__ == "__main__":
-    try:
-        if argv[1] == "save":
-            kdd_prep("kddcup.csv")
-            drop_columns("kddcup_prep.csv")
-            split_csv("modified_kddcup_prep.csv")
-        elif argv[1] == "merge":
-            merge_csv("modified_kddcup_prep")
+    with open("batch.txt") as f:
+        for line in f:
+            args = line.split()
+            if args[0] == "pcap" and len(args) == 3:
+                pcap(args[1], args[2])
+            elif args[0] == "process" and len(args) == 3:
+                process(args[1], args[2])
+    print("Complete conversion to PCAP!")
 
-    except IndexError:
-        kdd_prep("kddcup.csv")
-        drop_columns("kddcup_prep.csv")
-        split_csv("modified_kddcup_prep.csv")
-        exit(0)
+    for i in range(34):
+        process("kdd_" + str(i) + ".pcap")
+
+    # Merge into KDD
+    merge_csv("kdd")
