@@ -1,6 +1,15 @@
 # Operating_Systems_II
 Creating an Intrusion Detection System
 
+------Obtaining the KDD Preprocessor----
+
+Please use the installation script to build the pre-processor when the respository is cloned.
+
+The repository can be found at:
+https://github.com/AI-IDS/kdd99_feature_extractor
+
+----------------------------------------
+
 Source Location for Java Wireshark compatibility:
 https://sourceforge.net/projects/jnetpcap/postdownload
 
