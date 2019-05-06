@@ -40,7 +40,7 @@ def svc_linear_param_selection(x, y, n_folds=10, slow=False):
 
 
 # http://scikit-learn.org/stable/modules/model_evaluation.html
-def svm_linear(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=False):
+def svm_linear(train_x, train_y, n_fold=10, slow=False):
     start_time = time.time()
     svm_line = svc_linear_param_selection(train_x, train_y, n_fold, slow)
     print("--- Best Parameter Linear SVM: %s seconds ---" % (time.time() - start_time))
@@ -52,8 +52,6 @@ def svm_linear(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=False
         my_file.write("[SVM_Linear] Best Parameters: " + str(svm_line.best_params_) + '\n')
         my_file.write("[SVM_Linear] Training Mean Test Score: " + str(svm_line.score(train_x, train_y)) + '\n')
 
-    if test_x is not None and test_y is not None:
-        svm_test(svm_line, test_x, test_y, "Linear")
     # print(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i) for i in svm_line.classes_]))
     return svm_line
 

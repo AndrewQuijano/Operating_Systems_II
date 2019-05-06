@@ -14,7 +14,7 @@ def discriminant_line(train_x, train_y, test_x=None, test_y=None):
     print("Training Score (LDA): " + str(lda.score(train_x, train_y)))
 
     with open("results.txt", "a+") as my_file:
-        my_file.write("[LDA] Best Parameters: " + str(lda.get_params()) + '\n')
+        # my_file.write("[LDA] Best Parameters: " + str(lda.get_params()) + '\n')
         my_file.write("[LDA] Training Mean Test Score: " + str(lda.score(train_x, train_y)) + '\n')
     dump(lda, "LDA.joblib")
 
@@ -43,7 +43,7 @@ def lda_test(lda, test_x, test_y, extra_test=False):
         top(lda, test_x, test_y, "LDA", extra_attempts=3)
 
 
-def discriminant_quad(train_x, train_y, test_x=None, test_y=None):
+def discriminant_quad(train_x, train_y):
     qda = QuadraticDiscriminantAnalysis(store_covariance=False)
     start_time = time.time()
     qda.fit(train_x, train_y)
@@ -51,11 +51,9 @@ def discriminant_quad(train_x, train_y, test_x=None, test_y=None):
     print("Training Score is (QDA): " + str(qda.score(train_x, train_y)))
 
     with open("results.txt", "a+") as my_file:
-        my_file.write("[QDA] Best Parameters: " + str(qda.get_params()) + '\n')
+        # my_file.write("[QDA] Best Parameters: " + str(qda.get_params()) + '\n')
         my_file.write("[QDA] Training Mean Test Score: " + str(qda.score(train_x, train_y)) + '\n')
     dump(qda, "QDA.joblib")
-    if test_x is not None and test_y is not None:
-        qda_test(qda, test_x, test_y)
     return qda
 
 
@@ -66,7 +64,6 @@ def qda_test(qda, test_x, test_y, extra_test=False):
 
     if extra_test:
         top(qda, test_x, test_y, "QDA", extra_attempts=1)
-        top(qda, test_x, test_y, "QDA", extra_attempts=3)
 
     with open("results.txt", "a") as my_file:
         my_file.write("[QDA] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')

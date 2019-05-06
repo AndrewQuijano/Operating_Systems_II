@@ -42,7 +42,7 @@ def tune_tree(train_x, train_y, n_fold=10, slow=True, n_iter_search=10):
     return tree
 
 
-def get_tree(train_x, train_y, test_x=None, test_y=None, n_fold=5, slow=False):
+def get_tree(train_x, train_y, n_fold=10, slow=False):
     start_time = time.time()
     tree = tune_tree(train_x, train_y, n_fold, slow)
     print("--- Best Parameter Decision Tree Time: %s seconds ---" % (time.time() - start_time))
@@ -51,11 +51,9 @@ def get_tree(train_x, train_y, test_x=None, test_y=None, n_fold=5, slow=False):
     dump(tree, "tree.joblib")
 
     with open("results.txt", "a+") as my_file:
-        my_file.write("[Decision Tree] Best Parameters: " + str(tree.get_params()) + '\n')
+        my_file.write("[Decision Tree] Best Parameters: " + str(tree.best_params_) + '\n')
         my_file.write("[Decision Tree] Training Mean Test Score: " + str(tree.score(train_x, train_y)) + '\n')
 
-    if test_x is not None or test_y is not None:
-        tree_test(tree, test_x, test_y)
     # print(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i) for i in tree.classes_]))
     return tree
 

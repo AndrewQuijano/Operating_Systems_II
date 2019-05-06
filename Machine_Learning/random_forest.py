@@ -15,7 +15,7 @@ def get_forest_raw(train_x, train_y):
     return forest
 
 
-def get_forest(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=False):
+def get_forest(train_x, train_y, n_fold=10, slow=False):
     start_time = time.time()
     best_forest = tune_forest(train_x, train_y, n_fold, slow)
     print("--- Best Parameter Random Forest Time: %s seconds ---" % (time.time() - start_time))
@@ -26,9 +26,6 @@ def get_forest(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=False
     with open("results.txt", "a+") as my_file:
         my_file.write("[Random_Forest] Best Parameters: " + str(best_forest.best_params_) + '\n')
         my_file.write("[Random_Forest] Training Mean Test Score: " + str(best_forest.score(train_x, train_y)) + '\n')
-
-    if test_x is not None and test_y is not None:
-        forest_test(best_forest, test_x, test_y)
     return best_forest
 
 

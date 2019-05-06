@@ -46,7 +46,7 @@ def get_knn(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=True):
     dump(best_knn, "knn.joblib")
 
     with open("results.txt", "a+") as my_file:
-        my_file.write("[KNN] KNN-Best Parameters: " + str(best_knn.best_params_))
+        my_file.write("[KNN] KNN-Best Parameters: " + str(best_knn.best_params_) + '\n')
         my_file.write("[KNN] Training Mean Test Score: " + str(best_knn.score(train_x, train_y)) + '\n')
 
     if test_x is not None and test_y is not None:

@@ -118,7 +118,7 @@ def ids():
 
     # Now make a split between training and testing set from the input data
     start_time = time.time()
-    kf = KFold(n_splits=5)
+    kf = KFold(n_splits=10)
 
     # 1- Bayes
     print("Fitting Bayes Classifiers...")
@@ -141,24 +141,24 @@ def ids():
 
     # 3- SVM
     print("Fitting Linear SVM...")
-    # svm_line_clf = svm_linear(train_x, train_y, n_fold=kf, slow=False)
+    # = svm_linear(train_x, train_y, n_fold=kf, slow=False)
     # svm_line_clf = svm_linear_raw(train_x, train_y)
 
     # print("SVM Linear Model Ready!")
     print("Fitting RBF SVM...")
-    # svm_rbf_clf = svm_rbf(train_x, train_y, n_fold=kf, slow=False)
+    svm_rbf_clf = svm_rbf(train_x, train_y, n_fold=kf, slow=False)
     # svm_rbf_clf = svm_rbf_raw(train_x, train_y)
     # print("SVM RBF Kernel Ready!")
 
     # 4- Random Forest
     print("Fitting Random Forest...")
-    # forest_clf = get_forest(train_x, train_y, n_fold=kf, slow=False)
+    forest_clf = get_forest(train_x, train_y, n_fold=kf, slow=False)
     # forest_clf = get_forest_raw(train_x, train_y)
     # print("Random Forest Ready!")
 
     # 5- Logistic Regression
     print("Fitting Logistic Regression...")
-    # logistic_clf = get_logistic(train_x, train_y, n_fold=kf, slow=False)
+    logistic_clf = get_logistic(train_x, train_y, n_fold=kf, slow=False)
     # logistic_clf = logistic_raw(train_x, train_y)
     # print("Logistic Regression Ready!")
 
@@ -508,7 +508,7 @@ def kdd_prep_test(file):
                "csnet_ns", "http_443", "klogin", "printer", "netbios_ssn", "pop_2", "nnsp", "efs",
                "hostnames", "uucp_path", "sql_net", "vmnet", "iso_tsap", "netbios_ns", "kshell",
                "urh_i", "http_2784", "harvest", "aol",
-                "tftp_u", "http_8001", "tim_i", "red_i"]
+            "tftp_u", "http_8001", "tim_i", "red_i"]
 
     # Fit them with the known classes
     # classes.fit(y)
@@ -573,6 +573,4 @@ if __name__ == "__main__":
     # stat_column('kdd_prep_2.csv', '11', column_number=1, check_label=True)
     # stat_column('kddcup.data', 'normal.', column_number=1, check_label=True)
     # stat_column('KDDTrain+.txt', 'normal', column_number=6)
-    # ids()
-    forest_clf = load('LDA.joblib')
-    print(forest_clf.classes_)
+    ids()
