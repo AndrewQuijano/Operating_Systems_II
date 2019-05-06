@@ -1,25 +1,52 @@
+#!/usr/bin/env python3
+
 # first of all import the socket library
 # main issue: http://scikit-learn.org/stable/modules/scaling_strategies.html
 from network_setup import *
-from sklearn.naive_bayes import MultinomialNB
+# from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import Perceptron, SGDClassifier, SGDRegressor
 from sklearn.linear_model import PassiveAggressiveRegressor, PassiveAggressiveClassifier
+from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score, classification_report
-from misc import make_confusion_matrix, read_data
+from misc import make_confusion_matrix, read_data, is_valid_file_type
 from tuning import *
 import numpy as np
+from joblib import dump
+from sys import argv
+
 
 # ORIGINAL PARTS WHICH ALREADY ARE INCREMENTAL!
-
-
-def init_classifiers():
-    # bayes = MultinomialNB()
-    percep = Perceptron(warm_start=True)
-    sgd_class = SGDClassifier(warm_start=True)
-    pa_classifier = PassiveAggressiveClassifier(max_iter=1000, warm_start=True)
-    sgd_regress = SGDRegressor(warm_start=True)
-    pa_regress = PassiveAggressiveRegressor(warm_start=True)
-    return [percep, sgd_class, pa_classifier]
+def init_classifiers(train_x, train_y):
+    if train_x is None or train_y is None:
+        bayes = MultinomialNB()
+        percep = Perceptron(warm_start=True, max_iter=10)
+        sgd_class = SGDClassifier(warm_start=True, max_iter=10)
+        pa_classifier = PassiveAggressiveClassifier(max_iter=10, warm_start=True)
+        sgd_regress = SGDRegressor(warm_start=True, max_iter=10)
+        pa_regress = PassiveAggressiveRegressor(warm_start=True, max_iter=10)
+    else:
+        kf = KFold(n_splits=10)
+        bayes = tune_bayes(train_x, train_y, kf, False)
+        percep = tune_perceptron(train_x, train_y, kf, False)
+        sgd_class = tune_sgd_clf(train_x, train_y, kf, False)
+        pa_classifier = tune_passive_aggressive_clf(train_x, train_y, kf, False)
+        sgd_regress = tune_passive_aggressive_reg(train_x, train_y, kf, False)
+        pa_regress = tune_passive_aggressive_reg(train_x, train_y, kf, False)
+        # Get Parameters now
+        with open("results.txt", "r") as fd:
+            fd.write("[bayes] Best Parameters: " + bayes.best_params_)
+            fd.write("[percep] Best Parameters: " + percep.best_params_)
+            fd.write("[sgd_class] Best Parameters: " + sgd_class.best_params_)
+            fd.write("[pa_classifier] Best Parameters: " + pa_classifier.best_params_)
+            fd.write("[sgd_regress] Best Parameters: " + sgd_regress.best_params_)
+            fd.write("[pa_regress] Best Parameters: " + pa_regress.best_params_)
+        # If trained, should just dump now...
+        dump(bayes, "i_bayes.joblib")
+        dump(sgd_class, "sgd_class.joblib")
+        dump(sgd_regress, "sgd_regress.joblib")
+        dump(pa_classifier, "PA_class.joblib")
+        dump(pa_regress, "PA_regress.joblib")
+    return [bayes, percep, sgd_class, pa_classifier, sgd_regress, pa_regress]
 
 
 # Return X, Y for training, or just X to be used for classifiers
@@ -96,7 +123,7 @@ def server():
 
                 # 3- Update Classifiers
 
-                bayes.partial_fit(x, y, classes=None)
+                bayes.partial_fit(x, y)
                 connection.close()
 
             elif args[0] == "test":
@@ -128,58 +155,66 @@ def server():
 
 # test driver only on local host with ML model, see main_driver in ML python library
 # Test with ZIP code data set
-def main():
+def main(train_data):
     # Once server socket is ready get all classifiers up!
     # For Partial fit to work, I need to know all classes ahead of time!
-    classes = [3.0, 5.0, 6.0, 8.0]
-    classifiers = init_classifiers()
+    # classes = [3.0, 5.0, 6.0, 8.0]
+
+    train_x, train_y = read_data(train_data)
+    class_names = ["bayes", "percep", "sgd_class", "pa_classifier", "sgd_regress", "pa_regress"]
+    # classes = np.arange(0, 23, 1, dtype=float)
+    # [0, 23) or [0, 22]
+    classifiers = init_classifiers(train_x, train_y)
 
     # Train it
-    with open("zip_train_real.csv", "r") as file:
-        for line in file:
-            x, y = parse_string_to_numpy(line.rstrip())
-            for clf in classifiers:
-                clf.partial_fit(x, y, classes=classes)
-            # bayes.partial_fit(x, y, classes=classes)
-            # percep.partial_fit(x, y, classes=classes)
-            # sgd_class.partial_fit(x, y, classes=classes)
-            # pa_classifier.partial_fit(x, y, classes=classes)
-            # sgd_regress.partial_fit(x, y)
-            # pa_regress.partial_fit(x, y)
+    # TODO: Read say 100 lines, make to Numpy THEN FIT
+    # with open(train_data, "r") as file:
+    #    for line in file:
+    #        x, y = parse_string_to_numpy(line.rstrip())
+    #        for clf in classifiers:
+    #            clf.partial_fit(x, y, classes=classes)
 
-    # ZIP Build permanent training/testing set
-    train_x, train_y = read_data("zip_train_real.csv")
-    tune_passive_aggressive(train_x, train_y)
-    tune_perceptron(train_x, train_y)
-    tune_perceptron(train_x, train_y)
+    # Ideally figure out how to tune after partial fit ONCE in...
+    # I guess would I technically keep a record and try to refit?
 
-    test_x, test_y = read_data("zip_test_real.csv")
+    while True:
+        try:
+            arg = input("Input: ")
+            args = arg.split()
+            if args[0] == "exit":
+                break
 
-    # Now make a split between training and testing set from the input data
-    # train_x, train_y, test_x, test_y = get_cv_set(train_x, train_y)
-    # np.savetxt("zip_train_real.csv", train_x, delimiter=",")
-    # np.savetxt("zip_train_real_2.csv", train_y, delimiter=",")
-    # np.savetxt("zip_test_real.csv", test_x, delimiter=",")
-    # np.savetxt("zip_test_real_2.csv", test_y, delimiter=",")
-    for clf in classifiers:
-        incremental_test(clf, test_x, test_y)
+            elif args[0] == "detect":  # args: csv type
+                # Check if the correct CSV file exists, if so read it in!
+                if not is_valid_file_type(args[1]):
+                    continue
+                test_x, test_y = read_data(args[1])
+                for idx in range(len(classifiers)):
+                    incremental_test(classifiers[idx], test_x, test_y, class_names[idx])
+        except KeyboardInterrupt:
+            break
+        except EOFError:
+            break
 
 
-def incremental_test(clf, test_x, test_y):
+def incremental_test(clf, test_x, test_y, clf_name):
     y_hat = clf.predict(test_x)
 
     print("Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
-    make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=clf, clf_name='TEST')
+    make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=clf, clf_name=clf_name)
 
     with open("results.txt", "a") as my_file:
-        my_file.write("[]Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
+        my_file.write("[" + clf_name + "] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 
     with open("classification_reports.txt", "a") as my_file:
-        my_file.write("---[]---\n")
+        my_file.write("---[" + clf_name + "]---\n")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i)
                                                                                        for i in clf.classes_]))
         my_file.write('\n')
 
 
 if __name__ == "__main__":
-    main()
+    if len(argv) == 0:
+        main("./NSL_KDD_train.csv")
+    else:
+        main(argv[1])
