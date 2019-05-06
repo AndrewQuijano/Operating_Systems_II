@@ -13,26 +13,29 @@ import weka.classifiers.evaluation.NominalPrediction;
 import weka.classifiers.evaluation.Prediction;
 import weka.classifiers.functions.LibSVM;
 import weka.classifiers.functions.Logistic;
-
+import weka.classifiers.meta.CVParameterSelection;
 import weka.classifiers.rules.DecisionTable;
 import weka.classifiers.rules.PART;
 import weka.classifiers.trees.DecisionStump;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
+import weka.core.Range;
 import weka.core.converters.ArffLoader;
+import weka.classifiers.evaluation.output.prediction.AbstractOutput;
+import weka.classifiers.evaluation.output.prediction.PlainText;
  
 public class WekaClassifiers
 {
 	// Load all NON-Incremental models
 	private static Classifier [] models = { 
-			new J48(), 				// a decision tree
-			new PART(), 
-			new DecisionTable(),	//decision table majority classifier
-			new DecisionStump(),	//one-level decision tree
-			new Logistic(),
-			new RandomForest(),
-			new LibSVM()
+			//new J48(), 				// a decision tree
+			//new PART(), 
+			//new DecisionTable(),	//decision table majority classifier
+			//new DecisionStump(),	//one-level decision tree
+			//new Logistic(),
+			//new LibSVM(),
+			new RandomForest()
 	};
 	private static int NUM_CLASSIFIERS = models.length;
  
@@ -98,16 +101,40 @@ public class WekaClassifiers
 	
 		// Cross Validate each one
 		Evaluation [] evals = new Evaluation[NUM_CLASSIFIERS];
+		
+		StringBuffer predictionSB = new StringBuffer();
+		Range attributesToShow = null;
+		Boolean outputDistributions = new Boolean(true);
+
+		PlainText predictionOutput = new PlainText();
+		predictionOutput.setBuffer(predictionSB);
+		predictionOutput.setOutputDistribution(true);
+
 		for (int i = 0; i < NUM_CLASSIFIERS; i++)
 		{
 			evals[i] = new Evaluation(training_data);
-			evals[i].crossValidateModel(models[i], training_data, 10, new Random(1));
+			//evals[i].crossValidateModel(models[i], training_data, 10, new Random(1), predictionOutput, attributesToShow, outputDistributions);
+			CVParameterSelection hi = new CVParameterSelection();
+			hi.setClassifier(models[i]);
+			hi.setNumFolds(10);  // using 10-fold CV
+		    /*
+		    	cvParam - the string representation of a scheme parameter. The format is:
+				param_char lower_bound upper_bound number_of_steps
+				eg to search a parameter -P from 1 to 10 by increments of 1:
+				P 1 10 11 
+		     */
+		    hi.buildClassifier(training_data);
+		    String [] x = hi.getBestClassifierOptions();
+		    for (int j = 0; j < x.length; j++)
+		    {
+		    	System.out.println(x[j]);;
+		    }
 		}
 		
 		// Get Results
 		for (int i = 0; i < evals.length; i++)
 		{
-			System.out.println(evals[i].toSummaryString());
+			//System.out.println(evals[i].toSummaryString());
 		}
 		
 		// Conduct Test Set Evaluations
@@ -115,7 +142,6 @@ public class WekaClassifiers
 		// Write the classes into object files!
 		for (int i = 0; i < evals.length; i++)
 		{
-			
 			//WriteObjectToFile(models[i], "class"+i+".obj");
 		}
 	}
