@@ -1,6 +1,0 @@
-[]Testing Mean Test Score: 0.240663900415
-[]Testing Mean Test Score: 0.242738589212
-[]Testing Mean Test Score: 0.246887966805
-[]Testing Mean Test Score: 0.240663900415
-[]Testing Mean Test Score: 0.242738589212
-[]Testing Mean Test Score: 0.246887966805
