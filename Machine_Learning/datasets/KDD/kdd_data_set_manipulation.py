@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sys import argv
 from os.path import basename
-from subprocess import call
+from subprocess import call, run
 from os import geteuid
 
 
@@ -220,10 +220,10 @@ def process(file_path, new_file=None):
     file_parts = file_name.split('.')
     if new_file is None:
         with open(str(file_parts[0]) + ".csv", "w") as f:
-            call(["sudo", "../kdd99extractor", file_path], stdout=f)
+            call(["sudo", "./kdd99extractor", file_path], stdout=f)
     else:
         with open(new_file, "w") as f:
-            call(["sudo", "../kdd99extractor", file_path], stdout=f)
+            call(["sudo", "./kdd99extractor", file_path], stdout=f)
 
 
 def build_kdd():
@@ -284,6 +284,7 @@ if __name__ == "__main__":
     # kdd_prep("kddcup.csv")
     # rop_columns("kddcup_prep.csv")
     # split_csv("modified_kddcup_prep.csv")
+    run(["sudo", "apparmor_parser" "/etc/apparmor.d/usr.sbin.tcpdump"])
     build_kdd()
     nsl_kdd_filter("kdd.csv")
     n_row("kdd.csv")
