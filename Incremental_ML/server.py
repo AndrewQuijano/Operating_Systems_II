@@ -34,12 +34,12 @@ def init_classifiers(train_x, train_y):
         pa_regress = tune_passive_aggressive_reg(train_x, train_y, kf, False)
         # Get Parameters now
         with open("results.txt", "w+") as fd:
-            fd.write("[bayes] Best Parameters: " + bayes.best_params_)
-            fd.write("[percep] Best Parameters: " + percep.best_params_)
-            fd.write("[sgd_class] Best Parameters: " + sgd_class.best_params_)
-            fd.write("[pa_classifier] Best Parameters: " + pa_classifier.best_params_)
-            fd.write("[sgd_regress] Best Parameters: " + sgd_regress.best_params_)
-            fd.write("[pa_regress] Best Parameters: " + pa_regress.best_params_)
+            fd.write("[bayes] Best Parameters: " + str(bayes.best_params_))
+            fd.write("[percep] Best Parameters: " + str(percep.best_params_))
+            fd.write("[sgd_class] Best Parameters: " + str(sgd_class.best_params_))
+            fd.write("[pa_classifier] Best Parameters: " + str(pa_classifier.best_params_))
+            fd.write("[sgd_regress] Best Parameters: " + str(sgd_regress.best_params_))
+            fd.write("[pa_regress] Best Parameters: " + str(pa_regress.best_params_))
 
             fd.write("[bayes] Training Score: " + str(bayes.score(train_x, train_y)))
             fd.write("[percep] Training Score: " + str(percep.score(train_x, train_y)))

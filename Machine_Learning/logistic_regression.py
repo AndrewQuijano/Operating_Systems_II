@@ -19,7 +19,7 @@ def get_logistic(train_x, train_y, n_fold=10, slow=True):
     start = time.time()
     n = np.logspace(-3, 3)
     param_grid = {'C': n}
-    log = LogisticRegression(warm_start=False, max_iter=4000, multi_class='ovr', solver='lbfgs')
+    log = LogisticRegression(warm_start=False, max_iter=6000, multi_class='ovr', solver='lbfgs')
     if slow:
         log_model = GridSearchCV(log, param_grid, n_jobs=-1, cv=n_fold, verbose=2)
     else:
