@@ -4,8 +4,8 @@
 # main issue: http://scikit-learn.org/stable/modules/scaling_strategies.html
 from network_setup import *
 # from sklearn.naive_bayes import MultinomialNB
-from sklearn.linear_model import Perceptron, SGDClassifier, SGDRegressor
-from sklearn.linear_model import PassiveAggressiveRegressor, PassiveAggressiveClassifier
+# from sklearn.linear_model import Perceptron, SGDClassifier, SGDRegressor
+# from sklearn.linear_model import PassiveAggressiveRegressor, PassiveAggressiveClassifier
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score, classification_report
 from misc import make_confusion_matrix, read_data, is_valid_file_type
@@ -25,7 +25,7 @@ def init_classifiers(train_x, train_y):
         sgd_regress = SGDRegressor(warm_start=True, max_iter=10, tol=1e-3)
         pa_regress = PassiveAggressiveRegressor(warm_start=True, max_iter=10, tol=1e-3)
     else:
-        kf = KFold(n_splits=5)
+        kf = KFold(n_splits=10)
         bayes = tune_bayes(train_x, train_y, kf, False)
         percep = tune_perceptron(train_x, train_y, kf, False)
         sgd_class = tune_sgd_clf(train_x, train_y, kf, False)
@@ -40,6 +40,13 @@ def init_classifiers(train_x, train_y):
             fd.write("[pa_classifier] Best Parameters: " + pa_classifier.best_params_)
             fd.write("[sgd_regress] Best Parameters: " + sgd_regress.best_params_)
             fd.write("[pa_regress] Best Parameters: " + pa_regress.best_params_)
+
+            fd.write("[bayes] Training Score: " + str(bayes.score(train_x, train_y)))
+            fd.write("[percep] Training Score: " + str(percep.score(train_x, train_y)))
+            fd.write("[sgd_class] Training Score: " + str(sgd_class.score(train_x, train_y)))
+            fd.write("[pa_classifier] Training Score: " + str(pa_classifier.score(train_x, train_y)))
+            fd.write("[sgd_regress] Training Score: " + str(sgd_regress.score(train_x, train_y)))
+            fd.write("[pa_regress] Training Score: " + str(pa_regress.score(train_x, train_y)))
         # If trained, should just dump now...
         dump(bayes, "i_bayes.joblib")
         dump(sgd_class, "sgd_class.joblib")

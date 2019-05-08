@@ -21,11 +21,10 @@ def get_forest(train_x, train_y, n_fold=10, slow=False):
     print("--- Best Parameter Random Forest Time: %s seconds ---" % (time.time() - start_time))
     print("Best Random Forest Parameters: " + str(best_forest.get_params()))
     print("[Random_Forest]Training Mean Test Score: " + str(best_forest.score(train_x, train_y)))
-    dump(best_forest, "random_forest.joblib")
-
     with open("results.txt", "a+") as my_file:
         my_file.write("[Random_Forest] Best Parameters: " + str(best_forest.best_params_) + '\n')
         my_file.write("[Random_Forest] Training Mean Test Score: " + str(best_forest.score(train_x, train_y)) + '\n')
+    dump(best_forest, "random_forest.joblib")
     return best_forest
 
 
@@ -61,12 +60,12 @@ def tune_forest(train_features, train_labels, n_fold=10, slow=True):
     else:
         tune_rf = RandomizedSearchCV(estimator=rf, param_distributions=random_grid,
                                      cv=n_fold, n_jobs=-1, verbose=2)
+    tune_rf.fit(train_features, train_labels)
     # plot_grid_search(rf_estimate.cv_results_, n_estimators, 'n_estimators')
     # plot_grid_search(rf_max.cv_results_, max_features, 'max_features')
     # plot_grid_search(rf_distro.cv_results_, max_depth, 'max_depth')
     # plot_grid_search(rf_min_split.cv_results_, min_samples_split, 'min_samples_split')
     # plot_grid_search(rf_min_leaf.cv_results_, min_samples_leaf, 'min_samples_leaf')
-    tune_rf.fit(train_features, train_labels)
     return tune_rf
 
 
@@ -83,6 +82,6 @@ def forest_test(best_forest, test_x, test_y, extra_test=False):
     with open("classification_reports.txt", "a+") as my_file:
         my_file.write("---[Random_Forest]---")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
-                                            labels=[str(i) for i in clf.classes_],
+                                            labels=[str(i) for i in best_forest.classes_],
                                             target_names=[str(i) for i in best_forest.classes_]))
         my_file.write('\n')

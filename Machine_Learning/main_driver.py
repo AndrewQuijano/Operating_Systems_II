@@ -118,7 +118,7 @@ def ids():
 
     # Now make a split between training and testing set from the input data
     start_time = time.time()
-    kf = KFold(n_splits=10)
+    kf = KFold(n_splits=5)
 
     # 1- Bayes
     print("Fitting Bayes Classifiers...")
@@ -129,19 +129,13 @@ def ids():
     print("Fitting LDA and QDA...")
     lda_clf = discriminant_line(train_x, train_y)
     print("LDA ready!")
-    # Something aboult 1 sample of class 4? Find out and maybe delete it???
+
     qda_clf = discriminant_quad(train_x, train_y)
     print("QDA ready!")
-    svm_line_clf = None
-    svm_rbf_clf = None
-    forest_clf = None
-    logistic_clf = None
-    knn_clf = None
-    tree = None
 
     # 3- SVM
     print("Fitting Linear SVM...")
-    # = svm_linear(train_x, train_y, n_fold=kf, slow=False)
+    svm_line_clf = svm_linear(train_x, train_y, n_fold=kf, slow=False)
     # svm_line_clf = svm_linear_raw(train_x, train_y)
 
     # print("SVM Linear Model Ready!")
@@ -164,13 +158,13 @@ def ids():
 
     # 6- KNN
     print("Fitting KNN...")
-    knn_clf = get_knn(train_x, train_y, slow=False)
+    knn_clf = get_knn(train_x, train_y, n_fold=kf, slow=False)
     # knn_clf = tune_knn(train_x, train_y, n_fold=5, slow=False)
     # print("KNN ready!")
 
     # 7- Decision Tree
     print("Fitting Decision tree...")
-    tree = get_tree(train_x, train_y, n_fold=5, slow=False)
+    tree = get_tree(train_x, train_y, n_fold=kf, slow=False)
     # tree = decision_tree_raw(train_x, train_y)
     # print("Decision tree ready!")
 
@@ -220,61 +214,31 @@ def ids():
                     tree_test(tree, test_x, test_y)
 
             # Bring new ML model!
-            elif args[0] == "train":
-                if args[1] == "raw":
-                    if args[2] == "line_svm":
-                        print("Fitting Linear SVM...")
-                        svm_line_clf = svm_linear_raw(train_x, train_y)
-                        print("SVM Linear Linear Ready!")
-                    elif args[2] == "line_svm":
-                        print("Fitting RBF SVM...")
-                        svm_rbf_clf = svm_rbf_raw(train_x, train_y)
-                        print("SVM RBF Kernel Ready!")
-                    elif args[2] == "forest":
-                        print("Fitting Random Forest...")
-                        forest_clf = get_forest_raw(train_x, train_y)
-                        print("Random Forest Ready!")
-                    elif args[2] == "log":
-                        print("Fitting Logistic Regression...")
-                        logistic_clf = logistic_raw(train_x, train_y)
-                        print("Logistic Regression Ready!")
-                    elif args[2] == "knn":
-                        print("Fitting KNN...")
-                        knn_clf = raw_knn(train_x, train_y)
-                        print("KNN ready!")
-                    elif args[2] == "tree":
-                        print("Fitting Decision tree...")
-                        tree = decision_tree_raw(train_x, train_y)
-                        print("Decision tree ready!")
-                    else:
-                        continue
-                elif args[1] == "tune":
-                    if args[2] == "line_svm":
-                        print("Fitting Linear SVM...")
-                        svm_line_clf = svm_linear(train_x, train_y)
-                        print("SVM Linear Linear Ready!")
-                    elif args[2] == "line_svm":
-                        print("Fitting RBF SVM...")
-                        svm_rbf_clf = svm_rbf(train_x, train_y)
-                        print("SVM RBF Kernel Ready!")
-                    elif args[2] == "forest":
-                        print("Fitting Random Forest...")
-                        forest_clf = get_forest(train_x, train_y)
-                        print("Random Forest Ready!")
-                    elif args[2] == "log":
-                        print("Fitting Logistic Regression...")
-                        logistic_clf = get_logistic(train_x, train_y)
-                        print("Logistic Regression Ready!")
-                    elif args[2] == "knn":
-                        print("Fitting KNN...")
-                        knn_clf = get_knn(train_x, train_y)
-                        print("KNN ready!")
-                    elif args[2] == "tree":
-                        print("Fitting Decision tree...")
-                        tree = get_tree(train_x, train_y)
-                        print("Decision tree ready!")
-                    else:
-                        continue
+            elif args[0] == "tune":
+                if args[1] == "line_svm":
+                    print("Fitting Linear SVM...")
+                    svm_line_clf = svm_linear(train_x, train_y)
+                    print("SVM Linear Linear Ready!")
+                elif args[1] == "line_svm":
+                    print("Fitting RBF SVM...")
+                    svm_rbf_clf = svm_rbf(train_x, train_y)
+                    print("SVM RBF Kernel Ready!")
+                elif args[1] == "forest":
+                    print("Fitting Random Forest...")
+                    forest_clf = get_forest(train_x, train_y)
+                    print("Random Forest Ready!")
+                elif args[1] == "log":
+                    print("Fitting Logistic Regression...")
+                    logistic_clf = get_logistic(train_x, train_y)
+                    print("Logistic Regression Ready!")
+                elif args[1] == "knn":
+                    print("Fitting KNN...")
+                    knn_clf = get_knn(train_x, train_y)
+                    print("KNN ready!")
+                elif args[1] == "tree":
+                    print("Fitting Decision tree...")
+                    tree = get_tree(train_x, train_y)
+                    print("Decision tree ready!")
                 else:
                     continue
             else:
@@ -501,13 +465,13 @@ def kdd_prep_test(file):
     proto = ["tcp", "udp", "icmp"]
     fl = ["SF", "S2", "S1", "S3", "OTH", "REJ", "RSTO", "S0", "RSTR", "RSTOS0", "SH"]
     serv = ["http", "smtp", "domain_u", "auth", "finger", "telnet", "eco_i", "ftp", "ntp_u",
-               "ecr_i", "other", "urp_i", "private", "pop_3", "ftp_data", "netstat", "daytime", "ssh",
-               "echo", "time", "name", "whois", "domain", "mtp", "gopher", "remote_job", "rje", "ctf",
-               "supdup", "link", "systat", "discard", "X11", "shell", "login", "imap4", "nntp", "uucp",
-               "pm_dump", "IRC", "Z39_50", "netbios_dgm", "ldap", "sunrpc", "courier", "exec", "bgp",
-               "csnet_ns", "http_443", "klogin", "printer", "netbios_ssn", "pop_2", "nnsp", "efs",
-               "hostnames", "uucp_path", "sql_net", "vmnet", "iso_tsap", "netbios_ns", "kshell",
-               "urh_i", "http_2784", "harvest", "aol",
+            "ecr_i", "other", "urp_i", "private", "pop_3", "ftp_data", "netstat", "daytime", "ssh",
+            "echo", "time", "name", "whois", "domain", "mtp", "gopher", "remote_job", "rje", "ctf",
+            "supdup", "link", "systat", "discard", "X11", "shell", "login", "imap4", "nntp", "uucp",
+            "pm_dump", "IRC", "Z39_50", "netbios_dgm", "ldap", "sunrpc", "courier", "exec", "bgp",
+            "csnet_ns", "http_443", "klogin", "printer", "netbios_ssn", "pop_2", "nnsp", "efs",
+            "hostnames", "uucp_path", "sql_net", "vmnet", "iso_tsap", "netbios_ns", "kshell",
+            "urh_i", "http_2784", "harvest", "aol",
             "tftp_u", "http_8001", "tim_i", "red_i"]
 
     # Fit them with the known classes

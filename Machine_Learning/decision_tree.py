@@ -38,7 +38,6 @@ def tune_tree(train_x, train_y, n_fold=10, slow=True, n_iter_search=10):
     # plot_grid_search(tree.cv_results_, min_samples_split, 'min_samples_split')
     # plot_grid_search(tree.cv_results_, min_samples_leaf, 'min_samples_leaf')
     # plot_grid_search(tree.cv_results_, max_depth, 'max_depth')
-    tree.fit(train_x, train_y)
     return tree
 
 
@@ -48,13 +47,11 @@ def get_tree(train_x, train_y, n_fold=10, slow=False):
     print("--- Best Parameter Decision Tree Time: %s seconds ---" % (time.time() - start_time))
     print("Best Decision Tree Parameters: " + str(tree.best_params_))
     print("[Decision_Tree] Training Mean Test Score: " + str(tree.score(train_x, train_y)))
-    dump(tree, "tree.joblib")
 
     with open("results.txt", "a+") as my_file:
         my_file.write("[Decision Tree] Best Parameters: " + str(tree.best_params_) + '\n')
         my_file.write("[Decision Tree] Training Mean Test Score: " + str(tree.score(train_x, train_y)) + '\n')
-
-    # print(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i) for i in tree.classes_]))
+    dump(tree, "tree.joblib")
     return tree
 
 

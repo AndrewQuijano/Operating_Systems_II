@@ -15,16 +15,7 @@ def raw_knn(train_x, train_y):
 
 
 # https://www.pyimagesearch.com/2016/08/15/how-to-tune-hyperparameters-with-python-and-scikit-learn/
-def get_knn(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=True):
-    # Get Number of features
-    rows = np.shape(train_x)[0]
-
-    # if rows > 101:
-    #     rows = 101
-    # else:
-    #    rows = int((rows/2) - 1)
-
-    # print("Highest value of k to tune up to is: " + str(rows) + " features")
+def get_knn(train_x, train_y, n_fold=10, slow=True):
     n = np.arange(3, 18, 2)
     start = time.time()
     # tune the hyper parameters via a randomized search
@@ -35,22 +26,16 @@ def get_knn(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=True):
         best_knn = RandomizedSearchCV(estimator=KNeighborsClassifier(), param_distributions={'n_neighbors': n},
                                       n_jobs=-1, cv=n_fold, verbose=2)
     best_knn.fit(train_x, train_y)
-
     # Plot the CV-Curve
     # plot_grid_search(best_knn.cv_results_, n, 'KNN_n_neighbors')
-
-    # evaluate the best randomized searched model on the testing data
     print("[INFO] KNN-Best Parameters: " + str(best_knn.best_params_))
     print("[INFO] Tuning took {:.2f} seconds".format(time.time() - start))
     print("[KNN] Training Score is: " + str(best_knn.score(train_x, train_y)))
-    dump(best_knn, "knn.joblib")
 
     with open("results.txt", "a+") as my_file:
         my_file.write("[KNN] KNN-Best Parameters: " + str(best_knn.best_params_) + '\n')
         my_file.write("[KNN] Training Mean Test Score: " + str(best_knn.score(train_x, train_y)) + '\n')
-
-    if test_x is not None and test_y is not None:
-        knn_test(best_knn, test_x, test_y)
+    dump(best_knn, "knn.joblib")
     return best_knn
 
 
@@ -69,6 +54,6 @@ def knn_test(best_knn, test_x, test_y, extra_test=False):
     with open("classification_reports.txt", "a+") as my_file:
         my_file.write("---[KNN]---")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
-                                            labels=[str(i) for i in clf.classes_],
+                                            labels=[str(i) for i in best_knn.classes_],
                                             target_names=[str(i) for i in best_knn.classes_]))
         my_file.write('\n')

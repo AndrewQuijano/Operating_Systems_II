@@ -6,7 +6,7 @@ from joblib import dump
 # from sklearn.externals.joblib import dump
 
 
-def discriminant_line(train_x, train_y, test_x=None, test_y=None):
+def discriminant_line(train_x, train_y):
     lda = LinearDiscriminantAnalysis(solver="svd", store_covariance=True)
     start_time = time.time()
     lda.fit(train_x, train_y)
@@ -17,9 +17,6 @@ def discriminant_line(train_x, train_y, test_x=None, test_y=None):
         # my_file.write("[LDA] Best Parameters: " + str(lda.get_params()) + '\n')
         my_file.write("[LDA] Training Mean Test Score: " + str(lda.score(train_x, train_y)) + '\n')
     dump(lda, "LDA.joblib")
-
-    if test_x is not None and test_y is not None:
-        lda_test(lda, test_x, test_y)
     return lda
 
 

@@ -30,15 +30,11 @@ def get_logistic(train_x, train_y, n_fold=10, slow=True):
     print("[INFO] Logistic Regression-Best Parameters: " + str(log_model.best_params_))
     print("[INFO] randomized search took {:.2f} seconds".format(time.time() - start))
     print("[Logistic] Training Score is: " + str(log_model.score(train_x, train_y)))
-    dump(log_model, "logistic.joblib")
-
     with open("results.txt", "a+") as my_file:
         my_file.write("[Logistic Regression] Best Parameters: " + str(log_model.best_params_) + '\n')
         my_file.write("[Logistic Regression] Training Mean Test Score: " +
                       str(log_model.score(train_x, train_y)) + '\n')
-
-    if test_x is not None and test_y is not None:
-        log_linear_test(log_model, test_x, test_y)
+    dump(log_model, "logistic.joblib")
     return log_model
 
 
@@ -57,6 +53,6 @@ def log_linear_test(log_model, test_x, test_y, extra_test=False):
     with open("classification_reports.txt", "a+") as my_file:
         my_file.write("---[Logistic Regression]---")
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
-                                            labels=[str(i) for i in clf.classes_],
+                                            labels=[str(i) for i in log_model.classes_],
                                             target_names=[str(i) for i in log_model.classes_]))
         my_file.write('\n')

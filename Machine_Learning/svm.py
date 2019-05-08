@@ -20,9 +20,9 @@ def svc_rbf_param_selection(x, y, n_folds=10, slow=True):
     else:
         rbf_search = RandomizedSearchCV(svm.SVC(kernel='rbf', gamma='scale'), param_distributions=random_grid,
                                         cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
+    rbf_search.fit(x, y)
     # plot_grid_search(rbf_search_cost.cv_results_, c, 'SVM_RBF_Cost')
     # plot_grid_search(rbf_search_gamma.cv_results_, gammas, 'SVM_RBF_Gamma')
-    rbf_search.fit(x, y)
     return rbf_search
 
 
@@ -46,13 +46,10 @@ def svm_linear(train_x, train_y, n_fold=10, slow=False):
     print("--- Best Parameter Linear SVM: %s seconds ---" % (time.time() - start_time))
     print("Best Linear Parameters: " + str(svm_line.best_params_))
     print("[SVM_Linear] Training Mean Test Score: " + str(svm_line.score(train_x, train_y)))
-    dump(svm_line, "svm_line.joblib")
-
     with open("results.txt", "a+") as my_file:
         my_file.write("[SVM_Linear] Best Parameters: " + str(svm_line.best_params_) + '\n')
         my_file.write("[SVM_Linear] Training Mean Test Score: " + str(svm_line.score(train_x, train_y)) + '\n')
-
-    # print(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i) for i in svm_line.classes_]))
+    dump(svm_line, "svm_line.joblib")
     return svm_line
 
 
@@ -72,22 +69,16 @@ def svm_rbf_raw(train_x, train_y):
     return svm_line
 
 
-def svm_rbf(train_x, train_y, test_x=None, test_y=None, n_fold=10, slow=False):
+def svm_rbf(train_x, train_y, n_fold=10, slow=False):
     start_time = time.time()
     svm_radial = svc_rbf_param_selection(train_x, train_y, n_fold, slow)
     print("--- Best Parameter RBF Time to complete: %s seconds ---" % (time.time() - start_time))
     print("Best RBF Parameters: " + str(svm_radial.get_params()))
     print("[SVM_Radial] Training Mean Test Score: " + str(svm_radial.score(train_x, train_y)))
-    dump(svm_radial, "svm_rbf.joblib")
-
     with open("results.txt", "a+") as my_file:
         my_file.write("[SVM_Radial] Best Parameters: " + str(svm_radial.best_params_) + '\n')
         my_file.write("[SVM Radial] Training Mean Test Score: " + str(svm_radial.score(train_x, train_y)) + '\n')
-
-    # print(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i) for i in svm_radial.classes_]))
-    if test_x is not None and test_y is not None:
-        svm_test(svm_radial, test_x, test_y, "Radial")
-
+    dump(svm_radial, "svm_rbf.joblib")
     return svm_radial
 
 

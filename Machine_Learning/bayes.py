@@ -63,7 +63,7 @@ def naive_bayes_test(clf, clf_isotonic, clf_sigmoid, test_x, test_y, extra_test=
     with open("classification_reports.txt", "a+") as my_file:
         my_file.write("---[Bayes with Isotonic Calibration]---\n")
         my_file.write(classification_report(y_true=test_y, y_pred=prob_pos_isotonic,
-                                            labels=[str(i) for i in clf.classes_],
+                                            labels=[str(i) for i in clf_isotonic.classes_],
                                             target_names=[str(i) for i in clf_isotonic.classes_]))
         my_file.write('\n')
     # print(classification_report(test_y, prob_pos_isotonic, target_names=[str(i) for i in clf_isotonic.classes_]))
@@ -79,7 +79,7 @@ def naive_bayes_test(clf, clf_isotonic, clf_sigmoid, test_x, test_y, extra_test=
     with open("classification_reports.txt", "a+") as my_file:
         my_file.write("---[Bayes with Sigmoid Calibration]---")
         my_file.write(classification_report(y_true=test_y, y_pred=prob_pos_sigmoid,
-                                            labels=[str(i) for i in clf.classes_],
+                                            labels=[str(i) for i in clf_sigmoid.classes_],
                                             target_names=[str(i) for i in clf_sigmoid.classes_]))
     # print(classification_report(test_y, prob_pos_sigmoid, target_names=[str(i) for i in clf_sigmoid.classes_]))
     make_confusion_matrix(y_true=test_y, y_pred=prob_pos_sigmoid, clf=clf_sigmoid, clf_name='Naive_Bayes_Sigmoid')

@@ -7,78 +7,84 @@ import numpy as np
 
 
 def tune_bayes(x, y, n_folds=10, slow=True):
-    c = np.arange(0.01, 1, 0.01)
+    c = np.arange(0.01, 1.3, 0.01)
     param_grid = {'alpha': c}
     model = MultinomialNB()
     if slow:
         true_model = GridSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
-        plot_grid_search(true_model.cv_results_, c, 'Multinomial_Bayes')
     else:
         true_model = RandomizedSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
     true_model.fit(x, y)
+    if slow:
+        plot_grid_search(true_model.cv_results_, c, 'Multinomial_Bayes')
     return true_model
 
 
 def tune_perceptron(x, y, n_folds=10, slow=True):
-    c = np.arange(0.01, 1, 0.01)
+    c = np.arange(0.01, 1.3, 0.01)
     param_grid = {'alpha': c}
-    model = Perceptron(tol=1e-3, max_iter=1000,warm_start=True)
+    model = Perceptron(tol=1e-3, warm_start=True)
     if slow:
         true_model = GridSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
-        plot_grid_search(true_model.cv_results_, c, "Perceptron")
     else:
         true_model = RandomizedSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
     true_model.fit(x, y)
+    if slow:
+        plot_grid_search(true_model.cv_results_, c, "Perceptron")
     return true_model
 
 
 def tune_sgd_clf(x, y, n_folds=10, slow=True):
     c = np.arange(0.0001, 0.01, 0.01)
     param_grid = {'alpha': c}
-    model = SGDClassifier(warm_start=True, max_iter=10, tol=1e-3)
+    model = SGDClassifier(warm_start=True, tol=1e-3)
     if slow:
         true_model = GridSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
-        plot_grid_search(true_model.cv_results_, c, 'SGD_Classifier')
     else:
         true_model = RandomizedSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
     true_model.fit(x, y)
+    if slow:
+        plot_grid_search(true_model.cv_results_, c, 'SGD_Classifier')
     return true_model
 
 
 def tune_passive_aggressive_clf(x, y, n_folds=10, slow=True):
-    c = np.arange(0.01, 1, 0.01)
+    c = np.arange(0.01, 1.6, 0.01)
     param_grid = {'C': c}
-    model = PassiveAggressiveClassifier(warm_start=True, max_iter=10, tol=1e-3)
+    model = PassiveAggressiveClassifier(warm_start=True, tol=1e-3)
     if slow:
         true_model = GridSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
-        plot_grid_search(true_model.cv_results_, c, 'Passive_Aggressive_CLF')
     else:
         true_model = RandomizedSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
     true_model.fit(x, y)
+    if slow:
+        plot_grid_search(true_model.cv_results_, c, 'Passive_Aggressive_CLF')
     return true_model
 
 
 def tune_sgd_reg(x, y, n_folds=10, slow=True):
     c = np.arange(0.0001, 0.01, 0.01)
     param_grid = {'alpha': c}
-    model = SGDRegressor(warm_start=True, max_iter=10, tol=1e-3)
+    model = SGDRegressor(warm_start=True, tol=1e-3)
     if slow:
         true_model = GridSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
-        plot_grid_search(true_model.cv_results_, c, 'SGD_Regression')
     else:
         true_model = RandomizedSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
     true_model.fit(x, y)
+    if slow:
+        plot_grid_search(true_model.cv_results_, c, 'SGD_Regression')
     return true_model
 
 
 def tune_passive_aggressive_reg(x, y, n_folds=10, slow=True):
-    c = np.arange(0.01, 1, 0.01)
+    c = np.arange(0.01, 1.6, 0.01)
     param_grid = {'C': c}
-    model = PassiveAggressiveRegressor(warm_start=True, max_iter=10, tol=1e-3)
+    model = PassiveAggressiveRegressor(warm_start=True, tol=1e-3)
     if slow:
         true_model = GridSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
-        plot_grid_search(true_model.cv_results_, c, 'Passive_Aggressive_Regression')
     else:
         true_model = RandomizedSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
     true_model.fit(x, y)
+    if slow:
+        plot_grid_search(true_model.cv_results_, c, 'Passive_Aggressive_Regression')
     return true_model
