@@ -3,13 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f497d766-490f-48e3-82c5-f9f01f2114b3" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KNN.py" beforeDir="false" afterPath="$PROJECT_DIR$/KNN.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/decision_tree.py" beforeDir="false" afterPath="$PROJECT_DIR$/decision_tree.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/discriminant.py" beforeDir="false" afterPath="$PROJECT_DIR$/discriminant.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logistic_regression.py" beforeDir="false" afterPath="$PROJECT_DIR$/logistic_regression.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main_driver.py" beforeDir="false" afterPath="$PROJECT_DIR$/main_driver.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/random_forest.py" beforeDir="false" afterPath="$PROJECT_DIR$/random_forest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/svm.py" beforeDir="false" afterPath="$PROJECT_DIR$/svm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/datasets/KDD/data_set_manipulation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datasets/NSL_KDD/data_set_manipulation.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -20,13 +15,37 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main_driver.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/main_driver.py">
+      <file leaf-file-name="kdd_data_set_manipulation.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/datasets/KDD/kdd_data_set_manipulation.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1331">
-              <caret line="575" column="4" selection-start-line="575" selection-start-column="4" selection-end-line="575" selection-end-column="4" />
+            <state relative-caret-position="471">
+              <caret line="290" column="6" selection-start-line="290" selection-start-column="6" selection-end-line="290" selection-end-column="6" />
               <folding>
-                <element signature="e#23#42#0" expanded="true" />
+                <element signature="e#0#19#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build_kdd.py" pinned="false" current-in-tab="false">
+        <entry file="file://E:/build_kdd.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="185">
+              <caret line="73" column="32" selection-start-line="73" selection-start-column="28" selection-end-line="73" selection-end-column="32" />
+              <folding>
+                <element signature="e#0#19#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="nsl_data_modification.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/datasets/NSL_KDD/nsl_data_modification.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="168">
+              <caret line="69" column="36" selection-start-line="69" selection-start-column="35" selection-end-line="69" selection-end-column="36" />
+              <folding>
+                <element signature="e#0#19#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -48,6 +67,8 @@
       <find>is_val</find>
       <find>pcap_file</find>
       <find>valid</find>
+      <find>range(</find>
+      <find>icmp</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -61,10 +82,8 @@
         <option value="$PROJECT_DIR$/collect.py" />
         <option value="$PROJECT_DIR$/misc.py" />
         <option value="$PROJECT_DIR$/data_set_manipulation.py" />
-        <option value="$PROJECT_DIR$/datasets/KDD/data_set_manipulation.py" />
         <option value="$PROJECT_DIR$/bayes.py" />
         <option value="$PROJECT_DIR$/datasets/NSL_KDD/data_set_manipulation.py" />
-        <option value="E:/build_kdd.py" />
         <option value="$PROJECT_DIR$/KNN.py" />
         <option value="$PROJECT_DIR$/discriminant.py" />
         <option value="$PROJECT_DIR$/decision_tree.py" />
@@ -72,10 +91,13 @@
         <option value="$PROJECT_DIR$/random_forest.py" />
         <option value="$PROJECT_DIR$/svm.py" />
         <option value="$PROJECT_DIR$/main_driver.py" />
+        <option value="$PROJECT_DIR$/datasets/KDD/data_set_manipulation.py" />
+        <option value="E:/build_kdd.py" />
+        <option value="$PROJECT_DIR$/datasets/KDD/kdd_data_set_manipulation.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="75" />
     <option name="y" value="1" />
     <option name="width" value="1854" />
@@ -123,7 +145,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.data_set_manipulation (2)">
+  <component name="RunManager" selected="Python.kdd_data_set_manipulation">
     <configuration name="data_set_manipulation (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Machine_Learning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -178,6 +200,24 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
+    <configuration name="kdd_data_set_manipulation" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Machine_Learning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/datasets/KDD" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/datasets/KDD/kdd_data_set_manipulation.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
     <configuration name="main_driver" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Machine_Learning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -201,12 +241,14 @@
       <item itemvalue="Python.data_set_manipulation" />
       <item itemvalue="Python.data_set_manipulation (1)" />
       <item itemvalue="Python.data_set_manipulation (2)" />
+      <item itemvalue="Python.kdd_data_set_manipulation" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.kdd_data_set_manipulation" />
+        <item itemvalue="Python.data_set_manipulation (1)" />
         <item itemvalue="Python.data_set_manipulation (2)" />
         <item itemvalue="Python.main_driver" />
-        <item itemvalue="Python.data_set_manipulation (1)" />
         <item itemvalue="Python.data_set_manipulation" />
       </list>
     </recent_temporary>
@@ -228,12 +270,12 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2484375" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2484375" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="10" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32943678" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32943678" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -267,14 +309,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/data_set_manipulation.py" />
-    <entry file="file://$PROJECT_DIR$/convert_tcpdump.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="61" lean-forward="true" selection-start-line="10" selection-start-column="61" selection-end-line="10" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/KNN.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -328,9 +362,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
           <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
-          <folding>
-            <element signature="e#23#42#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -338,9 +369,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5083">
           <caret line="411" selection-start-line="406" selection-end-line="411" />
-          <folding>
-            <element signature="e#23#42#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -351,13 +379,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../Sniffer/collect.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="208" column="30" selection-start-line="208" selection-start-column="30" selection-end-line="208" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../Sniffer/collect.py" />
     <entry file="file://$PROJECT_DIR$/misc.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -370,9 +392,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5083">
           <caret line="411" selection-start-line="406" selection-end-line="411" />
-          <folding>
-            <element signature="e#23#42#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -383,13 +402,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../Sniffer/collect.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="208" column="30" selection-start-line="208" selection-start-column="30" selection-end-line="208" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../Sniffer/collect.py" />
     <entry file="file://$PROJECT_DIR$/misc.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -402,9 +415,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="6987">
           <caret line="411" lean-forward="true" selection-start-line="411" selection-end-line="411" />
-          <folding>
-            <element signature="e#23#42#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -415,13 +425,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../Sniffer/collect.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3536">
-          <caret line="208" column="30" selection-start-line="208" selection-start-column="30" selection-end-line="208" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../Sniffer/collect.py" />
     <entry file="file://$PROJECT_DIR$/misc.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -433,19 +437,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5882">
           <caret line="346" column="37" lean-forward="true" selection-start-line="346" selection-start-column="37" selection-end-line="346" selection-end-column="37" />
-          <folding>
-            <element signature="e#23#42#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../Sniffer/collect.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="208" column="30" selection-start-line="208" selection-start-column="30" selection-end-line="208" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../Sniffer/collect.py" />
     <entry file="file://$PROJECT_DIR$/misc.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -460,13 +455,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../Sniffer/collect.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="208" column="30" selection-start-line="208" selection-start-column="30" selection-end-line="208" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../Sniffer/collect.py" />
     <entry file="file://$PROJECT_DIR$/misc.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -481,13 +470,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../Sniffer/collect.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="208" column="30" selection-start-line="208" selection-start-column="30" selection-end-line="208" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../Sniffer/collect.py" />
     <entry file="file://$PROJECT_DIR$/misc.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -517,49 +500,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../Sniffer/collect.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="208" column="30" selection-start-line="208" selection-start-column="30" selection-end-line="208" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../Sniffer/collect.py" />
     <entry file="file://$PROJECT_DIR$/data_set_manipulation.py" />
-    <entry file="file://E:/build_kdd.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="236" column="21" selection-start-line="236" selection-start-column="21" selection-end-line="236" selection-end-column="21" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#5400#5448#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/NSL_KDD/data_set_manipulation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1814">
-          <caret line="74" column="56" selection-start-line="74" selection-start-column="56" selection-end-line="74" selection-end-column="56" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/KDD/data_set_manipulation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1729">
-          <caret line="108" column="12" selection-start-line="108" selection-start-column="12" selection-end-line="108" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/NSL_KDD/data_set_manipulation.py" />
     <entry file="file://$PROJECT_DIR$/KNN.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="408">
           <caret line="48" column="87" selection-start-line="48" selection-start-column="87" selection-end-line="48" selection-end-column="87" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -567,9 +514,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="413">
           <caret line="54" column="36" lean-forward="true" selection-start-line="54" selection-start-column="36" selection-end-line="54" selection-end-column="36" />
-          <folding>
-            <element signature="e#0#65#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -587,9 +531,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="572">
           <caret line="75" column="37" selection-start-line="75" selection-start-column="37" selection-end-line="75" selection-end-column="37" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -597,9 +538,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
           <caret line="17" column="35" selection-start-line="17" selection-start-column="35" selection-end-line="17" selection-end-column="35" />
-          <folding>
-            <element signature="e#0#65#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -607,9 +545,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-556">
           <caret line="27" column="117" selection-start-line="27" selection-start-column="117" selection-end-line="27" selection-end-column="117" />
-          <folding>
-            <element signature="e#0#51#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -617,9 +552,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
           <caret line="16" column="12" lean-forward="true" selection-start-line="16" selection-start-column="12" selection-end-line="16" selection-end-column="12" />
-          <folding>
-            <element signature="e#0#65#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -627,18 +559,43 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="702">
           <caret line="55" selection-start-line="55" selection-end-line="55" />
-          <folding>
-            <element signature="e#0#47#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main_driver.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1331">
+        <state relative-caret-position="774">
           <caret line="575" column="4" selection-start-line="575" selection-start-column="4" selection-end-line="575" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/KDD/data_set_manipulation.py" />
+    <entry file="file://E:/build_kdd.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="185">
+          <caret line="73" column="32" selection-start-line="73" selection-start-column="28" selection-end-line="73" selection-end-column="32" />
           <folding>
-            <element signature="e#23#42#0" expanded="true" />
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/NSL_KDD/nsl_data_modification.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="69" column="36" selection-start-line="69" selection-start-column="35" selection-end-line="69" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/datasets/KDD/kdd_data_set_manipulation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="471">
+          <caret line="290" column="6" selection-start-line="290" selection-start-column="6" selection-end-line="290" selection-end-column="6" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>
