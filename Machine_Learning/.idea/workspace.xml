@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f497d766-490f-48e3-82c5-f9f01f2114b3" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NSL_KDD_train.csv" beforeDir="false" afterPath="$PROJECT_DIR$/NSL_KDD_train.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/datasets/KDD/kdd_data_set_manipulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/datasets/KDD/kdd_data_set_manipulation.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,8 +18,8 @@
       <file leaf-file-name="kdd_data_set_manipulation.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/datasets/KDD/kdd_data_set_manipulation.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="352">
-              <caret line="286" column="71" lean-forward="true" selection-start-line="286" selection-start-column="71" selection-end-line="286" selection-end-column="71" />
+            <state relative-caret-position="403">
+              <caret line="286" column="42" selection-start-line="286" selection-start-column="42" selection-end-line="286" selection-end-column="42" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -28,8 +30,8 @@
       <file leaf-file-name="nsl_data_modification.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/datasets/NSL_KDD/nsl_data_modification.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="522">
-              <caret line="84" column="37" selection-start-line="84" selection-start-column="37" selection-end-line="84" selection-end-column="37" />
+            <state relative-caret-position="420">
+              <caret line="225" column="27" selection-start-line="225" selection-start-column="27" selection-end-line="225" selection-end-column="27" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -132,7 +134,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.kdd_data_set_manipulation">
+  <component name="RunManager" selected="Python.nsl_data_modification">
     <configuration name="data_set_manipulation (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Machine_Learning" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -164,24 +166,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/datasets/NSL_KDD/data_set_manipulation.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-    </configuration>
-    <configuration name="data_set_manipulation" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="Machine_Learning" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/data_set_manipulation.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -223,20 +207,38 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
+    <configuration name="nsl_data_modification" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Machine_Learning" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/datasets/NSL_KDD" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/datasets/NSL_KDD/nsl_data_modification.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
     <list>
       <item itemvalue="Python.main_driver" />
-      <item itemvalue="Python.data_set_manipulation" />
       <item itemvalue="Python.data_set_manipulation (1)" />
       <item itemvalue="Python.data_set_manipulation (2)" />
       <item itemvalue="Python.kdd_data_set_manipulation" />
+      <item itemvalue="Python.nsl_data_modification" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.nsl_data_modification" />
         <item itemvalue="Python.kdd_data_set_manipulation" />
         <item itemvalue="Python.data_set_manipulation (1)" />
         <item itemvalue="Python.data_set_manipulation (2)" />
         <item itemvalue="Python.main_driver" />
-        <item itemvalue="Python.data_set_manipulation" />
       </list>
     </recent_temporary>
   </component>
@@ -569,8 +571,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/datasets/NSL_KDD/nsl_data_modification.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="522">
-          <caret line="84" column="37" selection-start-line="84" selection-start-column="37" selection-end-line="84" selection-end-column="37" />
+        <state relative-caret-position="420">
+          <caret line="225" column="27" selection-start-line="225" selection-start-column="27" selection-end-line="225" selection-end-column="27" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
@@ -579,8 +581,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/datasets/KDD/kdd_data_set_manipulation.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="352">
-          <caret line="286" column="71" lean-forward="true" selection-start-line="286" selection-start-column="71" selection-end-line="286" selection-end-column="71" />
+        <state relative-caret-position="403">
+          <caret line="286" column="42" selection-start-line="286" selection-start-column="42" selection-end-line="286" selection-end-column="42" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>

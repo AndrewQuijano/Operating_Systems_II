@@ -284,7 +284,7 @@ if __name__ == "__main__":
     # kdd_prep("kddcup.csv")
     # rop_columns("kddcup_prep.csv")
     # split_csv("modified_kddcup_prep.csv")
-    run(["sudo", "apparmor_parser" "/etc/apparmor.d/usr.sbin.tcpdump"])
+    run(["sudo", "apparmor_parser", "-R", "/etc/apparmor.d/usr.sbin.tcpdump"])
     build_kdd()
     nsl_kdd_filter("kdd.csv")
     n_row("kdd.csv")
