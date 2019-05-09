@@ -28,10 +28,10 @@ sudo pip3 install sklearn -U
 sudo pip3 install numpy -U
 
 # Install Java and Eclipse
-apt-get install default-jdk
+sudo apt-get install default-jdk
 sudo apt-get install default-jre
 sudo add-apt-repository ppa:linuxuprising/java
 sudo apt update
-apt-get install oracle-java11-installer
+sudo apt-get install oracle-java11-installer
 
 
