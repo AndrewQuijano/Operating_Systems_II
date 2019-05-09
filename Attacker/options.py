@@ -118,10 +118,10 @@ def custom_action(incoming_packet):
     src_port = incoming_packet[0][1].sport
     dest_ip = incoming_packet[0][1].dst
     dest_port = incoming_packet[0][1].dport
-    #if port_to_pid[src_port] is not None:
+    # if port_to_pid[src_port] is not None:
     return 'Packet #{}: {}:{} ==> {}:{} --> PID:{}'.format(counter, src_ip, src_port,
                                                            dest_ip, dest_port, None)
-    #elif port_to_pid(dest_port) is not None:
+    # elif port_to_pid(dest_port) is not None:
     #    return 'Packet #{}: {}:{} ==> {}:{} --> PID:{}'.format(counter, src_ip, src_port, dest_ip,
     #                                                           dest_port, port_to_pid[dest_port])
 

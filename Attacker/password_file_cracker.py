@@ -43,7 +43,7 @@ def extract_pdf(pdf, password):
         with open(pdf, "rb") as input_file:
             PdfFileReader(input_file, password)
             return True
-    except Exception:
+    except PdfFileReader.PasswordError:
         return False
 
 

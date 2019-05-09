@@ -141,7 +141,7 @@ def parse_dos(args):
     try:
         if args[1] == "syn":
             if valid_ip(args[2]) and valid_port(args[3], dos=True):
-                syn_flood(args[1], args[2])
+                syn_flood(args[2], args[3])
             else:
                 print("usage: dos syn <Target IP> <Port Number>")
 
