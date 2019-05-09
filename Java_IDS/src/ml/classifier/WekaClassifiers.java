@@ -9,10 +9,12 @@ import java.util.Random;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
+import weka.classifiers.bayes.BayesNet;
 import weka.classifiers.evaluation.NominalPrediction;
 import weka.classifiers.evaluation.Prediction;
 import weka.classifiers.functions.LibSVM;
 import weka.classifiers.functions.Logistic;
+import weka.classifiers.meta.AdaBoostM1;
 import weka.classifiers.meta.CVParameterSelection;
 import weka.classifiers.rules.DecisionTable;
 import weka.classifiers.rules.PART;
@@ -22,20 +24,21 @@ import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
 import weka.core.Range;
 import weka.core.converters.ArffLoader;
-import weka.classifiers.evaluation.output.prediction.AbstractOutput;
 import weka.classifiers.evaluation.output.prediction.PlainText;
- 
+import weka.core.SerializationHelper;
+
 public class WekaClassifiers
 {
 	// Load all NON-Incremental models
 	private static Classifier [] models = { 
 			//new J48(), 				// a decision tree
-			//new PART(), 
+			new AdaBoostM1(),
+			new BayesNet()
 			//new DecisionTable(),	//decision table majority classifier
 			//new DecisionStump(),	//one-level decision tree
 			//new Logistic(),
 			//new LibSVM(),
-			new RandomForest()
+			//new RandomForest()
 	};
 	private static int NUM_CLASSIFIERS = models.length;
  
@@ -97,8 +100,9 @@ public class WekaClassifiers
 		*/
 		
 		// Load Training Data
-		Instances training_data = read_arff_file("C:\\Users\\Andrew\\Desktop\\iris.arff");
-	
+		//Instances training_data = read_arff_file("C:\\Users\\Andrew\\Desktop\\iris.arff");
+		Instances training_data = read_arff_file("../../../KDDTrain+.arff");
+		
 		// Cross Validate each one
 		Evaluation [] evals = new Evaluation[NUM_CLASSIFIERS];
 		
@@ -124,11 +128,15 @@ public class WekaClassifiers
 				P 1 10 11 
 		     */
 		    hi.buildClassifier(training_data);
+		    System.out.println(models[i].getClass().getSimpleName());
+		    writeClassifier(models[i].getClass().getSimpleName() + ".model", hi);
+		    /*
 		    String [] x = hi.getBestClassifierOptions();
 		    for (int j = 0; j < x.length; j++)
 		    {
-		    	System.out.println(x[j]);;
+		    	//System.out.println(x[j]);;
 		    }
+		    */
 		}
 		
 		// Get Results
@@ -143,6 +151,7 @@ public class WekaClassifiers
 		for (int i = 0; i < evals.length; i++)
 		{
 			//WriteObjectToFile(models[i], "class"+i+".obj");
+			//writeClassifier("", mode);
 		}
 	}
 	
@@ -161,5 +170,10 @@ public class WekaClassifiers
         {
             ex.printStackTrace();
         }
+    }
+    
+    public static void writeClassifier(String path, Classifier clf) throws Exception
+    {
+    	SerializationHelper.write(path, clf);
     }
 }
