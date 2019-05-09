@@ -176,4 +176,10 @@ public class WekaClassifiers
     {
     	SerializationHelper.write(path, clf);
     }
+    
+    public static Classifier loadClassifier(String path) throws Exception
+    {
+    	Classifier cls = (Classifier) SerializationHelper.read(path);
+    	return cls;
+    }
 }
