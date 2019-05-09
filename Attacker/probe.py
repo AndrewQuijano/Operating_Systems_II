@@ -3,7 +3,10 @@ from scapy.all import *
 
 def ping(ping_target="127.0.0.1", time_out=5, src_ip="192.168.147.160"):
     answer = sr1(IP(src=src_ip, dst=ping_target)/ICMP()/b"XXXXXXXXXXX", timeout=time_out)
-    # answer.show()
+    if answer is not None:
+        answer.show()
+    else:
+        print("No answer at:" + ping_target)
     return answer
 
 
@@ -34,7 +37,7 @@ def udp_ping(host, min_port=0, max_port=65535, time_out=2, src_ip="192.168.147.1
 
 
 # ARP-Ping
-def arp_ping(network, time_out=2, src="192.168."):
+def arp_ping(network, time_out=2):
     ans, unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=network), timeout=time_out)
     ans_list = list(ans)
     for a in ans_list:
