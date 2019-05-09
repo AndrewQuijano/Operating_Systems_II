@@ -209,7 +209,7 @@ def ids():
                 if logistic_clf is not None:
                     log_linear_test(logistic_clf, test_x, test_y)
                 if knn_clf is not None:
-                    knn_test(knn_clf, train_x, train_y)
+                    knn_test(knn_clf, test_x, test_y)
                 if tree is not None:
                     tree_test(tree, test_x, test_y)
 
@@ -257,6 +257,9 @@ def ids_shell_args(args):
         if args[0] == "sniff":  # args: number of packets, interface, PCAP name
             int(args[1])  # Check if it is an integer
             subprocess.run(["sudo", "tcpdump", "-c", args[1], "-s0", "-i", args[2], "-w", args[3]])
+        elif args[0] == "sniff_time":
+            int(args[1])    # time in seconds!
+            subprocess.run(["timeout", args[1], "tcpdump", "-s0" "-i", args[2], "-w", args[3]])
         elif args[0] == "process":  # args: pcap name
             # subprocess.run(["python3", "../Sniffer/collect.py", args[1]])
             file_parts = args[1].split('.')
@@ -522,14 +525,20 @@ def kdd_prep_test(file):
     print("KDD Label encoding complete!")
 
 
-def load_classifiers():
-    svm_line_clf = load('svm_line.joblib')
-    svm_rbf_clf = load('svm_rbf.joblib')
+def load_test(test_set):
+    # svm_line_clf = load('svm_line.joblib')
+    # svm_rbf_clf = load('svm_rbf.joblib')
+    test_x, test_y = read_data(test_set)
     forest_clf = load('random_forest.joblib')
     logistic_clf = load('logistic.joblib')
     knn_clf = load('knn.joblib')
     tree = load('tree.joblib')
-    return svm_line_clf, svm_rbf_clf, forest_clf, logistic_clf, knn_clf, tree
+    bayes_load_test(test_set, test_x, test_y)
+    discriminant_load_test(test_set, test_x, test_y)
+    forest_test(forest_clf, test_x, test_y)
+    log_linear_test(logistic_clf, test_x, test_y)
+    knn_test(knn_clf, test_x, test_y)
+    tree_test(tree, test_x, test_y)
 
 
 # TODO: Learn to train with generators
@@ -537,4 +546,4 @@ if __name__ == "__main__":
     # stat_column('kdd_prep_2.csv', '11', column_number=1, check_label=True)
     # stat_column('kddcup.data', 'normal.', column_number=1, check_label=True)
     # stat_column('KDDTrain+.txt', 'normal', column_number=6)
-    ids()
+    basic_ids()

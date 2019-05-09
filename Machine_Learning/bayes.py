@@ -3,8 +3,8 @@ from sklearn.calibration import CalibratedClassifierCV
 from sklearn.metrics import classification_report, accuracy_score
 from misc import *
 import time
-from joblib import dump
-# from sklearn.externals.joblib import dump
+from joblib import dump, load
+# from sklearn.externals.joblib import dump, load
 
 
 # http://scikit-learn.org/stable/auto_examples/calibration/plot_calibration.html#sphx-glr-auto-examples-calibration-plot-calibration-py
@@ -83,3 +83,12 @@ def naive_bayes_test(clf, clf_isotonic, clf_sigmoid, test_x, test_y, extra_test=
                                             target_names=[str(i) for i in clf_sigmoid.classes_]))
     # print(classification_report(test_y, prob_pos_sigmoid, target_names=[str(i) for i in clf_sigmoid.classes_]))
     make_confusion_matrix(y_true=test_y, y_pred=prob_pos_sigmoid, clf=clf_sigmoid, clf_name='Naive_Bayes_Sigmoid')
+
+
+def bayes_load_test(test_set, test_x=None, test_y=None):
+    clf = load('naive_bayes.joblib')
+    clf_isotonic = load('NB_Isotonic.joblib')
+    clf_sigmoid= load('NB_Sigmoid.joblib')
+    if test_x is None or test_y is None:
+        test_x, test_y = read_data(test_set)
+    naive_bayes_test(clf, clf_isotonic, clf_sigmoid, test_x, test_y, extra_test=False)

@@ -2,8 +2,8 @@ from sklearn.metrics import accuracy_score, classification_report
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
 from misc import *
 import time
-from joblib import dump
-# from sklearn.externals.joblib import dump
+from joblib import dump, load
+# from sklearn.externals.joblib import dump, load
 
 
 def discriminant_line(train_x, train_y):
@@ -25,14 +25,14 @@ def lda_test(lda, test_x, test_y, extra_test=False):
     print("Testing Score is (LDA): " + str(accuracy_score(test_y, y_hat)))
 
     with open("results.txt", "a+") as my_file:
-        my_file.write("[LDA] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)))
+        my_file.write("[LDA] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 
     with open("classification_reports.txt", "a+") as my_file:
-        my_file.write("---[LDA]---")
+        my_file.write("---[LDA]---" + '\n')
         my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
                                             labels=[str(i) for i in lda.classes_],
                                             target_names=[str(i) for i in lda.classes_]))
-
+        my_file.write('\n')
     make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=lda, clf_name='LDA')
 
     if extra_test:
@@ -71,3 +71,12 @@ def qda_test(qda, test_x, test_y, extra_test=False):
                                             labels=[str(i) for i in qda.classes_],
                                             target_names=[str(i) for i in qda.classes_]))
         my_file.write('\n')
+
+
+def discriminant_load_test(test_set, test_x=None, test_y=None):
+    lda = load('LDA.joblib')
+    qda = load('QDA.joblib')
+    if test_x is None or test_y is None:
+        test_x, test_y = read_data(test_set)
+    lda_test(lda, test_x, test_y)
+    qda_test(qda, test_x, test_y)

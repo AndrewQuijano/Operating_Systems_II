@@ -101,7 +101,7 @@ public class WekaClassifiers
 		
 		// Load Training Data
 		//Instances training_data = read_arff_file("C:\\Users\\Andrew\\Desktop\\iris.arff");
-		Instances training_data = read_arff_file("../../../KDDTrain+.arff");
+		Instances training_data = read_arff_file("C:\\Users\\Andrew\\Desktop\\KDDTrain+.arff");
 		
 		// Cross Validate each one
 		Evaluation [] evals = new Evaluation[NUM_CLASSIFIERS];
