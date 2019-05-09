@@ -6,20 +6,12 @@ from os import popen
 import urllib.request
 import urllib.error
 import requests
-from probe import *
 counter = 0
 
 
-def network_scan(ip_address):
-    host_scan(ip_address, min_port=1024, max_port=1050)
-    udp_ping(ip_address, min_port=1024, max_port=1050)
-    # GET NETWORK ADDRESS. ASSUMES /24!
-    network = get_network_address(ip_address)
-    arp_ping(network)
-
-
-def get_network_address(ip_addr, mask="/24"):
-    ip = ip_addr.split('.')
+# TODO: Figure out how to get default subnet mask?
+def get_network_address(ip_address, mask="/24"):
+    ip = ip_address.split('.')
     ip[3] = '0'
     return '.'.join(ip) + mask
 
@@ -108,62 +100,3 @@ def os(url="http://192.168.118.130/bWAPP/commandi.php", command="www.nsa.gov|pwd
     r = requests.post(url=url, data=command)
     with open("out.txt", "w") as f:
         f.write(r.text)
-
-
-# Define our Custom Action function
-def custom_action(incoming_packet):
-    global counter
-    counter += 1
-    src_ip = incoming_packet[0][1].src
-    src_port = incoming_packet[0][1].sport
-    dest_ip = incoming_packet[0][1].dst
-    dest_port = incoming_packet[0][1].dport
-    # if port_to_pid[src_port] is not None:
-    return 'Packet #{}: {}:{} ==> {}:{} --> PID:{}'.format(counter, src_ip, src_port,
-                                                           dest_ip, dest_port, None)
-    # elif port_to_pid(dest_port) is not None:
-    #    return 'Packet #{}: {}:{} ==> {}:{} --> PID:{}'.format(counter, src_ip, src_port, dest_ip,
-    #                                                           dest_port, port_to_pid[dest_port])
-
-
-def pid_to_port():
-    # global port_to_pid
-    port_to_pid = {}
-    source_ip = popen("hostname -I").read().rstrip()
-    mapping = popen("sudo netstat -anp | grep tcp").read().split('\n')
-    print("Current IP: " + source_ip)
-    for line in mapping:
-        result = line.split()
-        if len(result) > 0:
-            # 3 - source
-            # 4 - destination
-            # 6 - Process Name/PID
-            if result[0] == "tcp":
-                s_ip = result[3].split(':')[0]
-                d_ip = result[4].split(':')[0]
-                if source_ip == s_ip or source_ip == d_ip and result[6] == "TIME_WAIT":
-                    s_port = result[3].split(':')[1]
-                    d_port = result[4].split(':')[1]
-                    pid = result[6].split('/')[0]
-                    process_name = result[6].split('/')[1]
-                    port_to_pid[s_port] = pid
-                    port_to_pid[d_port] = pid
-                    print("Source IP/Port" + str(s_ip)+":" + str(s_port))
-                    print("Destination IP/Port" + str(d_ip)+":" + str(d_port))
-                    print("Process ID: " + pid + " Name: " + process_name)
-    return port_to_pid
-
-
-def stop():
-    global counter
-    if counter >= 100:
-        print("END NOW: " + str(counter))
-        return True
-    else:
-        return False
-
-
-# Option 5 - Passively collect statistics on Packets and Bytes for all ports
-def read_ip(time_frame):
-    pid_to_port()
-    sniff(filter="ip and tcp", prn=custom_action, stop_filter=None)

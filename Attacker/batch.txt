@@ -8,4 +8,6 @@ dos teardrop 192.168.147.145 1
 dos teardrop 192.168.147.145 2
 dos teardrop 192.168.147.145 3
 dos teardrop 192.168.147.145 4
-dos teardrop 192.168.147.145 5
+ping 192.168.147.145
+scan 192.168.147.145
+udp_ping 192.168.147.145

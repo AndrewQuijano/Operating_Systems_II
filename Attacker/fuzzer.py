@@ -3,6 +3,7 @@ from options import *
 from isvalid import *
 from denial_of_service import *
 from password_file_cracker import *
+from probe import *
 from os import geteuid, popen, getcwd, mkdir
 from os.path import exists, isfile
 import subprocess
@@ -10,9 +11,8 @@ import sys
 from extra import *
 
 
-def parse_args(args, not_batch_mode=True):
+def parse_args(args):
     try:
-        print(args)
         if args[0] == "GET":
             if len(args) == 3:
                 if valid_ip(args[1]):
@@ -35,72 +35,8 @@ def parse_args(args, not_batch_mode=True):
                 print("Bad Input! Invalid Number of Arguments!")
                 return
 
-        elif args[0] == "scan":
-            if len(args) == 2 and valid_ip(args[1]):
-                network_scan(args[1])
-
-        elif args[0] == "crack-host":
-            # By default attack andrew:
-            with open("target.txt") as passFile:
-                for line in passFile:
-                    if ":" in line:
-                        user = line.split(':')[0]
-                        crypt_pass = line.split(':')[1].strip(' ')
-                        print("[*] Cracking Password for user: " + user)
-                        if len(args) == 1:
-                            crack_local_host(crypt_pass)
-                        elif len(args) == 2:
-                            if exists(args[1]) and isfile(args[1]):
-                                crack_local_host(crypt_pass, args[1])
-                            else:
-                                return
-                        else:
-                            return
-
-        elif args[0] == "crack-zip":
-            if len(args) == 1:
-                print("usage: crack-zip <zip-file> <password-file>")
-            elif len(args) == 2:
-                if exists(args[1]) and isfile(args[1]):
-                    crack_zip_file(args[1])
-                else:
-                    print("Zip file: " + args[1] + " not found!")
-            elif len(args) == 3:
-                if exists(args[1] and isfile(args[1]) and exists(args[2])) and isfile(args[2]):
-                    crack_zip_file(args[1], args[2])
-                else:
-                    return
-            else:
-                return
-
-        elif args[0] == "crack-pdf":
-            if len(args) == 1:
-                print("usage: crack-pdf <pdf-file> <password-file>")
-
-            elif len(args) == 2:
-                if exists(args[1]) and isfile(args[1]) and valid_extension(args[1], "pdf"):
-                    crack_pdf_file(args[1])
-                else:
-                    print("PDF file: " + args[1] + " not found!")
-            elif len(args) == 3:
-                if exists(args[1] and isfile(args[1]) and exists(args[2])) and isfile(args[2]):
-                    crack_pdf_file(args[1], args[2])
-                else:
-                    return
-            else:
-                return
-
-        elif args[0] == "read" and not_batch_mode:
-            if len(args) == 2:
-                seconds = int(args[1])
-                if seconds < 1:
-                    print("Fuzzer does NOT support less than 1 second scans!")
-                    return
-                else:
-                    pid_to_port()
-                    read_ip(seconds)
-            else:
-                print("usage: read <time-frame in seconds>")
+        elif args[0] == "password_crack":
+            parse_password_crack(args)
 
         elif args[0] == "ftp":
             if len(args) == 2 and valid_ip(args[1]):
@@ -119,6 +55,17 @@ def parse_args(args, not_batch_mode=True):
                 inject_page(args[1], args[2], args[3])
             else:
                 print("usage: inject <IP Address> <File to Inject> <Text to inject>")
+
+        elif args[0] == "dos":
+            parse_dos(args)
+
+        elif args[0] == "probe":
+            parse_probe()
+
+    except IndexError:
+        print(args)
+        print("Index out of bounds!")
+        return
 
     except KeyboardInterrupt:
         return
@@ -166,6 +113,71 @@ def parse_dos(args):
         return
 
 
+def parse_probe(args):
+
+    try:
+        if args[1] == "ping":
+            ping(ping_target=args[2], time_out=5)
+
+        elif args[1] == "host_scan" and valid_ip(args[2]):
+            # Return a Dictionary of <IP Address, Open Port>
+            host_scan(args[2], min_port=1024, max_port=65535, time_out=2)
+
+        # If all else fails there is always UDP Ping which will produce ICMP Port unreachable errors
+        # from live hosts. Here you can pick any port which is most likely to be closed,
+        # such as port 0:
+        elif args[1] == "udp_ping" and valid_ip(args[2]):
+            udp_ping(args[2], min_port=0, max_port=65535, time_out=2)
+
+        # TODO: Valid network address to scan?
+        elif args[1] == "arp_ping":
+            arp_ping(args[2], time_out=2)
+
+    except IndexError:
+        print(args)
+        print("Index out of bounds: Probe Attacks")
+
+
+def parse_password_crack(args):
+    print("usage: crack-host <shadow-file> <password-file>")
+    print("usage: crack-zip <zip-file> <password-file>")
+    print("usage: crack-pdf <pdf-file> <password-file>")
+
+    try:
+        if args[1] == "crack-host":
+            with open("target.txt") as passFile:
+                for line in passFile:
+                    if ":" in line:
+                        user = line.split(':')[0]
+                        crypt_pass = line.split(':')[1].strip(' ')
+                        print("[*] Cracking Password for user: " + user)
+                        if len(args) == 1:
+                            crack_local_host(crypt_pass)
+                        elif len(args) == 2 and exists(args[1]) and isfile(args[1]):
+                            crack_local_host(crypt_pass, args[1])
+                        else:
+                            return
+
+        elif args[1] == "crack-zip":
+            if exists(args[1]) and isfile(args[1]):
+                crack_zip_file(args[1])
+            if exists(args[1] and isfile(args[1]) and exists(args[2])) and isfile(args[2]):
+                    crack_zip_file(args[1], args[2])
+            else:
+                return
+
+        elif args[1] == "crack-pdf":
+            if exists(args[1]) and isfile(args[1]) and valid_extension(args[1], "pdf"):
+                crack_pdf_file(args[1])
+            if exists(args[1] and isfile(args[1]) and valid_extension(args[1], "pdf")
+                      and exists(args[2])) and isfile(args[2]):
+                crack_pdf_file(args[1], args[2])
+
+    except IndexError:
+        print("Index out of bounds in Parse Password Crack")
+        print(args)
+
+
 def main():
 
     if geteuid() != 0:
@@ -200,7 +212,7 @@ def main():
 
             if len(args) == 1 and args[0] == "exit":
                 break
-            if args[0] == "dos":
+            if len(args) >= 1 and args[0] == "dos":
                 parse_dos(args)
             # This also takes case of when no arguments are inputted as well!
             else:

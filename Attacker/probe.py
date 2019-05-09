@@ -37,8 +37,8 @@ def udp_ping(host, min_port=0, max_port=65535, time_out=2, src_ip="192.168.147.1
 
 
 # ARP-Ping
-def arp_ping(network, time_out=2):
-    ans, unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=network), timeout=time_out)
+def arp_ping(network="192.168.147.0/24", time_out=2):
+    ans, unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=network), timeout=time_out, verbose=False)
     ans_list = list(ans)
     for a in ans_list:
         print(a)
