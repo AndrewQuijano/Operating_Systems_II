@@ -11,13 +11,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="fuzzer.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="fuzzer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/fuzzer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="39" lean-forward="true" selection-start-line="39" selection-end-line="39" />
+            <state relative-caret-position="519">
+              <caret line="212" column="21" selection-start-line="212" selection-start-column="21" selection-end-line="212" selection-end-column="21" />
               <folding>
                 <element signature="e#19#40#0" expanded="true" />
+                <element signature="e#329#5161#0" />
                 <element signature="e#5164#6133#0" />
                 <element signature="e#6345#7151#0" />
                 <element signature="e#4661#6305#0" />
@@ -62,11 +63,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="denial_of_service.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="denial_of_service.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/denial_of_service.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="111">
-              <caret line="64" column="49" selection-start-line="64" selection-start-column="49" selection-end-line="64" selection-end-column="49" />
+            <state relative-caret-position="417">
+              <caret line="25" column="59" selection-start-line="25" selection-start-column="59" selection-end-line="25" selection-end-column="59" />
               <folding>
                 <element signature="e#211#234#0" expanded="true" />
               </folding>
@@ -101,10 +102,10 @@
         <option value="$PROJECT_DIR$/password.py" />
         <option value="$PROJECT_DIR$/extra.py" />
         <option value="$PROJECT_DIR$/password_file_cracker.py" />
-        <option value="$PROJECT_DIR$/denial_of_service.py" />
         <option value="$PROJECT_DIR$/probe.py" />
         <option value="$PROJECT_DIR$/options.py" />
         <option value="$PROJECT_DIR$/fuzzer.py" />
+        <option value="$PROJECT_DIR$/denial_of_service.py" />
       </list>
     </option>
   </component>
@@ -231,6 +232,7 @@
           <caret line="151" column="19" selection-start-line="151" selection-start-column="19" selection-end-line="151" selection-end-column="19" />
           <folding>
             <element signature="e#19#40#0" expanded="true" />
+            <element signature="e#329#5161#0" />
             <element signature="e#5164#6133#0" />
             <element signature="e#6345#7151#0" />
             <element signature="e#4661#6305#0" />
@@ -288,6 +290,7 @@
           <caret line="4" column="35" selection-start-line="4" selection-start-column="35" selection-end-line="4" selection-end-column="35" />
           <folding>
             <element signature="e#19#40#0" expanded="true" />
+            <element signature="e#329#5161#0" />
             <element signature="e#5164#6133#0" />
             <element signature="e#6345#7151#0" />
             <element signature="e#4661#6305#0" />
@@ -378,16 +381,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/password.py" />
-    <entry file="file://$PROJECT_DIR$/denial_of_service.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="111">
-          <caret line="64" column="49" selection-start-line="64" selection-start-column="49" selection-end-line="64" selection-end-column="49" />
-          <folding>
-            <element signature="e#211#234#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/probe.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="663">
@@ -434,13 +427,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/fuzzer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="39" lean-forward="true" selection-start-line="39" selection-end-line="39" />
+        <state relative-caret-position="519">
+          <caret line="212" column="21" selection-start-line="212" selection-start-column="21" selection-end-line="212" selection-end-column="21" />
           <folding>
             <element signature="e#19#40#0" expanded="true" />
+            <element signature="e#329#5161#0" />
             <element signature="e#5164#6133#0" />
             <element signature="e#6345#7151#0" />
             <element signature="e#4661#6305#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/denial_of_service.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="417">
+          <caret line="25" column="59" selection-start-line="25" selection-start-column="59" selection-end-line="25" selection-end-column="59" />
+          <folding>
+            <element signature="e#211#234#0" expanded="true" />
           </folding>
         </state>
       </provider>

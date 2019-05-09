@@ -202,8 +202,7 @@ def main():
         with open(sys.argv[1], "r") as file:
             for line in file:
                 args = line.split()
-                # parse_args(args)
-                parse_dos(args)
+                parse_args(args)
 
     while True:
         try:
@@ -212,8 +211,6 @@ def main():
 
             if len(args) == 1 and args[0] == "exit":
                 break
-            if len(args) >= 1 and args[0] == "dos":
-                parse_dos(args)
             # This also takes case of when no arguments are inputted as well!
             else:
                 parse_args(args)
