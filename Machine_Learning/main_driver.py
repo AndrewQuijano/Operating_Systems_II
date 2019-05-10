@@ -445,7 +445,7 @@ def mean_freq(freq):
 
 def print_map(hash_map):
     answer = "{"
-    for k, v in hash_map:
+    for k, v in hash_map.items():
         answer = answer + k + "," + v + "\n"
     answer = answer + "}"
     return answer
@@ -596,9 +596,6 @@ def stats_columns(label):
 
 # TODO: Learn to train with generators
 if __name__ == "__main__":
-    # stat_column('kdd_prep_2.csv', '11', column_number=1, check_label=True)
-    # stat_column('kddcup.data', 'normal.', column_number=1, check_label=True)
-    # stat_column('KDDTrain+.txt', 'normal', column_number=6)
     # basic_ids()
     # Get ALL stats about NORMAL
     stats_columns('11')

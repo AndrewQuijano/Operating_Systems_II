@@ -208,7 +208,7 @@ def main():
 
     while True:
         try:
-            var = input("Shell> ")
+            var = input("Fuzzer> ")
             args = var.split()
 
             if args[0] == "exit":
