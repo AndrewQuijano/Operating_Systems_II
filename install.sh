@@ -34,4 +34,7 @@ sudo add-apt-repository ppa:linuxuprising/java
 sudo apt update
 sudo apt-get install oracle-java11-installer
 
+# To install C++ Processor, hope to make java version someday after OS2 ends
+sudo apt-get install cmake
+sudo apt-get install libpcap-dev
 

