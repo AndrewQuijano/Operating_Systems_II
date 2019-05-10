@@ -1,2 +1,2 @@
-sniff 10000 ens33 sniff_noatk.pcap
-process sniff_noatk.pcap
+sniff_time 300 ens33 test_1.pcap
+process test_1.pcap

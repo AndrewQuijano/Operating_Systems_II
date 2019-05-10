@@ -15,7 +15,7 @@ def back(target_ip, payload, target_port=80, src_ip="192.168.147.150"):
     i = IP(src=src_ip, dst=target_ip)
     t = TCP(flags="S", dport=int(target_port), sport=RandShort())
     back_attack = i / t / Raw(payload=payload)
-    replies = sr(back_attack)
+    replies = sr(back_attack, timeout=2)
     for packet in replies:
         print(packet)
 
