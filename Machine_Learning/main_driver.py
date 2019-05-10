@@ -264,7 +264,7 @@ def ids_shell_args(args):
             # subprocess.run(["python3", "../Sniffer/collect.py", args[1]])
             file_parts = args[1].split('.')
             with open(file_parts[0] + ".csv", "w") as f:
-                subprocess.call(["sudo", "../kdd99extractor", args[1]], stdout=f)
+                subprocess.call(["sudo", "./kdd99extractor", "-e", args[1]], stdout=f)
         # DO NOT USE THIS! THIS ASSUMES TEXT TO PCAP
         # YOU DONT NEED THIS IF YOU HAVE TCPDUMP
         elif args[0] == "convert":  # args: file.tcpdump
