@@ -358,7 +358,7 @@ def label_testing_set(file_path, output):
             else:
                 parts.insert(0, "normal.")
             # drop the columns and write
-            parts = parts[:27]
+            parts = parts[:29]
             new_line = ','.join(parts)
             write.write(new_line + '\n')
             write.flush()
@@ -579,5 +579,8 @@ if __name__ == "__main__":
     # stat_column('KDDTrain+.txt', 'normal', column_number=6)
     # basic_ids()
     # Get ALL stats about NORMAL
-    stat_one_column('NSL_KDD_train.csv', '11', column_number=6)
-    label_testing_set("test_1.csv", "oh_shit.csv")
+    # stat_one_column('NSL_KDD_train.csv', '11', column_number=6)
+    # label_testing_set("test_1.csv", "oh_shit.csv")
+    with open("test_1.csv") as fd:
+        for line in fd:
+            print(line)

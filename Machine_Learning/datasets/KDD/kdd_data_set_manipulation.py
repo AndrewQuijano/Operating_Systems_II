@@ -4,7 +4,7 @@ from sklearn.preprocessing import LabelEncoder
 from sys import argv
 from os.path import basename
 from subprocess import call, run
-from os import geteuid
+# from os import geteuid
 
 
 # For kdd, we skip columns 10 - 22
@@ -281,12 +281,13 @@ def compare_csv(kdd_file, nsl_kdd):
 # 3- Split into parts
 # **To use it, just merge it, use raw file name w/o extension!**
 if __name__ == "__main__":
+    drop_columns("kddcup.csv")
     # kdd_prep("kddcup.csv")
     # rop_columns("kddcup_prep.csv")
     # split_csv("modified_kddcup_prep.csv")
-    run(["sudo", "apparmor_parser", "-R", "/etc/apparmor.d/usr.sbin.tcpdump"])
-    build_kdd()
-    nsl_kdd_filter("kdd.csv")
-    n_row("kdd.csv")
-    n_row("NSL_KDD.csv")
+    # run(["sudo", "apparmor_parser", "-R", "/etc/apparmor.d/usr.sbin.tcpdump"])
+    # build_kdd()
+    # nsl_kdd_filter("kdd.csv")
+    # n_row("kdd.csv")
+    # n_row("NSL_KDD.csv")
     # compare_csv("kdd.csv", "NSL_KDD.csv")
