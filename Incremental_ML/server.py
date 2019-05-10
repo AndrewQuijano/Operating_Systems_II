@@ -11,7 +11,7 @@ from sklearn.metrics import accuracy_score, classification_report
 from misc import make_confusion_matrix, read_data, is_valid_file_type
 from tuning import *
 import numpy as np
-from joblib import dump
+from joblib import dump, load
 from sys import argv
 
 
@@ -34,25 +34,26 @@ def init_classifiers(train_x, train_y):
         pa_regress = tune_passive_aggressive_reg(train_x, train_y, kf, False)
         # Get Parameters now
         with open("results.txt", "w+") as fd:
-            fd.write("[bayes] Best Parameters: " + str(bayes.best_params_))
-            fd.write("[percep] Best Parameters: " + str(percep.best_params_))
-            fd.write("[sgd_class] Best Parameters: " + str(sgd_class.best_params_))
-            fd.write("[pa_classifier] Best Parameters: " + str(pa_classifier.best_params_))
-            fd.write("[sgd_regress] Best Parameters: " + str(sgd_regress.best_params_))
-            fd.write("[pa_regress] Best Parameters: " + str(pa_regress.best_params_))
+            fd.write("[bayes] Best Parameters: " + str(bayes.best_params_) + '\n')
+            fd.write("[percep] Best Parameters: " + str(percep.best_params_) + '\n')
+            fd.write("[sgd_class] Best Parameters: " + str(sgd_class.best_params_) + '\n')
+            fd.write("[pa_classifier] Best Parameters: " + str(pa_classifier.best_params_) + '\n')
+            fd.write("[sgd_regress] Best Parameters: " + str(sgd_regress.best_params_) + '\n')
+            fd.write("[pa_regress] Best Parameters: " + str(pa_regress.best_params_) + '\n')
 
-            fd.write("[bayes] Training Score: " + str(bayes.score(train_x, train_y)))
-            fd.write("[percep] Training Score: " + str(percep.score(train_x, train_y)))
-            fd.write("[sgd_class] Training Score: " + str(sgd_class.score(train_x, train_y)))
-            fd.write("[pa_classifier] Training Score: " + str(pa_classifier.score(train_x, train_y)))
-            fd.write("[sgd_regress] Training Score: " + str(sgd_regress.score(train_x, train_y)))
-            fd.write("[pa_regress] Training Score: " + str(pa_regress.score(train_x, train_y)))
+            fd.write("[bayes] Training Score: " + str(bayes.score(train_x, train_y)) + '\n')
+            fd.write("[percep] Training Score: " + str(percep.score(train_x, train_y)) + '\n')
+            fd.write("[sgd_class] Training Score: " + str(sgd_class.score(train_x, train_y)) + '\n')
+            fd.write("[pa_classifier] Training Score: " + str(pa_classifier.score(train_x, train_y)) + '\n')
+            fd.write("[sgd_regress] Training Score: " + str(sgd_regress.score(train_x, train_y)) + '\n')
+            fd.write("[pa_regress] Training Score: " + str(pa_regress.score(train_x, train_y)) + '\n')
         # If trained, should just dump now...
         dump(bayes, "i_bayes.joblib")
         dump(sgd_class, "sgd_class.joblib")
         dump(sgd_regress, "sgd_regress.joblib")
         dump(pa_classifier, "PA_class.joblib")
         dump(pa_regress, "PA_regress.joblib")
+        dump(percep, "percep.joblib")
     return [bayes, percep, sgd_class, pa_classifier, sgd_regress, pa_regress]
 
 
@@ -215,9 +216,21 @@ def incremental_test(clf, test_x, test_y, clf_name):
 
     with open("classification_reports.txt", "a") as my_file:
         my_file.write("---[" + clf_name + "]---\n")
-        my_file.write(classification_report(y_true=test_y, y_pred=y_hat, target_names=[str(i)
-                                                                                       for i in clf.classes_]))
+        my_file.write(classification_report(y_true=test_y, y_pred=y_hat, labels=clf.classes_,
+                                            target_names=[str(i) for i in clf.classes_]))
         my_file.write('\n')
+
+
+def load_test(file_path):
+    test_x, test_y = read_data(file_path)
+    bayes = load("i_bayes.joblib")
+    sgd = load("sgd_class.joblib")
+    pa = load("PA_class.joblib")
+    percep = load("percep.joblib")
+    incremental_test(bayes, test_x, test_y, "Bayes")
+    incremental_test(sgd, test_x, test_y, "SGD")
+    incremental_test(pa, test_x, test_y, "Passive_Aggressive")
+    incremental_test(percep, test_x, test_y, "Perceptron")
 
 
 if __name__ == "__main__":
