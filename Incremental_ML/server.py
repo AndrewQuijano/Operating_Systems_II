@@ -29,8 +29,8 @@ def init_classifiers(train_x, train_y):
         bayes = tune_bayes(train_x, train_y, kf, False)
         percep = tune_perceptron(train_x, train_y, kf, False)
         sgd_class = tune_sgd_clf(train_x, train_y, kf, False)
-        pa_classifier = tune_passive_aggressive_clf(train_x, train_y, kf, False)
         sgd_regress = tune_passive_aggressive_reg(train_x, train_y, kf, False)
+        pa_classifier = tune_passive_aggressive_clf(train_x, train_y, kf, False)
         pa_regress = tune_passive_aggressive_reg(train_x, train_y, kf, False)
         # Get Parameters now
         with open("results.txt", "w+") as fd:

@@ -87,7 +87,7 @@ def tune_passive_aggressive_clf(x, y, n_folds=10, slow=True):
 
 
 def tune_passive_aggressive_reg(x, y, n_folds=10, slow=True):
-    print("Tuning Passive Regression Classifier...")
+    print("Tuning Passive Aggressive Regression Classifier...")
     c = np.arange(0.01, 1.6, 0.01)
     param_grid = {'C': c}
     model = PassiveAggressiveRegressor(warm_start=True, tol=1e-3)

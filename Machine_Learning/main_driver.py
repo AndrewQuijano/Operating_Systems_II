@@ -340,9 +340,13 @@ def label_training_set(labels, pcap_file, no_label_benign=False):
 # GOAL: LABEL IS ON FIRST COLUMN
 def label_testing_set(file_path, output):
     # From fuzzer I know the mapping of IP and attack
+    # 192.168.147.152 is IP of Client running Kali Linux
     attack_map = {"192.168.147.150": "back.", "192.168.147.151": "neptune.",
-                  "192.168.147.152": "pod.", "192.168.147.153": "teardrop",
+                  "192.168.147.152": "satan.", "192.168.147.153": "teardrop", "192.168.147.154": "pod",
                   "192.168.147.160": "ipsweep.", "192.168.147.161": "portsweep.", "192.168.147.162": "portsweep."}
+    # Pulled from NSL-KDD Labels
+    label_map = {"normal.": 11, "back.": 0, "ipsweep.": 5, "land.": 6, "neptune.": 9, "pod.": 14,
+                 "portsweep.": 15, "satan.": 17, "smurf.": 18, "teardrop.": 20}
 
     with open(file_path, "r") as read, open(output, "w+") as write:
         for line in read:
@@ -350,13 +354,15 @@ def label_testing_set(file_path, output):
             parts = ln.split(',')
             # signature of land
             if parts[28] == parts[30]:
-                parts.insert(0, "land.")
+                parts.insert(0, str(label_map["land."]))
             elif parts[28] in attack_map:
-                parts.insert(0, attack_map[parts[28]])
+                lab = attack_map[parts[28]]
+                parts.insert(0, str(label_map[lab]))
             elif parts[30] in attack_map:
-                parts.insert(0, attack_map[parts[30]])
+                lab = attack_map[parts[30]]
+                parts.insert(0, str(label_map[lab]))
             else:
-                parts.insert(0, "normal.")
+                parts.insert(0, str(label_map["normal."]))
             # drop the columns and write
             parts = parts[:29]
             new_line = ','.join(parts)
@@ -420,14 +426,11 @@ def stat_one_column(data_set, label, column_number=2):
     # print contents
     u = mean_freq(freq_n)
     s = std_dev_freq(freq_n, u)
-    print("For Class:" + label)
-    print(str(freq_n))
-    print("The mean is: " + str(u))
-    print("The standard deviation is: " + str(s))
+
     with open("stat_result_" + label + "_col_" + str(column_number) + ".txt", "w+") as fd:
-        fd.write(str(freq_n))
-        fd.write("The mean is: " + str(u))
-        fd.write("The standard deviation is: " + str(s))
+        fd.write(print_map(freq_n) + '\n')
+        fd.write("The mean is: " + str(u) + '\n')
+        fd.write("The standard deviation is: " + str(s) + '\n')
 
 
 def mean_freq(freq):
@@ -437,6 +440,14 @@ def mean_freq(freq):
         miu = miu + float(key) * value
     miu = miu/n
     return miu
+
+
+def print_map(hash_map):
+    answer = "{"
+    for k, v in hash_map:
+        answer = answer + k + "," + v + "\n"
+    answer = answer + "}"
+    return answer
 
 
 def std_dev_freq(freq, miu=None):

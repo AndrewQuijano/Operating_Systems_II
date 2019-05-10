@@ -9,6 +9,7 @@ from os.path import exists, isfile
 import subprocess
 import sys
 from extra import *
+from time import sleep
 
 
 def parse_args(args):
@@ -34,7 +35,8 @@ def parse_args(args):
             else:
                 print("Bad Input! Invalid Number of Arguments!")
                 return
-
+        elif args[0] == "sleep":
+            sleep(int(args[1]))
         elif args[0] == "password_crack":
             parse_password_crack(args)
 
@@ -209,8 +211,16 @@ def main():
             var = input("Shell> ")
             args = var.split()
 
-            if len(args) == 1 and args[0] == "exit":
+            if args[0] == "exit":
                 break
+            elif args[0] == "batch":
+                if exists(args[1]) and isfile(args[1]):
+                    with open(args[1], "r") as file:
+                        for line in file:
+                            args = line.split()
+                            parse_args(args)
+                else:
+                    print("Invalid batch file to run!")
             # This also takes case of when no arguments are inputted as well!
             else:
                 parse_args(args)
@@ -218,10 +228,12 @@ def main():
         except EOFError:
             print("EOF detected --closing--")
             break
-
         except KeyboardInterrupt:
             print("Interrupt detected --closing--")
             break
+        except IndexError:
+            print("Invalid number of arguments!")
+            continue
 
     # Revert changes to IP Table!
     subprocess.call(["sudo", "iptables", "-F"])
