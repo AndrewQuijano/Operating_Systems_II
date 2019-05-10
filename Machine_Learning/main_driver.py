@@ -444,9 +444,10 @@ def mean_freq(freq):
 
 
 def print_map(hash_map):
-    answer = "{"
+    answer = "{'\n'"
     for k, v in hash_map.items():
-        answer = answer + k + "," + v + "\n"
+        line = str(k) + "," + str(v) + "\n"
+        answer = answer + line
     answer = answer + "}"
     return answer
 
