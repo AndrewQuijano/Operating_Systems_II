@@ -418,11 +418,16 @@ def stat_one_column(data_set, label, column_number=2):
             except ValueError:
                 exit("NAN FOUND!")
     # print contents
+    u = mean_freq(freq_n)
+    s = std_dev_freq(freq_n, u)
     print("For Class:" + label)
     print(str(freq_n))
-    u = mean_freq(freq_n)
     print("The mean is: " + str(u))
-    print("The standard deviation is: " + str(std_dev_freq(freq_n, u)))
+    print("The standard deviation is: " + str(s))
+    with open("stat_result_" + label + "_col_" + str(column_number) + ".txt", "w+") as fd:
+        fd.write(str(freq_n))
+        fd.write("The mean is: " + str(u))
+        fd.write("The standard deviation is: " + str(s))
 
 
 def mean_freq(freq):
@@ -572,6 +577,11 @@ def load_test(test_set):
     tree_test(tree, test_x, test_y)
 
 
+def stats_columns(label):
+    for col in range(12, 29, 1):
+        stat_one_column('NSL_KDD_train.csv', label, column_number=col)
+
+
 # TODO: Learn to train with generators
 if __name__ == "__main__":
     # stat_column('kdd_prep_2.csv', '11', column_number=1, check_label=True)
@@ -579,8 +589,4 @@ if __name__ == "__main__":
     # stat_column('KDDTrain+.txt', 'normal', column_number=6)
     # basic_ids()
     # Get ALL stats about NORMAL
-    # stat_one_column('NSL_KDD_train.csv', '11', column_number=6)
-    # label_testing_set("test_1.csv", "oh_shit.csv")
-    with open("test_1.csv") as fd:
-        for line in fd:
-            print(line)
+    stats_columns('11')
