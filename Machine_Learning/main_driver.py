@@ -350,16 +350,16 @@ def label_testing_set(file_path, output):
             parts = ln.split(',')
             # signature of land
             if parts[28] == parts[30]:
-                part.insert(0, "land.")
+                parts.insert(0, "land.")
             elif parts[28] in attack_map:
-                path.insert(0, attack_map[parts[28]])
+                parts.insert(0, attack_map[parts[28]])
             elif parts[30] in attack_map:
-                path.insert(0, attack_map[parts[30]])
+                parts.insert(0, attack_map[parts[30]])
             else:
-                path.insert(0, "normal.")
+                parts.insert(0, "normal.")
             # drop the columns and write
             parts = parts[:27]
-            new_line = parts.join(',')
+            new_line = ','.join(parts)
             write.write(new_line + '\n')
             write.flush()
 
@@ -422,11 +422,11 @@ def stat_one_column(data_set, label, column_number=2):
     print(str(freq_n))
     u = mean_freq(freq_n)
     print("The mean is: " + str(u))
-    print("The standard deviation is: " + str(std_dev_freq(freq_n, u))
+    print("The standard deviation is: " + str(std_dev_freq(freq_n, u)))
 
 
 def mean_freq(freq):
-    n = sum(list(freq_n.values()))
+    n = sum(list(freq.values()))
     miu = 0
     for key, value in freq.items():
         miu = miu + float(key) * value
