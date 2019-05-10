@@ -234,8 +234,7 @@ def load_test(file_path):
 
 
 if __name__ == "__main__":
-    label_testing_set("./test_1.csv", "real_shit.csv")
-    # load_test("./real_shit.csv")
+    load_test("./shit.csv")
     # if len(argv) == 1:
     #    main("./NSL_KDD_train.csv")
     # else:
