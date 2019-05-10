@@ -14,8 +14,11 @@ import subprocess
 import pyshark
 import collections
 from misc import read_data
+from collections import OrderedDict
+from operator import itemgetter
 # from sklearn.externals.joblib import load
 from joblib import load
+from math import sqrt
 
 
 # Just test functionality of script!
@@ -427,9 +430,13 @@ def stat_one_column(data_set, label, column_number=2):
     u = mean_freq(freq_n)
     s = std_dev_freq(freq_n, u)
 
+    # To make it easier to figure out most frequent feature value
+    # sort the map by value!
+    sorted_freq = OrderedDict(sorted(freq_n.items(), key=itemgetter(1)))
+
     with open("stat_result_" + label + ".txt", "a+") as fd:
         fd.write("-----for Column " + str(column_number) + "-----\n")
-        fd.write(print_map(freq_n) + '\n')
+        fd.write(print_map(sorted_freq) + '\n')
         fd.write("The mean is: " + str(u) + '\n')
         fd.write("The standard deviation is: " + str(s) + '\n')
 
@@ -443,12 +450,16 @@ def mean_freq(freq):
     return miu
 
 
-def print_map(hash_map):
-    answer = "{'\n'"
+def print_map(hash_map, per_row=5):
+    line_counter = 1
+    answer = "{\n"
     for k, v in hash_map.items():
-        line = str(k) + "," + str(v) + "\n"
+        if line_counter % per_row == 0:
+            answer = answer + '\n'
+        line = str(k) + ":" + str(v) + " "
         answer = answer + line
-    answer = answer + "}"
+        line_counter += 1
+    answer = answer + "\n}"
     return answer
 
 
@@ -457,9 +468,10 @@ def std_dev_freq(freq, miu=None):
         miu = mean_freq(freq)
     n = sum(list(freq.values()))
     sigma = 0
-    for key, value in freq.items():
-        sigma = sigma + value * (float(key) - miu) * (float(key) - miu)
-    sigma = sigma/(n - 1)
+    for val, f in freq.items():
+        sigma += f * (float(val) - miu) * (float(val) - miu)
+    sigma = sigma/n
+    sigma = sqrt(sigma)
     return sigma
 
 
@@ -476,7 +488,6 @@ def fit_time(train_x, train_y):
 
 
 def basic_ids():
-
     # Here execute commands that are needed ahead of time
     print("Running batch process of other tasks")
     if is_valid_file_type("batch.txt"):
@@ -556,21 +567,21 @@ def kdd_prep_test(file):
         f.write('\n')
 
     with open(file) as read_kdd_data, open("./test.csv", "w") as write_kdd:
-            for line in read_kdd_data:
-                # Swap using encoder
-                line = line.rstrip()
-                parts = line.split(",")
-                # Starting from 0..
-                # I must edit Column 1, 2, 3, 41
-                parts[1] = str(encode_protocol[parts[1]])
-                parts[2] = str(encode_service[parts[2]])
-                parts[3] = str(encode_fl[parts[3]])
-                # parts[41] = str(encode_class[parts[41]])
-                # As my ML stuff excepts class on first column
-                # swap_positions(parts, 0, 41)
-                new_line = ','.join(parts)
-                write_kdd.write(new_line + '\n')
-                write_kdd.flush()
+        for line in read_kdd_data:
+            # Swap using encoder
+            line = line.rstrip()
+            parts = line.split(",")
+            # Starting from 0..
+            # I must edit Column 1, 2, 3, 41
+            parts[1] = str(encode_protocol[parts[1]])
+            parts[2] = str(encode_service[parts[2]])
+            parts[3] = str(encode_fl[parts[3]])
+            # parts[41] = str(encode_class[parts[41]])
+            # As my ML stuff excepts class on first column
+            # swap_positions(parts, 0, 41)
+            new_line = ','.join(parts)
+            write_kdd.write(new_line + '\n')
+            write_kdd.flush()
     print("KDD Label encoding complete!")
 
 
