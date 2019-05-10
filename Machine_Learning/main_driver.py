@@ -427,7 +427,8 @@ def stat_one_column(data_set, label, column_number=2):
     u = mean_freq(freq_n)
     s = std_dev_freq(freq_n, u)
 
-    with open("stat_result_" + label + "_col_" + str(column_number) + ".txt", "w+") as fd:
+    with open("stat_result_" + label + ".txt", "a+") as fd:
+        fd.write("-----for Column " + str(column_number) + "-----\n")
         fd.write(print_map(freq_n) + '\n')
         fd.write("The mean is: " + str(u) + '\n')
         fd.write("The standard deviation is: " + str(s) + '\n')
@@ -589,7 +590,7 @@ def load_test(test_set):
 
 
 def stats_columns(label):
-    for col in range(12, 29, 1):
+    for col in range(0, 29, 1):
         stat_one_column('NSL_KDD_train.csv', label, column_number=col)
 
 
