@@ -315,6 +315,9 @@ def ids_shell_args(args):
     except ValueError:
         print("Number Format Exception!")
         return
+    except IndexError:
+        print("Invalid Number of arguments")
+        return
     except IOError:
         print("PCAP file not found!")
         return
@@ -655,7 +658,7 @@ def stats_columns(label):
 
 # TODO: Learn to train with generators
 if __name__ == "__main__":
-    # basic_ids()
+    basic_ids()
     # Get ALL stats about NORMAL
-    label_testing_set('./test_1.csv', 'shit.csv')
+    # label_testing_set('./test_1.csv', 'shit.csv')
     # stats_columns('11')

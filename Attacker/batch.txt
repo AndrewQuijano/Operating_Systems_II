@@ -29,7 +29,6 @@ probe ping 192.168.147.145
 dos smurf 192.168.147.145
 probe ping 192.168.147.145
 probe ping 192.168.147.145
-sleep 300
 probe ping 192.168.147.145
 probe ping 192.168.147.145
 probe ping 192.168.147.145
@@ -43,7 +42,5 @@ probe host_scan 192.168.147.145
 probe udp_ping 192.168.147.145
 probe host_scan 192.168.147.145
 probe udp_ping 192.168.147.145
-udp_ping 192.168.147.145
-udp_ping 192.168.147.145
 udp_ping 192.168.147.145
 dos back 192.168.147.145
