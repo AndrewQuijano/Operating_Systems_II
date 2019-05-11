@@ -1,3 +1,6 @@
+sniff_time 1200 ens33 train_3.pcap
+
+process train_3.pcap
 sniff_time 300 ens33 test_1.pcap
 
 process test_1.pcap
