@@ -259,7 +259,7 @@ def ids_shell_args(args):
             subprocess.run(["sudo", "tcpdump", "-c", args[1], "-s0", "-i", args[2], "-w", args[3]])
         elif args[0] == "sniff_time":
             int(args[1])    # time in seconds!
-            subprocess.run(["timeout", args[1], "tcpdump", "-s0" "-i", args[2], "-w", args[3]])
+            subprocess.run(["sudo", "timeout", args[1], "tcpdump", "-i", args[2], "-s0", "-w", args[3]])
         elif args[0] == "process":  # args: pcap name
             # subprocess.run(["python3", "../Sniffer/collect.py", args[1]])
             file_parts = args[1].split('.')
@@ -444,7 +444,7 @@ def mean_freq(freq):
 
 
 def print_map(hash_map):
-    answer = "{'\n'"
+    answer = "{\n"
     for k, v in hash_map.items():
         line = str(k) + "," + str(v) + "\n"
         answer = answer + line
