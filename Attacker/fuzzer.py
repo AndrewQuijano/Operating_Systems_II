@@ -62,7 +62,7 @@ def parse_args(args):
             parse_dos(args)
 
         elif args[0] == "probe":
-            parse_probe()
+            parse_probe(args)
 
     except IndexError:
         print(args)
@@ -107,7 +107,8 @@ def parse_dos(args):
         elif args[1] == "smurf" and valid_ip(args[2]):
             smurf(args[2], args[2])
 
-        elif args[1] == "teardrop" and valid_ip(args[2]) and (args[3] == '0' or args[3] == '1' or args[3] == '2' or args[3] == '3' or args[3] == '4'):
+        elif args[1] == "teardrop" and valid_ip(args[2]) \
+                and (args[3] == '0' or args[3] == '1' or args[3] == '2' or args[3] == '3' or args[3] == '4'):
             teardrop(args[2], args[3])
 
     except IndexError:
@@ -164,7 +165,7 @@ def parse_password_crack(args):
             if exists(args[1]) and isfile(args[1]):
                 crack_zip_file(args[1])
             if exists(args[1] and isfile(args[1]) and exists(args[2])) and isfile(args[2]):
-                    crack_zip_file(args[1], args[2])
+                crack_zip_file(args[1], args[2])
             else:
                 return
 

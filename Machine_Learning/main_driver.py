@@ -14,8 +14,11 @@ import subprocess
 import pyshark
 import collections
 from misc import read_data
+from collections import OrderedDict
+from operator import itemgetter
 # from sklearn.externals.joblib import load
 from joblib import load
+from math import sqrt
 
 
 # Just test functionality of script!
@@ -342,16 +345,53 @@ def label_testing_set(file_path, output):
     # From fuzzer I know the mapping of IP and attack
     # 192.168.147.152 is IP of Client running Kali Linux
     attack_map = {"192.168.147.150": "back.", "192.168.147.151": "neptune.",
-                  "192.168.147.152": "satan.", "192.168.147.153": "teardrop", "192.168.147.154": "pod",
+                  "192.168.147.152": "satan.", "192.168.147.153": "teardrop.", "192.168.147.154": "pod.",
                   "192.168.147.160": "ipsweep.", "192.168.147.161": "portsweep.", "192.168.147.162": "portsweep."}
     # Pulled from NSL-KDD Labels
     label_map = {"normal.": 11, "back.": 0, "ipsweep.": 5, "land.": 6, "neptune.": 9, "pod.": 14,
                  "portsweep.": 15, "satan.": 17, "smurf.": 18, "teardrop.": 20}
 
+    # DON'T FORGET TO LABEL THE FEATURES. See labels.txt in NSL dataset folder
+    # Protocol
+    label_protocol = {
+        'tcp': 1, 'udp': 2, 'icmp': 0
+    }
+    # Flag
+    label_flag = {
+        'SF': 9, 'S2': 7, 'S1': 6, 'S3': 8,
+        'OTH': 0, 'REJ': 1, 'RSTO': 2, 'S0': 5, 'RSTR': 4,
+        'RSTOS0': 3, 'SH': 10
+    }
+    # Service
+    label_service = {
+        'http': 24, 'smtp': 54, 'domain_u': 12, 'auth': 4,
+        'finger': 18, 'telnet': 60, 'eco_i': 14, 'ftp': 19, 'ntp_u': 43,
+        'ecr_i': 15, 'other': 44, 'urp_i': 65, 'private': 49, 'pop_3': 47,
+        'ftp_data': 20, 'netstat': 40, 'daytime': 9, 'ssh': 56, 'echo': 13,
+        'time': 63, 'name': 36, 'whois': 69, 'domain': 11, 'mtp': 35,
+        'gopher': 21, 'remote_job': 51, 'rje': 52, 'ctf': 8, 'supdup': 58,
+        'link': 33, 'systat': 59, 'discard': 10, 'X11': 1, 'shell': 53,
+        'login': 34, 'imap4': 28, 'nntp': 42, 'uucp': 66, 'pm_dump': 45,
+        'IRC': 0, 'Z39_50': 2, 'netbios_dgm': 37, 'ldap': 32, 'sunrpc': 57,
+        'courier': 6, 'exec': 17, 'bgp': 5, 'csnet_ns': 7, 'http_443': 26,
+        'klogin': 30, 'printer': 48, 'netbios_ssn': 39, 'pop_2': 46, 'nnsp': 41,
+        'efs': 16, 'hostnames': 23, 'uucp_path': 67, 'sql_net': 55, 'vmnet': 68,
+        'iso_tsap': 29, 'netbios_ns': 38, 'kshell': 31, 'urh_i': 64, 'http_2784': 25,
+        'harvest': 22, 'aol': 3, 'tftp_u': 61, 'http_8001': 27, 'tim_i': 62,
+        'red_i': 50
+    }
+
+    # Features are on Columns 1, 2, 3
     with open(file_path, "r") as read, open(output, "w+") as write:
         for line in read:
             ln = line.rstrip()
             parts = ln.split(',')
+
+            # DON'T FORGOT TO ENCODE NOW!
+            parts[1] = str(label_protocol[parts[1]])
+            parts[2] = str(label_service[parts[2]])
+            parts[3] = str(label_flag[parts[3]])
+
             # signature of land
             if parts[28] == parts[30]:
                 parts.insert(0, str(label_map["land."]))
@@ -363,6 +403,7 @@ def label_testing_set(file_path, output):
                 parts.insert(0, str(label_map[lab]))
             else:
                 parts.insert(0, str(label_map["normal."]))
+
             # drop the columns and write
             parts = parts[:29]
             new_line = ','.join(parts)
@@ -427,9 +468,13 @@ def stat_one_column(data_set, label, column_number=2):
     u = mean_freq(freq_n)
     s = std_dev_freq(freq_n, u)
 
+    # To make it easier to figure out most frequent feature value
+    # sort the map by value!
+    sorted_freq = OrderedDict(sorted(freq_n.items(), key=itemgetter(1)))
+
     with open("stat_result_" + label + ".txt", "a+") as fd:
         fd.write("-----for Column " + str(column_number) + "-----\n")
-        fd.write(print_map(freq_n) + '\n')
+        fd.write(print_map(sorted_freq) + '\n')
         fd.write("The mean is: " + str(u) + '\n')
         fd.write("The standard deviation is: " + str(s) + '\n')
 
@@ -443,12 +488,16 @@ def mean_freq(freq):
     return miu
 
 
-def print_map(hash_map):
+def print_map(hash_map, per_row=5):
+    line_counter = 1
     answer = "{\n"
     for k, v in hash_map.items():
-        line = str(k) + "," + str(v) + "\n"
+        if line_counter % per_row == 0:
+            answer = answer + '\n'
+        line = str(k) + ":" + str(v) + " "
         answer = answer + line
-    answer = answer + "}"
+        line_counter += 1
+    answer = answer + "\n}"
     return answer
 
 
@@ -457,9 +506,10 @@ def std_dev_freq(freq, miu=None):
         miu = mean_freq(freq)
     n = sum(list(freq.values()))
     sigma = 0
-    for key, value in freq.items():
-        sigma = sigma + value * (float(key) - miu) * (float(key) - miu)
-    sigma = sigma/(n - 1)
+    for val, f in freq.items():
+        sigma += f * (float(val) - miu) * (float(val) - miu)
+    sigma = sigma/n
+    sigma = sqrt(sigma)
     return sigma
 
 
@@ -476,7 +526,6 @@ def fit_time(train_x, train_y):
 
 
 def basic_ids():
-
     # Here execute commands that are needed ahead of time
     print("Running batch process of other tasks")
     if is_valid_file_type("batch.txt"):
@@ -556,21 +605,21 @@ def kdd_prep_test(file):
         f.write('\n')
 
     with open(file) as read_kdd_data, open("./test.csv", "w") as write_kdd:
-            for line in read_kdd_data:
-                # Swap using encoder
-                line = line.rstrip()
-                parts = line.split(",")
-                # Starting from 0..
-                # I must edit Column 1, 2, 3, 41
-                parts[1] = str(encode_protocol[parts[1]])
-                parts[2] = str(encode_service[parts[2]])
-                parts[3] = str(encode_fl[parts[3]])
-                # parts[41] = str(encode_class[parts[41]])
-                # As my ML stuff excepts class on first column
-                # swap_positions(parts, 0, 41)
-                new_line = ','.join(parts)
-                write_kdd.write(new_line + '\n')
-                write_kdd.flush()
+        for line in read_kdd_data:
+            # Swap using encoder
+            line = line.rstrip()
+            parts = line.split(",")
+            # Starting from 0..
+            # I must edit Column 1, 2, 3, 41
+            parts[1] = str(encode_protocol[parts[1]])
+            parts[2] = str(encode_service[parts[2]])
+            parts[3] = str(encode_fl[parts[3]])
+            # parts[41] = str(encode_class[parts[41]])
+            # As my ML stuff excepts class on first column
+            # swap_positions(parts, 0, 41)
+            new_line = ','.join(parts)
+            write_kdd.write(new_line + '\n')
+            write_kdd.flush()
     print("KDD Label encoding complete!")
 
 
@@ -599,4 +648,5 @@ def stats_columns(label):
 if __name__ == "__main__":
     # basic_ids()
     # Get ALL stats about NORMAL
-    stats_columns('11')
+    label_testing_set('./test_1.csv', 'shit.csv')
+    # stats_columns('11')

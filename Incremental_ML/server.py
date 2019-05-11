@@ -8,7 +8,7 @@ from network_setup import *
 # from sklearn.linear_model import PassiveAggressiveRegressor, PassiveAggressiveClassifier
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score, classification_report
-from misc import make_confusion_matrix, read_data, is_valid_file_type
+from misc import make_confusion_matrix, read_data, is_valid_file_type, label_testing_set
 from tuning import *
 import numpy as np
 from joblib import dump, load
@@ -234,7 +234,8 @@ def load_test(file_path):
 
 
 if __name__ == "__main__":
-    if len(argv) == 1:
-        main("./NSL_KDD_train.csv")
-    else:
-        main(argv[1])
+    load_test("./shit.csv")
+    # if len(argv) == 1:
+    #    main("./NSL_KDD_train.csv")
+    # else:
+    #    main(argv[1])
