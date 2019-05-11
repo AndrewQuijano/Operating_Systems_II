@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6e9b56fd-d290-43c5-b7df-4ed5d7595aeb" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/mini_atk.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Fuzzer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Fuzzer.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/denial_of_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/denial_of_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fuzzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/fuzzer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/probe.py" beforeDir="false" afterPath="$PROJECT_DIR$/probe.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Machine_Learning/batch.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Machine_Learning/batch.txt" afterDir="false" />
-    </list>
+    <list default="true" id="6e9b56fd-d290-43c5-b7df-4ed5d7595aeb" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
