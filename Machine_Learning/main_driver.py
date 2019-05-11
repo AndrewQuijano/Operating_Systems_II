@@ -268,6 +268,15 @@ def ids_shell_args(args):
             file_parts = args[1].split('.')
             with open(file_parts[0] + ".csv", "w") as f:
                 subprocess.call(["sudo", "./kdd99extractor", "-e", args[1]], stdout=f)
+        elif args[0] == "process_2":  # args: pcap name
+            # subprocess.run(["python3", "../Sniffer/collect.py", args[1]])
+            file_parts = args[1].split('.')
+            with open(file_parts[0] + ".csv", "w") as f:
+                subprocess.call(["sudo", "./kdd99extractor_2", "-e", args[1]], stdout=f)
+        elif args[0] == "label":  # args: pcap name
+            file_parts = args[1].split('.')
+            label_testing_set(args[1], "encoded_" + file_parts[0] + ".csv")
+
         # DO NOT USE THIS! THIS ASSUMES TEXT TO PCAP
         # YOU DONT NEED THIS IF YOU HAVE TCPDUMP
         elif args[0] == "convert":  # args: file.tcpdump
