@@ -390,7 +390,7 @@ def label_testing_set(file_path, output):
         'efs': 16, 'hostnames': 23, 'uucp_path': 67, 'sql_net': 55, 'vmnet': 68,
         'iso_tsap': 29, 'netbios_ns': 38, 'kshell': 31, 'urh_i': 64, 'http_2784': 25,
         'harvest': 22, 'aol': 3, 'tftp_u': 61, 'http_8001': 27, 'tim_i': 62,
-        'red_i': 50
+        'red_i': 50, 'oth_i': 70
     }
 
     # Features are on Columns 1, 2, 3
