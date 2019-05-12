@@ -60,7 +60,6 @@ def tree_test(tree, test_x, test_y, extra_test=False):
     y_hat = tree.predict(test_x)
     print("[Decision_Tree] Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
 
-    make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=tree, clf_name='Decision_Tree')
     # Sanity check to match with test score
     if extra_test:
         top(tree, test_x, test_y, "Decision Tree", extra_attempts=1)
@@ -73,9 +72,10 @@ def tree_test(tree, test_x, test_y, extra_test=False):
         with open("classification_reports.txt", "a+") as my_file:
             my_file.write("---[Decision Tree]---\n")
             my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
-                                            labels=[str(i) for i in tree.classes_],
-                                            target_names=[str(i) for i in tree.classes_]))
+                                                labels=[str(i) for i in tree.classes_],
+                                                target_names=[str(i) for i in tree.classes_]))
             my_file.write('\n')
+        make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=tree, clf_name='Decision_Tree')
     else:
         print("Not all tests here!")
         # TODO: Manually build this!

@@ -84,8 +84,8 @@ def forest_test(best_forest, test_x, test_y, extra_test=False):
         with open("classification_reports.txt", "a+") as my_file:
             my_file.write("---[Random_Forest]---")
             my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
-                                            labels=[str(i) for i in best_forest.classes_],
-                                            target_names=[str(i) for i in best_forest.classes_]))
+                                                labels=[str(i) for i in best_forest.classes_],
+                                                target_names=[str(i) for i in best_forest.classes_]))
             my_file.write('\n')
         make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=best_forest, clf_name='Random_Forest')
     else:

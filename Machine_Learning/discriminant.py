@@ -70,12 +70,12 @@ def qda_test(qda, test_x, test_y, extra_test=False):
         top(qda, test_x, test_y, "QDA", extra_attempts=1)
         top(qda, test_x, test_y, "QDA", extra_attempts=3)
 
-    if num_test_y == len(np.unique(test_y)):
+    if num_test_y == len(qda.classes_):
         with open("classification_reports.txt", "a") as my_file:
             my_file.write("---[QDA]---\n")
             my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
-                                            labels=[str(i) for i in qda.classes_],
-                                            target_names=[str(i) for i in qda.classes_]))
+                                                labels=[str(i) for i in qda.classes_],
+                                                target_names=[str(i) for i in qda.classes_]))
             my_file.write('\n')
         make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=qda, clf_name='QDA')
     else:

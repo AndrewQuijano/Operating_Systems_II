@@ -8,8 +8,8 @@ from sklearn.model_selection import validation_curve
 from sklearn.metrics import confusion_matrix
 from matplotlib import pyplot as plt
 from collections import Counter
-# Next two lines prevent issues with threading for printing plots
 import pandas as pd
+import scikitplot as skplt
 # matplotlib.use('Agg')
 
 
@@ -138,6 +138,7 @@ def dual_frequency_histogram(hash_map1, hash_map2):
     ax.set_xlabel('Land Flag')
     ax.set_ylabel('Number of Connections')
     ax.set_xticks(ind2)
+    ax.set_xticklabels(tuple(hash_map1.keys))
 #    ax.set_xticklabels(('ICMP', 'TCP', 'UDP'))
 #    ax.set_xticklabels(('OTH', 'REJ', 'RSTO', 'RSTOS0', 'RSTR', 'S0', 'S1', 'S2', 'S3', 'SF', 'SH'))
 #    ax.set_xticklabels(("SF", "S2", "S1", "S3", "OTH", "REJ", "RSTO", "S0", "RSTR", "RSTOS0", "SH"))
@@ -169,8 +170,9 @@ def dual_frequency_histogram(hash_map1, hash_map2):
     plt.close()
 
 
-def percent_histogram(hash_map1, hash_map2):
-    fig, ax = plt.subplots()
+def plot_roc(y_test, y_hat):
+    skplt.metrics.plot_roc_curve(y_test, y_hat)
+    plt.show()
 
 
 def get_cv_set(training_set, test_set, percentile=0.2):
