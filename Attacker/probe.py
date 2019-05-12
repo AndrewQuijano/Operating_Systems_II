@@ -5,29 +5,37 @@ from scapy.all import *
 
 
 # Matches most with IPSWEEP
-def ping(ping_target="127.0.0.1", time_out=5, src_ip="192.168.147.160"):
-    answer = sr1(IP(src=src_ip, dst=ping_target)/ICMP()/b"XXXXXXXXXXX", timeout=time_out)
+def ping(ping_target="127.0.0.1", time_out=3, src_ip="192.168.147.160", naive=True):
+    print("Start basic ping...")
+    if naive:
+        answer = sr1(IP(src=src_ip, dst=ping_target)/ICMP()/b"XXXXXXXXXXX", timeout=time_out)
+    else:
+        answer = sr1(IP(src=src_ip, dst=ping_target) / ICMP() / b"XXXXXXXXXXX", timeout=time_out, inter=1)
     if answer is not None:
         answer.show()
     else:
-        print("No answer at:" + ping_target)
+        print("[Ping] No answer at:" + ping_target)
     return answer
 
 
 # Return a Dictionary of <IP Address, Open Port>
 # Matches most with PORTSWEEP
-def host_scan(host, min_port=1024, max_port=65535, time_out=2, src_ip="192.168.147.161"):
+def host_scan(host, min_port=1024, max_port=65535, time_out=3, src_ip="192.168.147.161", naive=True):
+    print("Start Host Scan...")
     # Use TCP with SYN flag to look
-    ans, unans = sr(IP(src=src_ip, dst=host)/TCP(dport=range(min_port, max_port), flags="S"), timeout=time_out)
-    ans_list = list(ans)
-    for a in ans_list:
-        print(a)
+    if naive:
+        ans, unans = sr(IP(src=src_ip, dst=host)/TCP(dport=range(min_port, max_port), flags="S"), timeout=time_out)
+    else:
+        ans, unans = sr(IP(src=src_ip, dst=host) / TCP(dport=range(min_port, max_port), flags="S"), timeout=time_out,
+                        inter=1)
 
     # Use TCP with ACK flag to look
-    ans, unans = sr(IP(src=src_ip, dst=host)/TCP(dport=range(min_port, max_port), flags="A"), timeout=time_out)
-    ans_list = list(ans)
-    for a in ans_list:
-        print(a)
+    if naive:
+        ans, unans = sr(IP(src=src_ip, dst=host)/TCP(dport=range(min_port, max_port), flags="A"), timeout=time_out)
+    else:
+        ans, unans = sr(IP(src=src_ip, dst=host) / TCP(dport=range(min_port, max_port), flags="A"), timeout=time_out,
+                        inter=1)
+    print("Host Scan complete...")
 
 
 # UDP Ping
@@ -35,11 +43,14 @@ def host_scan(host, min_port=1024, max_port=65535, time_out=2, src_ip="192.168.1
 # from live hosts. Here you can pick any port which is most likely to be closed,
 # such as port 0:
 # Matches most with PORTSWEEP
-def udp_ping(host, min_port=0, max_port=65535, time_out=2, src_ip="192.168.147.162"):
-    ans, unans = sr(IP(src=src_ip, dst=host) / UDP(dport=range(min_port, max_port)), timeout=time_out)
-    ans_list = list(ans)
-    for a in ans_list:
-        print(a)
+def udp_ping(host, min_port=0, max_port=65535, time_out=3, src_ip="192.168.147.162", naive=True):
+    print("UDP scan of all ports...")
+    if naive:
+        ans, unans = sr(IP(src=src_ip, dst=host) / UDP(dport=range(min_port, max_port)), timeout=time_out)
+    else:
+        ans, unans = sr(IP(src=src_ip, dst=host) / UDP(dport=range(min_port, max_port)), timeout=time_out,
+                        inter=1)
+    print("UDP Scan complete...")
 
 
 # ARP-Ping

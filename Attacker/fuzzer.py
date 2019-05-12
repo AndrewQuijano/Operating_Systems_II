@@ -90,26 +90,26 @@ def parse_dos(args):
     try:
         if args[1] == "syn":
             if valid_ip(args[2]) and valid_port(args[3], dos=True):
-                syn_flood(args[2], args[3])
+                syn_flood(args[2], args[3], naive=False)
             else:
                 print("usage: dos syn <Target IP> <Port Number>")
 
         # Technically this is more application layer kind of attack...
         elif args[1] == "back" and valid_ip(args[2]):
-            back(args[2], payload="../index.html")
+            back(args[2], payload="../index.html", naive=False)
 
         elif args[1] == "land" and valid_ip(args[2]) and valid_port(args[3], dos=True):
-            land(args[2], args[3])
+            land(args[2], args[3], naive=False)
 
         elif args[1] == "pod" and valid_ip(args[2]):
-            pod(args[2])
+            pod(args[2], naive=False)
 
         elif args[1] == "smurf" and valid_ip(args[2]):
-            smurf(args[2], args[2])
+            smurf(args[2], args[2], naive=False)
 
         elif args[1] == "teardrop" and valid_ip(args[2]) \
                 and (args[3] == '0' or args[3] == '1' or args[3] == '2' or args[3] == '3' or args[3] == '4'):
-            teardrop(args[2], args[3])
+            teardrop(args[2], args[3], naive=False)
 
     except IndexError:
         print("Index out of bounds!")
@@ -120,17 +120,17 @@ def parse_probe(args):
 
     try:
         if args[1] == "ping":
-            ping(ping_target=args[2], time_out=5)
+            ping(ping_target=args[2], time_out=5, naive=False)
 
         elif args[1] == "host_scan" and valid_ip(args[2]):
             # Return a Dictionary of <IP Address, Open Port>
-            host_scan(args[2], min_port=1024, max_port=65535, time_out=2)
+            host_scan(args[2], min_port=1024, max_port=65535, time_out=3, naive=False)
 
         # If all else fails there is always UDP Ping which will produce ICMP Port unreachable errors
         # from live hosts. Here you can pick any port which is most likely to be closed,
         # such as port 0:
         elif args[1] == "udp_ping" and valid_ip(args[2]):
-            udp_ping(args[2], min_port=0, max_port=65535, time_out=2)
+            udp_ping(args[2], min_port=0, max_port=65535, time_out=3, naive=False)
 
         # TODO: Valid network address to scan?
         elif args[1] == "arp_ping":
