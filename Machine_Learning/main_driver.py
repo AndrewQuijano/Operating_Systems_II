@@ -636,8 +636,6 @@ def kdd_prep_test(file):
 
 
 def load_test(test_set):
-    # svm_line_clf = load('svm_line.joblib')
-    # svm_rbf_clf = load('svm_rbf.joblib')
     test_x, test_y = read_data(test_set)
     forest_clf = load('random_forest.joblib')
     logistic_clf = load('logistic.joblib')
@@ -658,7 +656,9 @@ def stats_columns(label):
 
 # TODO: Learn to train with generators
 if __name__ == "__main__":
-    basic_ids()
+    # basic_ids()
     # Get ALL stats about NORMAL
     # label_testing_set('./test_1.csv', 'shit.csv')
     # stats_columns('11')
+    load_test("./test_1.csv")
+    # load_test("./test_2.csv")
