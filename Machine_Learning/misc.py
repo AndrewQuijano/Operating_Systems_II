@@ -13,14 +13,15 @@ import pandas as pd
 # matplotlib.use('Agg')
 
 
-def read_data(file, skip_head=True):
-    if skip_head:
-        features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=float, autostrip=True, converters=None)
+def read_data(file, has_header=False):
+    if has_header:
+        features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=float, autostrip=True, data=True)
     else:
-        features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=float, autostrip=True, converters=None)
+        features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=float, autostrip=True)
 
     if np.isnan(features).any():
-        if skip_head:
+        print("Classes are NOT numeric!")
+        if has_header:
             features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=str, autostrip=True, converters=None)
         else:
             features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=str, autostrip=True, converters=None)
@@ -34,6 +35,7 @@ def read_data(file, skip_head=True):
             features.astype(float)
     else:
         classes = features[:, 0]
+        # classes = classes.astype(str)
         features = features[:, 1:]
     return features, classes
 

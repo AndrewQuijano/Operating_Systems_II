@@ -56,6 +56,7 @@ def get_tree(train_x, train_y, n_fold=10, slow=False):
 
 
 def tree_test(tree, test_x, test_y, extra_test=False):
+    num_test_y = len(np.unique(test_y))
     y_hat = tree.predict(test_x)
     print("[Decision_Tree] Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
 
@@ -68,9 +69,13 @@ def tree_test(tree, test_x, test_y, extra_test=False):
     with open("results.txt", "a+") as my_file:
         my_file.write("[Decision_Tree] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 
-    with open("classification_reports.txt", "a+") as my_file:
-        my_file.write("---[Decision Tree]---\n")
-        my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
+    if num_test_y == len(tree.classes_):
+        with open("classification_reports.txt", "a+") as my_file:
+            my_file.write("---[Decision Tree]---\n")
+            my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
                                             labels=[str(i) for i in tree.classes_],
                                             target_names=[str(i) for i in tree.classes_]))
-        my_file.write('\n')
+            my_file.write('\n')
+    else:
+        print("Not all tests here!")
+        # TODO: Manually build this!

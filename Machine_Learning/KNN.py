@@ -40,20 +40,24 @@ def get_knn(train_x, train_y, n_fold=10, slow=True):
 
 
 def knn_test(best_knn, test_x, test_y, extra_test=False):
+    num_test_y = len(np.unique(test_y))
+
     y_hat = best_knn.predict(test_x)
     print("[KNN] Testing Score is: " + str(accuracy_score(test_y, y_hat)))
-
-    make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=best_knn, clf_name='KNN')
+    with open("results.txt", "a+") as my_file:
+        my_file.write("[KNN] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 
     if extra_test:
         top(best_knn, test_x, test_y, "KNN", extra_attempts=1)
         top(best_knn, test_x, test_y, "KNN", extra_attempts=3)
 
-    with open("results.txt", "a+") as my_file:
-        my_file.write("[KNN] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
-    with open("classification_reports.txt", "a+") as my_file:
-        my_file.write("---[KNN]---")
-        my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
-                                            labels=[str(i) for i in best_knn.classes_],
-                                            target_names=[str(i) for i in best_knn.classes_]))
-        my_file.write('\n')
+    if num_test_y == len(best_knn.classes_):
+        with open("classification_reports.txt", "a+") as my_file:
+            my_file.write("---[KNN]---")
+            my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
+                                                labels=[str(i) for i in best_knn.classes_],
+                                                target_names=[str(i) for i in best_knn.classes_]))
+            my_file.write('\n')
+        make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=best_knn, clf_name='KNN')
+    else:
+        print("TODO")

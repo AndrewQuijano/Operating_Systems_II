@@ -37,52 +37,45 @@ def naive_bayes_test(clf, clf_isotonic, clf_sigmoid, test_x, test_y, extra_test=
     prob_pos_isotonic = clf_isotonic.predict(test_x)
     prob_pos_sigmoid = clf_sigmoid.predict(test_x)
 
-    # Evaluate Results
-    # Sanity check to match with test score
     if extra_test:
         top(clf, test_x, test_y, "Naive Bayes")
-        top(clf, test_x, test_y, "Naive Bayes", 3)
-
-    with open("results.txt", "a+") as my_file:
-        my_file.write("[NB] Testing Mean Test Score: " + str(accuracy_score(test_y, prob_pos_clf)))
-    with open("classification_reports.txt", "a+") as my_file:
-        my_file.write("---[Naive Bayes]---")
-        my_file.write(classification_report(y_true=test_y, y_pred=prob_pos_clf,
-                                            labels=[str(i) for i in clf.classes_],
-                                            target_names=[str(i) for i in clf.classes]))
-    # print(classification_report(test_y, prob_pos_clf, target_names=[str(i) for i in clf.classes_]))
-    make_confusion_matrix(y_true=test_y, y_pred=prob_pos_clf, clf=clf, clf_name='Naive_Bayes')
-
-    # Sanity check to match with test score
-    if extra_test:
         top(clf, test_x, test_y, "Bayes with Isotonic Calibration")
+        top(clf, test_x, test_y, "Bayes with Sigmoid Calibration")
+        top(clf, test_x, test_y, "Naive Bayes", 3)
         top(clf, test_x, test_y, "Bayes with Isotonic Calibration", 3)
+        top(clf, test_x, test_y, "Bayes with Sigmoid Calibration", 3)
 
     with open("results.txt", "a+") as my_file:
+        my_file.write("[NB] Testing Mean Test Score: " + str(accuracy_score(test_y, prob_pos_clf)) + '\n')
         my_file.write("[NB Isotonic] Testing Mean Test Score: " + str(accuracy_score(test_y, prob_pos_isotonic)) + '\n')
+        my_file.write("[NB Sigmoid] Testing Mean Test Score: " + str(accuracy_score(test_y, prob_pos_sigmoid)) + '\n')
+
+    """
+    with open("classification_reports.txt", "a+") as my_file:
+        my_file.write("---[Bayes with Sigmoid Calibration]---")
+        my_file.write(classification_report(y_true=test_y, y_pred=prob_pos_sigmoid,
+                                            labels=[str(i) for i in clf_sigmoid.classes_],
+                                            target_names=[str(i) for i in clf_sigmoid.classes_]))
+        my_file.write('\n')
+
     with open("classification_reports.txt", "a+") as my_file:
         my_file.write("---[Bayes with Isotonic Calibration]---\n")
         my_file.write(classification_report(y_true=test_y, y_pred=prob_pos_isotonic,
                                             labels=[str(i) for i in clf_isotonic.classes_],
                                             target_names=[str(i) for i in clf_isotonic.classes_]))
         my_file.write('\n')
-    # print(classification_report(test_y, prob_pos_isotonic, target_names=[str(i) for i in clf_isotonic.classes_]))
-    make_confusion_matrix(y_true=test_y, y_pred=prob_pos_isotonic, clf=clf_isotonic, clf_name='Naive_Bayes_Isotonic')
 
-    # Sanity check to match with test score
-    if extra_test:
-        top(clf, test_x, test_y, "Bayes with Sigmoid Calibration")
-        top(clf, test_x, test_y, "Bayes with Sigmoid Calibration")
-
-    with open("results.txt", "a+") as my_file:
-        my_file.write("[NB Sigmoid] Testing Mean Test Score: " + str(accuracy_score(test_y, prob_pos_sigmoid)))
     with open("classification_reports.txt", "a+") as my_file:
-        my_file.write("---[Bayes with Sigmoid Calibration]---")
-        my_file.write(classification_report(y_true=test_y, y_pred=prob_pos_sigmoid,
-                                            labels=[str(i) for i in clf_sigmoid.classes_],
-                                            target_names=[str(i) for i in clf_sigmoid.classes_]))
-    # print(classification_report(test_y, prob_pos_sigmoid, target_names=[str(i) for i in clf_sigmoid.classes_]))
+        my_file.write("---[Naive Bayes]---")
+        my_file.write(classification_report(y_true=test_y, y_pred=prob_pos_clf,
+                                            labels=[str(i) for i in clf.classes_],
+                                            target_names=[str(i) for i in clf.classes]))
+        my_file.write('\n')
+
+    make_confusion_matrix(y_true=test_y, y_pred=prob_pos_clf, clf=clf, clf_name='Naive_Bayes')
+    make_confusion_matrix(y_true=test_y, y_pred=prob_pos_isotonic, clf=clf_isotonic, clf_name='Naive_Bayes_Isotonic')
     make_confusion_matrix(y_true=test_y, y_pred=prob_pos_sigmoid, clf=clf_sigmoid, clf_name='Naive_Bayes_Sigmoid')
+    """
 
 
 def bayes_load_test(test_set, test_x=None, test_y=None):

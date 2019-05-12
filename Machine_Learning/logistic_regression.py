@@ -39,21 +39,24 @@ def get_logistic(train_x, train_y, n_fold=10, slow=True):
 
 
 def log_linear_test(log_model, test_x, test_y, extra_test=False):
+    num_y_test = len(np.unique(test_y))
     y_hat = log_model.predict(test_x)
     print("[Logistic] Testing Score is: " + str(accuracy_score(y_true=test_y, y_pred=y_hat)))
-    make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=log_model, clf_name='Logistic_Regression')
+
+    with open("results.txt", "a+") as my_file:
+        my_file.write("[Logistic Regression] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 
     if extra_test:
         top(log_model, test_x, test_y, "Logistic_Regression", extra_attempts=1)
         top(log_model, test_x, test_y, "Logistic_Regression", extra_attempts=3)
 
-    with open("results.txt", "a+") as my_file:
-        my_file.write("[Logistic Regression] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
-
-    with open("classification_reports.txt", "a+") as my_file:
-        my_file.write("---[Logistic Regression]---")
-        my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
-                                            labels=[str(i) for i in log_model.classes_],
-                                            target_names=[str(i) for i in log_model.classes_]))
-        my_file.write('\n')
-
+    if num_y_test == len(log_model.classes_):
+        with open("classification_reports.txt", "a+") as my_file:
+            my_file.write("---[Logistic Regression]---")
+            my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
+                                                labels=[str(i) for i in log_model.classes_],
+                                                target_names=[str(i) for i in log_model.classes_]))
+            my_file.write('\n')
+        make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=log_model, clf_name='Logistic_Regression')
+    else:
+        print("TODO")
