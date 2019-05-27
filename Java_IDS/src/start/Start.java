@@ -13,6 +13,7 @@ import org.jnetpcap.PcapIf;
 import org.jnetpcap.packet.PcapPacket;
 import org.jnetpcap.packet.PcapPacketHandler;
 import org.jnetpcap.protocol.network.Arp;
+import org.jnetpcap.protocol.tcpip.Tcp;
 
 import nids.Sniffer;
 import nids.kdd;
@@ -31,18 +32,22 @@ public class Start
 
 	public static void main(String[] args) throws Exception 
 	{
+		/*
 		if(!Sniffer.start())
 		{
 			System.out.println("Error!");
 		}
+		*/
 		
 		kdd test = new kdd();
-		List<PcapPacket> l = test.getPacketList("lol.pcap");
+		List<PcapPacket> l = test.getPacketList("C:\\Users\\Andrew\\Desktop\\lol.pcap");
+		Tcp t = new Tcp();
 		
 		for (int i = 0; i < l.size(); i++)
 		{
 			PcapPacket p = l.get(i);
-			System.out.println(p.toString());
+			//t = p.getHeader(t);
+			//System.out.println(t.toString());
 		}
 		/*
 

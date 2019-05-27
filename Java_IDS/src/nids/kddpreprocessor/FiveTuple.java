@@ -1,5 +1,7 @@
 package nids.kddpreprocessor;
 
+import org.jnetpcap.protocol.network.Ip4;
+
 public class FiveTuple
 {
 	public int ip_proto;
@@ -8,16 +10,24 @@ public class FiveTuple
 	public int src_port;
 	public int dst_port;
 	
-	public FiveTuple()
+	public FiveTuple(Ip4 ip)
 	{
-		
+		ip_proto = 0;
+		src_ip = 0;
+		dst_ip = 0;
+		src_port = 0;
+		dst_port = 0;
 	}
 	
-	/*
-	public five_tuple(ip_proto(PROTO_ZERO), src_ip(0), dst_ip(0), src_port(0), dst_port(0))
+	public FiveTuple()
 	{
+		ip_proto = 0;
+		src_ip = 0;
+		dst_ip = 0;
+		src_port = 0;
+		dst_port = 0;
 	}
-	*/
+	
 	
 	int get_ip_proto()
 	{

@@ -33,10 +33,13 @@ public class Start
 			System.err.printf("Can't read list of devices, error is %s", errbuf.toString());  
 			return;  
 		}
-		int i=0;
+		int i = 0;
 		while(i < alldevs.size())
 		{
-			System.out.println(i+" : "+alldevs.get(i++).getName());
+			PcapIf iface = alldevs.get(i);
+			System.out.println(i +" : " + iface.getName());
+			System.out.println(iface.getDescription());
+			++i;
 		}
 		System.out.println("Enter which device do you want to use to listen :");
 		int choice = new Scanner(System.in).nextInt();
@@ -153,7 +156,7 @@ public class Start
 				{
 					System.out.printf("%d, ", p.getFrameNumber());
 				}
-			} 
+			}
 			else 
 			{
 				for (JPacket p : flow.getAll()) 
