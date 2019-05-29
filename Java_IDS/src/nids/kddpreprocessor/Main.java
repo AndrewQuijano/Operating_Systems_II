@@ -80,7 +80,7 @@ public class Main
 
 				Timestamp now = frag.get_end_ts();
 
-				// IP Reassembly, frag must not be used after this
+				// IP Reassemble, frag must not be used after this
 				datagr = reasm.reassemble(frag);
 
 				// Conversation reconstruction
@@ -121,7 +121,7 @@ public class Main
 
 	static void usage(String name)
 	{
-		// Option '-' orignaly meant to use big read timeouts and exit on first timeout. Other approach used
+		// Option '-' originally meant to use big read timeouts and exit on first timeout. Other approach used
 		// because original approach did not work (does this option make sense now?).
 		System.out.println("KDD'99-like feature extractor");
 		//System.out.println("Build time : " << __DATE__ << " " << __TIME__ << endl << endl

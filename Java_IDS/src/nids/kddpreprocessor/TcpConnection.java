@@ -11,12 +11,12 @@ public class TcpConnection
 		
 	}
 	
-	public TcpConnection(FiveTuple tuple, Conversation x)
+	public TcpConnection(FiveTuple tuple)
 	{
 		five_tuple = tuple;
 	}
 
-	public TcpConnection(Packet packet, Conversation y)
+	public TcpConnection(Packet packet)
 	{
 		
 	}
@@ -28,7 +28,8 @@ public class TcpConnection
 		boolean originator = (packet.get_src_ip() == five_tuple.get_src_ip());
 		tcp_field_flags_t f = packet.get_tcp_flags();
 
-		switch (state) {
+		switch (state) 
+		{
 		case INIT:
 			if (f.syn() && f.ack())
 				state = S4;
@@ -39,13 +40,15 @@ public class TcpConnection
 			break;
 
 		case S0:
-			if (originator) {
+			if (originator) 
+			{
 				if (f.rst())
 					state = RSTOS0;
 				else if (f.fin())
 					state = SH;
 			}
-			else { // from responder
+			else 
+			{ // from responder
 				if (f.rst())
 					state = REJ;
 				else if (f.syn() && f.ack())
@@ -63,26 +66,30 @@ public class TcpConnection
 			break;
 
 		case S1:
-			if (originator) {
+			if (originator) 
+			{
 				if (f.rst())
 					state = RSTO;
 				else if (f.ack())
 					state = ESTAB;
 			}
-			else { // responder
+			else 
+			{ // responder
 				if (f.rst())
 					state = RSTR;
 			}
 			break;
 
 		case ESTAB:
-			if (originator) {
+			if (originator) 
+			{
 				if (f.rst())
 					state = RSTO;
 				else if (f.fin())
 					state = S2;
 			}
-			else { // responder
+			else 
+			{ // responder
 				if (f.rst())
 					state = RSTR;
 				else if (f.fin())
@@ -91,11 +98,13 @@ public class TcpConnection
 			break;
 
 		case S2:
-			if (originator) {
+			if (originator) 
+			{
 				if (f.rst())
 					state = RSTO;
 			}
-			else { // responder
+			else 
+			{ // responder
 				if (f.rst())
 					state = RSTR;
 				else if (f.fin())
@@ -104,37 +113,43 @@ public class TcpConnection
 			break;
 
 		case S3:
-			if (originator) {
+			if (originator) 
+			{
 				if (f.rst())
 					state = RSTO;
 				else if (f.fin())
 					state = S3F;
 			}
-			else { // responder
+			else 
+			{ // responder
 				if (f.rst())
 					state = RSTR;
 			}
 			break;
 
 		case S2F:
-			if (originator) {
+			if (originator) 
+			{
 				if (f.rst())
 					state = RSTO;
 				else if (f.ack())
 					state = SF;
 			}
-			else { // responder
+			else 
+			{ // responder
 				if (f.rst())
 					state = RSTR;
 			}
 			break;
 
 		case S3F:
-			if (originator) {
+			if (originator) 
+			{
 				if (f.rst())
 					state = RSTO;
 			}
-			else { // responder
+			else 
+			{ // responder
 				if (f.rst())
 					state = RSTR;
 				else if (f.ack())
