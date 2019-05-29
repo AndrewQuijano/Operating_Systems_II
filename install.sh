@@ -20,6 +20,7 @@ sudo pip3 install pandas
 sudo pip3 install pyshark
 sudo pip3 install joblib
 sudo pip3 install pikepdf
+sudo pip3 install scikit-plot
 
 # Update the packages, Written as of May 4, 2019
 # You want sklearn 0.20.3 scipy 1.1.0 numpy 1.16.3

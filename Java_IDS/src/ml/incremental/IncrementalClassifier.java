@@ -9,8 +9,6 @@ import weka.classifiers.UpdateableClassifier;
 import weka.classifiers.bayes.NaiveBayesMultinomialUpdateable;
 import weka.classifiers.bayes.NaiveBayesUpdateable;
 import weka.classifiers.functions.SGD;
-//import weka.classifiers.bayes.NaiveBayesMultinomialText;
-//import weka.classifiers.functions.SGDText;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.lazy.KStar;
 import weka.classifiers.lazy.LWL;
@@ -19,25 +17,58 @@ import weka.classifiers.trees.HoeffdingTree;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class IncrementalClassifier 
 {
-	private static UpdateableClassifier [] clf =
-	{
-		new NaiveBayesUpdateable(), 
-		new HoeffdingTree(),
-		new IBk(), 
-		new KStar(), 
-		new LWL(), 
-		new MultiClassClassifierUpdateable(),
-		new SGD()
-	};
-	// new NaiveBayesMultinomialUpdateable(), 
-	// new NaiveBayesMultinomialText(),
-	// new SGDText()
-	private static final int NUM_CLF = clf.length;
-	private static Evaluation [] evaluation = new Evaluation[NUM_CLF];
+	private static UpdateableClassifier [] clf;
+	private static Evaluation [] evaluation;
+	private static int NUM_CLF = clf.length;
 	private static final int CAPACITY = 10000;
+	
+	public static void init()
+	{
+		ArrayList<UpdateableClassifier> c = new ArrayList<UpdateableClassifier>();
+		c.add(new NaiveBayesUpdateable());
+		c.add(new HoeffdingTree());
+		c.add(new NaiveBayesUpdateable());
+		c.add(new HoeffdingTree());
+		c.add(new IBk());
+		c.add(new KStar());
+		c.add(new LWL());
+		c.add(new MultiClassClassifierUpdateable());
+		c.add(new SGD());
+		//c.add(new NaiveBayesMultinomialUpdateable());
+		//c.add(new NaiveBayesMultinomialText());
+		//c.add(new SGDText());
+		clf = c.toArray(new UpdateableClassifier[c.size()]);
+		NUM_CLF = clf.length;
+		evaluation = new Evaluation[NUM_CLF];
+	}
+	
+	public static void train_incrementally(String filepath) throws Exception
+	{
+		ArffLoader load = new ArffLoader();
+		load.setFile(new File(filepath));
+		Instances data = load.getStructure();
+		data.setClassIndex(data.numAttributes() - 1);
+		Instance current = null;
+
+		for (int i = 0; i < NUM_CLF;i++)
+		{
+			Classifier x = (Classifier) clf[i];
+			x.buildClassifier(data);
+			evaluation[i] = new Evaluation(data);
+		}
+		
+		while ((current = load.getNextInstance(data)) != null) 
+		{
+			for (UpdateableClassifier u: clf)
+			{
+				u.updateClassifier(current);
+			}
+		}
+	}
 	
 	public static Instances read_arff_file(String filepath) throws IOException
 	{
@@ -90,50 +121,24 @@ public class IncrementalClassifier
 	 */
 	public static void main(String[] args) throws Exception 
 	{
-		// load data
-		Instances training_data = null;
+		init();
 		Instances test_data = null;
 		try
 		{
-			training_data = read_arff_file_part("C:\\Users\\Andrew\\Desktop\\NSL-KDD\\KDDTrain+.arff", 0);
 			test_data = read_arff_file("C:\\Users\\Andrew\\Desktop\\NSL-KDD\\KDDTest+.arff");
+			train_incrementally("C:\\Users\\Andrew\\Desktop\\NSL-KDD\\KDDTrain+.arff");
 		}
-		catch(IOException io)
+		catch(Exception e)
 		{
 			
-		}
-		
-		ArffLoader load = new ArffLoader();
-		load.setFile(new File("C:\\Users\\Andrew\\Desktop\\NSL-KDD\\KDDTrain+.arff"));
-		Instances data = load.getStructure();
-		data.setClassIndex(data.numAttributes() - 1);
-		Instance current = null;
-
-		for (int i = 0; i < NUM_CLF;i++)
-		{
-			for (UpdateableClassifier u: clf)
-			{
-				Classifier x = (Classifier) u;
-				x.buildClassifier(data);
-			}
-		}
-		
-		while ((current = load.getNextInstance(data)) != null) 
-		{
-			for (UpdateableClassifier u: clf)
-			{
-				u.updateClassifier(current);
-			}
 		}
 		
 		// Get The Training Score of the Model
 		for (int i = 0; i < NUM_CLF; i++)
 		{
-			evaluation[i] = new Evaluation(data);
 			// Get Test Score
 			evaluation[i].evaluateModel((Classifier) clf[i], test_data);
-			double incorrect = evaluation[i].incorrect()/test_data.size();
-			System.out.println(1.0 - incorrect);
+			System.out.println(evaluation[i].pctCorrect());
 		}
 	}
 }
