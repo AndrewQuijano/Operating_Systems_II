@@ -54,5 +54,5 @@ def log_linear_test(log_model, test_x, test_y, extra_test=False):
         # It will crash if you don't have same number of stuff. The Classification report stuff must
         # be obtained manually
 
-        # precision    recall  f1-score   support
+        # precision, recall, f1-score, support
         print("TODO")

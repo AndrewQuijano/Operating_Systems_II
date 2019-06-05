@@ -18,6 +18,8 @@ from operator import itemgetter
 # from sklearn.externals.joblib import load
 from joblib import load
 from math import sqrt
+from os.path import basename, dirname, abspath
+from os import name
 
 
 # Just test functionality of script!
@@ -40,6 +42,15 @@ def main():
 
         # Now make a split between training and testing set from the input data
         train_x, train_y, test_x, test_y = get_cv_set(train_x, train_y)
+        p = dirname(abspath(argv[1]))
+        b = basename(argv[1])
+
+        if name == 'nt':
+            np.savetxt(p + "\\train_" + b, train_x, delimiter=",")
+            np.savetxt(p + "\\test_" + b, test_x, delimiter=",")
+        else:
+            np.savetxt(p + "/train_" + b, train_x, delimiter=",")
+            np.savetxt(p + "/test_" + b, test_x, delimiter=",")
 
     elif len(argv) == 3:
         # Read the training and testing data-set
@@ -56,7 +67,6 @@ def main():
         else:
             print("Testing Set Not Found or invalid file extension!")
             exit(0)
-
     else:
         print("Usage: python3 main_driver <train-set> <test-set>")
         exit(0)
@@ -143,45 +153,31 @@ def ids():
     # print("SVM Linear Model Ready!")
     print("Fitting RBF SVM...")
     svm_rbf_clf = svm_rbf(train_x, train_y, n_fold=kf, slow=False)
-    # svm_rbf_clf = svm_rbf_raw(train_x, train_y)
     # print("SVM RBF Kernel Ready!")
 
     # 4- Random Forest
     print("Fitting Random Forest...")
     forest_clf = get_forest(train_x, train_y, n_fold=kf, slow=False)
-    # forest_clf = get_forest_raw(train_x, train_y)
     # print("Random Forest Ready!")
 
     # 5- Logistic Regression
     print("Fitting Logistic Regression...")
     logistic_clf = get_logistic(train_x, train_y, n_fold=kf, slow=False)
-    # logistic_clf = logistic_raw(train_x, train_y)
     # print("Logistic Regression Ready!")
 
     # 6- KNN
     print("Fitting KNN...")
     knn_clf = get_knn(train_x, train_y, n_fold=kf, slow=False)
-    # knn_clf = tune_knn(train_x, train_y, n_fold=5, slow=False)
     # print("KNN ready!")
 
     # 7- Decision Tree
     print("Fitting Decision tree...")
     tree = get_tree(train_x, train_y, n_fold=kf, slow=False)
     # tree = decision_tree_raw(train_x, train_y)
-    # print("Decision tree ready!")
+    print("Decision tree ready!")
 
     print("--- Model Training Time: %s seconds ---" % (time.time() - start_time))
     print("All models are trained...")
-
-    # Here execute commands that are needed ahead of time
-    # print("Running batch process of other tasks")
-    # if is_valid_file_type("batch.txt"):
-    #    with open("batch.txt") as f:
-    #        for line in f:
-    #            ids_shell_args(line.split())
-    # print("Complete!")
-
-    # svm_line_clf, svm_rbf_clf, forest_clf, logistic_clf, knn_clf, tree = load_classifiers()
 
     while True:
 
@@ -275,31 +271,6 @@ def ids_shell_args(args):
         elif args[0] == "label":  # args: pcap name
             file_parts = args[1].split('.')
             label_testing_set(args[1], "encoded_" + file_parts[0] + ".csv")
-
-        # DO NOT USE THIS! THIS ASSUMES TEXT TO PCAP
-        # YOU DONT NEED THIS IF YOU HAVE TCPDUMP
-        elif args[0] == "convert":  # args: file.tcpdump
-            file_parts = args[1].split('.')
-            if len(file_parts) != 2:
-                print("Not valid file name!")
-                print(file_parts[0])
-                print(file_parts[1])
-                return
-            if file_parts[1] != "tcpdump":
-                print("Not a tcpdump file!")
-                return
-            # Step 1- Convert tcpdump to textfile that can be read!
-            with open(file_parts[0] + ".txt", "w") as f:
-                subprocess.call(["tcpdump", "-r", file_parts[0] + ".tcpdump"], stdout=f)
-            print(file_parts[1] + ".txt is generated!")
-
-            # Step 2- convert the readable tcpdump to the right format
-            convert_tcp_dump_to_text(file_parts[0] + ".txt", file_parts[0] + "2.txt")
-            print(file_parts[1] + "2.txt is generated")
-
-            # Step 3- complete conversion to PCAP format
-            subprocess.run(["text2pcap", file_parts[0] + "2.txt", file_parts[0] + ".pcap"])
-            print("Conversion Complete!")
 
         elif args[0] == "pcap":
             file_parts = args[1].split('.')
@@ -522,18 +493,6 @@ def std_dev_freq(freq, miu=None):
     sigma = sigma/n
     sigma = sqrt(sigma)
     return sigma
-
-
-# This was created because lack of time
-# I need to know how long it takes to fit each classifier.
-# Then I can just use some basic math to figure out how much CV I can do
-def fit_time(train_x, train_y):
-    raw_knn(train_x, train_y)
-    logistic_raw(train_x, train_y)
-    decision_tree_raw(train_x, train_y)
-    get_forest_raw(train_x, train_y)
-    svm_linear_raw(train_x, train_y)
-    svm_rbf_raw(train_x, train_y)
 
 
 def basic_ids():

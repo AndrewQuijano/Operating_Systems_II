@@ -112,18 +112,48 @@ def unique_features(file_name, col_number):
 
 
 # Given a file and list of columns to encode, this will take care of that.
-def kdd_prep(file_name, to_encode):
-    mapping = []
+def kdd_prep_2(file_name, to_encode, col_drop=None, shift=True):
+    encoders = []
     for col in to_encode:
         features = unique_features(file_name, col)
         lab = LabelEncoder()
         lab.fit(features)
+        encoders.insert(col, lab)
         label = lab.transform(features)
         with open("./labels.txt", "w") as f:
+            f.write("For Column " + str(col))
             for k, v in features, label:
                 f.write(k + "," + str(v) + '\n')
             f.write('\n')
 
+    with open(file_name) as read_kdd_data, open("./kddcup_prep.csv", "w") as write_kdd:
+        for line in read_kdd_data:
+            # Swap using encoder
+            line = line.rstrip()
+            parts = line.split(",")
+            # Starting from 0..
+            # I must edit Column 1, 2, 3, 41
+            for c in to_encode:
+                parts[c] = str(encoders[c].transform(parts[c]))
+
+            # Personally, I like my classes on first column not last
+            if shift:
+                last_column = parts[len(parts) - 1]
+                parts.remove(parts[len(parts) - 1])
+                parts.insert(0, last_column)
+
+            # Check if you want to drop columns
+            if col_drop is not None:
+                for column in col_drop:
+                    parts.remove(column)
+
+            # Write the result
+            new_line = ','.join(parts)
+            write_kdd.write(new_line + '\n')
+            write_kdd.flush()
+
+
+def kdd_prep(file_name):
     # I know that there are some features that need to be encoded
     services = LabelEncoder()
     flags = LabelEncoder()
@@ -201,7 +231,7 @@ def shift_column(file_name):
             last_column = parts[len(parts) - 1]
             parts.remove(parts[len(parts) - 1])
             parts.insert(0, last_column)
-            # Write
+            # Write the result
             new_line = ','.join(parts)
             write_kdd.write(new_line + '\n')
             write_kdd.flush()
@@ -238,15 +268,15 @@ def pcap(file_path, new_file=None):
         call(["tcpdump", "-r", file_path, "-w", str(file_parts[0]) + ".pcap"])
 
 
-def process(file_path, new_file=None):
-    file_name = basename(file_path)
-    file_parts = file_name.split('.')
+def process(file_name, new_file=None):
+    p = dirname(abspath(file_name))
+    file_name = basename(file_name)
     if new_file is None:
-        with open(str(file_parts[0]) + ".csv", "w") as f:
-            call(["sudo", "./kdd99extractor", file_path], stdout=f)
+        with open(p + "\\" + str(file_name.split(".")[0]) + ".csv", "w") as f:
+            call(["sudo", "./kdd99extractor", file_name], stdout=f)
     else:
         with open(new_file, "w") as f:
-            call(["sudo", "./kdd99extractor", file_path], stdout=f)
+            call(["sudo", "./kdd99extractor", file_name], stdout=f)
 
 
 def build_kdd():
@@ -268,24 +298,20 @@ def build_kdd():
     merge_csv("kdd", n_parts=35)
 
 
-# 1- Filter out duplicates
-# 2- Any service with ICMP? KIll it
-def nsl_kdd_filter(kdd_file):
-    filter_row = {}
-    with open(kdd_file) as read_kdd_data:
+# Filter out any tuples that are duplicates
+# Used in NSL-KDD as it filters duplicates from KDD-Cup 1999
+def filter_duplicate(original_file, new_file):
+    s = set()
+    with open(original_file) as read_kdd_data:
         for line in read_kdd_data:
             # Swap using encoder
             line = line.rstrip()
-            # As my ML stuff excepts class on first column
-            if line in filter_row:
-                filter_row[line] = 1
-            else:
-                filter_row[line] = filter_row[line] + 1
-    # Print frequency data?
-    rows = list(filter_row.keys())
-    with open("./NSL_KDD.csv", "w") as write_kdd:
-        for r in rows:
-            write_kdd.write(r + '\n')
+            s.add(line)
+
+    # Print new data set
+    with open(new_file, "w+") as write_kdd:
+        for row in s:
+            write_kdd.write(row + '\n')
 
 
 def compare_csv(file_1, file_2):
@@ -302,7 +328,7 @@ def compare_csv(file_1, file_2):
 # To convert KDD
 # 1- First Swap columns AND Encode it
 # 2- Drop Columns that are content related
-# 3- Split into parts
+# 3- Split into parts -- FOR SAVING IT ONLY
 # **To use it, just merge it, use raw file name w/o extension!**
 if __name__ == "__main__":
     drop_columns("./kddcup.csv", [(0, 9), (21, 42)])

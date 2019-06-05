@@ -17,37 +17,25 @@ import scikitplot as skplt
 # After a lot of tinkering around, it is always best to have your classes be strings
 # for easier usage with Classification Reports and stuff.
 def read_data(file, has_header=False):
+    columns = n_col(file)
     if has_header:
-        features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=float, autostrip=True, data=True)
+        features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=float,
+                                 autostrip=True, usecols=[i for i in range(1, columns + 1)])
+        classes = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=str,
+                                autostrip=True, usecols=[0])
     else:
-        features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=float, autostrip=True)
-
-    if np.isnan(features).any():
-        print("Classes are NOT numeric!")
-        if has_header:
-            features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=str, autostrip=True, converters=None)
-        else:
-            features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=str, autostrip=True, converters=None)
-        classes = features[:, 0]
-        features = features[:, 1:]
-        # Now you have NaN in your features, ok now you have issues!
-        if np.isnan(features).any():
-            print("There are NaNs found in your features at: " + str(list(map(tuple, np.where(np.isnan(features))))))
-            exit(0)
-        else:
-            features.astype(float)
-    else:
-        classes = features[:, 0]
-        # classes = classes.astype(str)
-        features = features[:, 1:]
+        features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=float,
+                                 autostrip=True, usecols=[i for i in range(1, columns + 1)])
+        classes = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=str,
+                                autostrip=True, usecols=[0])
     return features, classes
 
 
 # KDD without content has 27 columns
 def read_data_pandas(file_name):
     col = n_col(file_name)
-    x = pd.read_csv(file_name, usecols=[i for i in range(1, col)])
-    y = pd.read_csv(file_name, usecols=0)
+    x = pd.read_csv(file_name, usecols=[i for i in range(1, col + 1)])
+    y = pd.read_csv(file_name, usecols=[0])
     x = x.to_numpy()
     y = y.to_numpy()
     return x, y
