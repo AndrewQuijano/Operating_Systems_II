@@ -8,13 +8,6 @@ from joblib import dump
 # from sklearn.externals.joblib import dump
 
 
-def get_forest_raw(train_x, train_y):
-    start_time = time.time()
-    forest = RandomForestClassifier(warm_start=False, n_estimators=100).fit(train_x, train_y)
-    print("--- Random Forest fit time: %s seconds ---" % (time.time() - start_time))
-    return forest
-
-
 def get_forest(train_x, train_y, n_fold=10, slow=False):
     start_time = time.time()
     best_forest = tune_forest(train_x, train_y, n_fold, slow)

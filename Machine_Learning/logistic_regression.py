@@ -7,14 +7,6 @@ from joblib import dump
 # from sklearn.externals.joblib import dump
 
 
-def logistic_raw(train_x, train_y):
-    start = time.time()
-    log = LogisticRegression(warm_start=False, max_iter=1000, multi_class='auto', solver='lbfgs')
-    log.fit(train_x, train_y)
-    print("[INFO] Generating Logistic Classifier took {:.2f} seconds".format(time.time() - start))
-    return log
-
-
 def get_logistic(train_x, train_y, n_fold=10, slow=True):
     start = time.time()
     n = np.logspace(-3, 3)
@@ -59,4 +51,8 @@ def log_linear_test(log_model, test_x, test_y, extra_test=False):
             my_file.write('\n')
         make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=log_model, clf_name='Logistic_Regression')
     else:
+        # It will crash if you don't have same number of stuff. The Classification report stuff must
+        # be obtained manually
+
+        # precision    recall  f1-score   support
         print("TODO")

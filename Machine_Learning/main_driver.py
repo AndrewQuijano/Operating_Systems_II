@@ -7,7 +7,6 @@ from random_forest import *
 from svm import *
 from decision_tree import *
 from sys import argv, exit
-from convert_tcpdump import convert_tcp_dump_to_text
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import KFold
 import subprocess

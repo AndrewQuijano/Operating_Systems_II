@@ -7,13 +7,6 @@ from joblib import dump
 # from sklearn.externals.joblib import dump
 
 
-def decision_tree_raw(train_x, train_y):
-    start = time.time()
-    tree = DecisionTreeClassifier().fit(train_x, train_y)
-    print("[INFO] Time to fit Decision tree is {:.2f} seconds".format(time.time() - start))
-    return tree
-
-
 def tune_tree(train_x, train_y, n_fold=10, slow=True, n_iter_search=10):
     # Minimum number of samples required to split a node
     min_samples_split = np.arange(5, 20, 1)

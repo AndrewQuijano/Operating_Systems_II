@@ -9,10 +9,13 @@ from sklearn.metrics import confusion_matrix
 from matplotlib import pyplot as plt
 from collections import Counter
 import pandas as pd
+from data_set_manipulation import n_col
 import scikitplot as skplt
 # matplotlib.use('Agg')
 
 
+# After a lot of tinkering around, it is always best to have your classes be strings
+# for easier usage with Classification Reports and stuff.
 def read_data(file, has_header=False):
     if has_header:
         features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=float, autostrip=True, data=True)
@@ -40,10 +43,10 @@ def read_data(file, has_header=False):
     return features, classes
 
 
-# KDD has 27 columns
-def read_data_pandas(file_name, n_col=27):
-    range2 = [i for i in range(1, n_col)]
-    x = pd.read_csv(file_name, usecols=range2)
+# KDD without content has 27 columns
+def read_data_pandas(file_name):
+    col = n_col(file_name)
+    x = pd.read_csv(file_name, usecols=[i for i in range(1, col)])
     y = pd.read_csv(file_name, usecols=0)
     x = x.to_numpy()
     y = y.to_numpy()

@@ -53,22 +53,6 @@ def svm_linear(train_x, train_y, n_fold=10, slow=False):
     return svm_line
 
 
-def svm_linear_raw(train_x, train_y):
-    start_time = time.time()
-    svm_line = svm.SVC(kernel='linear')
-    svm_line.fit(train_x, train_y)
-    print("--- Linear SVM time w/o tuning: %s seconds ---" % (time.time() - start_time))
-    return svm_line
-
-
-def svm_rbf_raw(train_x, train_y):
-    start_time = time.time()
-    svm_line = svm.SVC(kernel='rbf')
-    svm_line.fit(train_x, train_y)
-    print("--- RBF SVM time w/o tuning: %s seconds ---" % (time.time() - start_time))
-    return svm_line
-
-
 def svm_rbf(train_x, train_y, n_fold=10, slow=False):
     start_time = time.time()
     svm_radial = svc_rbf_param_selection(train_x, train_y, n_fold, slow)
@@ -88,7 +72,7 @@ def svm_test(svm_clf, test_x, test_y, kernel, extra_test=False):
     print("[SVM_" + kernel + "] Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
 
     with open("results.txt", "a+") as my_file:
-        my_file.write("[SVM_" + kernel + "Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
+        my_file.write("[SVM_" + kernel + "] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 
     if extra_test:
         top(svm_clf, test_x, test_y, "SVM_" + str(kernel), extra_attempts=1)
