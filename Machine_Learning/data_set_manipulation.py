@@ -154,6 +154,7 @@ def kdd_prep_2(file_name, to_encode, col_drop=None, shift=True):
     else:
         output_file = p + "/prep_" + b
 
+    t = []
     with open(file_name) as read_kdd_data, open(output_file, "w+") as write_kdd:
         for line in read_kdd_data:
             # Swap using encoder
@@ -167,11 +168,13 @@ def kdd_prep_2(file_name, to_encode, col_drop=None, shift=True):
                 en = encoders[c]
                 print("Column to encode: " + str(c))
                 print(parts[c])
-                updated = en.transform([parts[c]])
+                t.append(parts[c])
+                updated = en.transform(t)
                 print(updated)
                 print(updated[0])
+                t.clear()
                 parts[c] = str(updated[0])
-                
+
             # Personally, I like my classes on first column not last
             if shift:
                 last_column = parts[len(parts) - 1]
