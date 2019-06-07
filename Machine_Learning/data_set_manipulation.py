@@ -127,15 +127,15 @@ def kdd_prep_2(file_name, to_encode, col_drop=None, shift=True):
     # Get the file information
     p = dirname(abspath(file_name))
     b = basename(file_name)
-
-    encoders = []
+    label_map = {}
+    # encoders = []
     for col in to_encode:
         features = unique_features(file_name, col)
         print(features)
         lab = LabelEncoder()
-        lab.fit(features)
-        encoders.insert(col, lab)
-        label = lab.transform(features)
+        label = lab.fit_transform(features)
+        # encoders.insert(col, lab)
+        label_map[col] = lab
         if name == 'nt':
             with open(p + "\\labels.txt", "a+") as f:
                 f.write("For Column " + str(col) + '\n')
@@ -165,7 +165,7 @@ def kdd_prep_2(file_name, to_encode, col_drop=None, shift=True):
             # Starting from 0..
             # I must edit Column 1, 2, 3
             for c in to_encode:
-                en = encoders[c]
+                en = label_map[c]
                 print("Column to encode: " + str(c))
                 print(parts[c])
                 t.append(parts[c])
