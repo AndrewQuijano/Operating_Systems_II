@@ -15,8 +15,7 @@ import collections
 from misc import read_data
 from collections import OrderedDict
 from operator import itemgetter
-# from sklearn.externals.joblib import load
-from joblib import load
+from sklearn.externals.joblib import load
 from math import sqrt
 from os.path import basename, dirname, abspath
 from os import name

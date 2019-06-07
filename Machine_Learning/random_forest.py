@@ -4,8 +4,7 @@ from sklearn.model_selection import RandomizedSearchCV
 from sklearn.model_selection import GridSearchCV
 from misc import *
 import time
-from joblib import dump
-# from sklearn.externals.joblib import dump
+from sklearn.externals.joblib import dump
 
 
 def get_forest(train_x, train_y, n_fold=10, slow=False):

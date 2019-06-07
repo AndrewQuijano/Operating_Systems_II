@@ -5,29 +5,20 @@ import time
 from misc import *
 
 
-def get_brain_raw(train_x, train_y):
-    start_time = time.time()
-    clf = MLPClassifier(warm_start=False).fit(train_x, train_y)
-    print("--- Best Parameter NN Generation: %s seconds ---" % (time.time() - start_time))
-    return clf
-
-
 # http://scikit-learn.org/stable/auto_examples/neural_networks/plot_mlp_alpha.html#sphx-glr-auto-examples-neural-networks-plot-mlp-alpha-py
 # http://scikit-learn.org/stable/auto_examples/neural_networks/plot_mlp_training_curves.html#sphx-glr-auto-examples-neural-networks-plot-mlp-training-curves-py
-def get_brain(train_x, train_y, test_x=None, test_y=None):
+def get_brain(train_x, train_y):
     start_time = time.time()
     clf = tune_brain(train_x, train_y)
     print("--- Best Parameter NN Generation: %s seconds ---" % (time.time() - start_time))
     # Print Training and Test Error
-    print("Best NN Parameters: " + str(clf.get_params()))
+    # print("Best NN Parameters: " + str(clf.)
     print("[NN] Training Mean Test Score: " + str(clf.score(train_x, train_y)))
 
     with open("results.txt", "a") as my_file:
         my_file.write("[Neural_Network] Best Parameters: " + str(clf.get_params()) + '\n')
         my_file.write("[Neural_Network] Training Mean Test Score: " + str(clf.score(train_x, train_y)) + '\n')
 
-    if test_x is not None and test_y is not None:
-        brain_test(clf, test_x, test_y)
     # print(classification_report(test_y, y_hat, target_names=[str(i) for i in clf.classes_]))
     return clf
 

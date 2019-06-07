@@ -2,9 +2,9 @@
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from subprocess import call, run
-from os import name
+from os import name, geteuid
 from os.path import basename, dirname, abspath
-
+from sys import argv
 # The purpose of this class is mostly to modify data sets
 # for machine learning purposes. This includes functions such
 # as getting number of rows/columns, removing similar tuples and columns, etc.
@@ -90,15 +90,26 @@ def drop_rows(file_name, to_drop, col_number):
     b = basename(file_name)
     p = dirname(abspath(file_name))
     counter = 0
-    with open(file_name, "r") as fd, open(p + "\\drop_" + b, "w+") as wr:
-        for line in fd:
-            line = line.rstrip()
-            args = line.split(',')
-            if args[col_number] == to_drop:
-                counter += 1
-            else:
-                wr.write(line + '\n')
-                wr.flush()
+    if name == 'nt':
+        with open(file_name, "r") as fd, open(p + "\\drop_" + b, "w+") as wr:
+            for line in fd:
+                line = line.rstrip()
+                args = line.split(',')
+                if args[col_number] == to_drop:
+                    counter += 1
+                else:
+                    wr.write(line + '\n')
+                    wr.flush()
+    else:
+        with open(file_name, "r") as fd, open(p + "/drop_" + b, "w+") as wr:
+            for line in fd:
+                line = line.rstrip()
+                args = line.split(',')
+                if args[col_number] == to_drop:
+                    counter += 1
+                else:
+                    wr.write(line + '\n')
+                    wr.flush()
     print("Number of " + to_drop + " found and dropped is: " + str(counter))
 
 
@@ -113,6 +124,10 @@ def unique_features(file_name, col_number):
 
 # Given a file and list of columns to encode, this will take care of that.
 def kdd_prep_2(file_name, to_encode, col_drop=None, shift=True):
+    # Get the file information
+    p = dirname(abspath(file_name))
+    b = basename(file_name)
+
     encoders = []
     for col in to_encode:
         features = unique_features(file_name, col)
@@ -120,19 +135,31 @@ def kdd_prep_2(file_name, to_encode, col_drop=None, shift=True):
         lab.fit(features)
         encoders.insert(col, lab)
         label = lab.transform(features)
-        with open("./labels.txt", "w") as f:
-            f.write("For Column " + str(col))
-            for k, v in features, label:
-                f.write(k + "," + str(v) + '\n')
-            f.write('\n')
+        if name == 'nt':
+            with open(p + "\\labels.txt", "w+") as f:
+                f.write("For Column " + str(col))
+                for k, v in features, label:
+                    f.write(k + "," + str(v) + '\n')
+                f.write('\n')
+        else:
+            with open(p + "/labels.txt", "w+") as f:
+                f.write("For Column " + str(col))
+                for k, v in features, label:
+                    f.write(k + "," + str(v) + '\n')
+                f.write('\n')
 
-    with open(file_name) as read_kdd_data, open("./kddcup_prep.csv", "w") as write_kdd:
+    if name == 'nt':
+        output_file = p + "\\prep_" + b
+    else:
+        output_file = p + "/prep_" + b
+
+    with open(file_name) as read_kdd_data, open(output_file, "w") as write_kdd:
         for line in read_kdd_data:
             # Swap using encoder
             line = line.rstrip()
             parts = line.split(",")
             # Starting from 0..
-            # I must edit Column 1, 2, 3, 41
+            # I must edit Column 1, 2, 3
             for c in to_encode:
                 parts[c] = str(encoders[c].transform(parts[c]))
 
@@ -222,7 +249,14 @@ def kdd_prep(file_name):
 # A decent chunk of data sets prefer the class to be the last column
 # Personally, I prefer it to be the first column. This method will adjust that for me
 def shift_column(file_name):
-    with open(file_name) as read_kdd_data, open("./kddcup_swap.csv", "w") as write_kdd:
+    p = dirname(abspath(file_name))
+    b = basename(file_name)
+    if name == 'nt':
+        output = p + "\\shifted_" + b
+    else:
+        output = p + "//shifted_" + b
+
+    with open(file_name) as read_kdd_data, open(output, "w+") as write_kdd:
         for line in read_kdd_data:
             # Swap using encoder
             line = line.rstrip()
@@ -258,6 +292,7 @@ def n_row(file_name):
     return rows
 
 
+# convert .tcpdump to .pcap file!
 def pcap(file_path, new_file=None):
     file_name = basename(file_path)
     file_parts = file_name.split('.')
@@ -280,9 +315,9 @@ def process(file_name, new_file=None):
 
 
 def build_kdd():
-    # if geteuid() != 0:
-    #    print("Need root permission!")
-    #    exit(0)
+    if geteuid() != 0:
+        print("Need root permission!")
+        exit(0)
 
     with open("./build_kdd.txt", "r") as f:
         for line in f:
@@ -331,12 +366,7 @@ def compare_csv(file_1, file_2):
 # 3- Split into parts -- FOR SAVING IT ONLY
 # **To use it, just merge it, use raw file name w/o extension!**
 if __name__ == "__main__":
-    drop_columns("./kddcup.csv", [(0, 9), (21, 42)])
-    # kdd_prep("kddcup.csv")
-    # drop_columns("kddcup_prep.csv")
-    # split_csv("modified_kddcup_prep.csv")
-    # build_kdd()
-    # nsl_kdd_filter("kdd.csv")
-    # n_row("kdd.csv")
-    # n_row("NSL_KDD.csv")
-    # compare_csv("kdd.csv", "NSL_KDD.csv")
+    if len(argv) == 1:
+        drop_columns("./kddcup.csv", [(0, 9), (21, 42)])
+    else:
+        kdd_prep_2(argv[1], to_encode=[1, 2, 3], col_drop=[i for i in range(10, 21)])

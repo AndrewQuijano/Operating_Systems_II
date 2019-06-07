@@ -51,7 +51,6 @@ def get_tree(train_x, train_y, n_fold=10, slow=False):
 def tree_test(tree, test_x, test_y, extra_test=False):
     num_test_y = len(np.unique(test_y))
     y_hat = tree.predict(test_x)
-    print("[Decision_Tree] Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
 
     # Sanity check to match with test score
     if extra_test:

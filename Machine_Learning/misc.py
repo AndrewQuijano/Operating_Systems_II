@@ -11,7 +11,6 @@ from collections import Counter
 import pandas as pd
 from data_set_manipulation import n_col
 import scikitplot as skplt
-# matplotlib.use('Agg')
 
 
 # After a lot of tinkering around, it is always best to have your classes be strings
