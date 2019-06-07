@@ -167,10 +167,11 @@ def kdd_prep_2(file_name, to_encode, col_drop=None, shift=True):
                 en = encoders[c]
                 print("Column to encode: " + str(c))
                 print(parts[c])
-                updated = str(en.transform([parts[c]]))
+                updated = en.transform([parts[c]])
                 print(updated)
-                parts[c] = updated[0]
-
+                print(updated[0])
+                parts[c] = str(updated[0])
+                
             # Personally, I like my classes on first column not last
             if shift:
                 last_column = parts[len(parts) - 1]
