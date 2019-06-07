@@ -131,20 +131,21 @@ def kdd_prep_2(file_name, to_encode, col_drop=None, shift=True):
     encoders = []
     for col in to_encode:
         features = unique_features(file_name, col)
+        print(features)
         lab = LabelEncoder()
         lab.fit(features)
         encoders.insert(col, lab)
         label = lab.transform(features)
         if name == 'nt':
-            with open(p + "\\labels.txt", "w+") as f:
-                f.write("For Column " + str(col))
-                for k, v in features, label:
+            with open(p + "\\labels.txt", "a+") as f:
+                f.write("For Column " + str(col) + '\n')
+                for k, v in zip(features, label):
                     f.write(k + "," + str(v) + '\n')
                 f.write('\n')
         else:
-            with open(p + "/labels.txt", "w+") as f:
-                f.write("For Column " + str(col))
-                for k, v in features, label:
+            with open(p + "/labels.txt", "a+") as f:
+                f.write("For Column " + str(col) + '\n')
+                for k, v in zip(features, label):
                     f.write(k + "," + str(v) + '\n')
                 f.write('\n')
 
@@ -153,7 +154,7 @@ def kdd_prep_2(file_name, to_encode, col_drop=None, shift=True):
     else:
         output_file = p + "/prep_" + b
 
-    with open(file_name) as read_kdd_data, open(output_file, "w") as write_kdd:
+    with open(file_name) as read_kdd_data, open(output_file, "w+") as write_kdd:
         for line in read_kdd_data:
             # Swap using encoder
             line = line.rstrip()
@@ -161,7 +162,9 @@ def kdd_prep_2(file_name, to_encode, col_drop=None, shift=True):
             # Starting from 0..
             # I must edit Column 1, 2, 3
             for c in to_encode:
-                parts[c] = str(encoders[c].transform(parts[c]))
+                en = encoders[c]
+                updated = str(en.transform(list(parts[c])))
+                parts[c] = updated[0]
 
             # Personally, I like my classes on first column not last
             if shift:

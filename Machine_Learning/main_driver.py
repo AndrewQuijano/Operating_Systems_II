@@ -43,14 +43,16 @@ def main():
         train_x, train_y, test_x, test_y = get_cv_set(train_x, train_y)
         p = dirname(abspath(argv[1]))
         b = basename(argv[1])
+        # train = np.concatenate((train_y, train_x), axis=1)
+        # test = np.concatenate((test_y, test_x), axis=1)
 
         if name == 'nt':
-            np.savetxt(p + "\\train_" + b, train_x, delimiter=",")
+            np.savetxt(p + '\\train_' + b, train_x, delimiter=",")
             np.savetxt(p + "\\test_" + b, test_x, delimiter=",")
         else:
             np.savetxt(p + "/train_" + b, train_x, delimiter=",")
             np.savetxt(p + "/test_" + b, test_x, delimiter=",")
-
+        exit(0)
     elif len(argv) == 3:
         # Read the training and testing data-set
         # This assumes the class variable is on the first column!
