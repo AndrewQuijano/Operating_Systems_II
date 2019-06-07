@@ -158,12 +158,17 @@ def kdd_prep_2(file_name, to_encode, col_drop=None, shift=True):
         for line in read_kdd_data:
             # Swap using encoder
             line = line.rstrip()
-            parts = line.split(",")
+            parts = line.split(',')
+            print("Line")
+            print(parts)
             # Starting from 0..
             # I must edit Column 1, 2, 3
             for c in to_encode:
                 en = encoders[c]
-                updated = str(en.transform(list(parts[c])))
+                print("Column to encode: " + str(c))
+                print(parts[c])
+                updated = str(en.transform([parts[c]]))
+                print(updated)
                 parts[c] = updated[0]
 
             # Personally, I like my classes on first column not last
