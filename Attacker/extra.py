@@ -1,5 +1,4 @@
 import ftplib
-from scapy.all import *
 
 
 def brute_login(hostname, passwd_file="10M.txt"):

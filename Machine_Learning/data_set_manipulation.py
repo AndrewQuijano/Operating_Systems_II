@@ -67,6 +67,7 @@ def merge_csv(file_name, n_parts=9):
     # if n_parts is 9
     # j goes from 0 - 8
     # Remember files parts is goes 1 - 9!
+
     for j in range(n_parts):
         if name == 'nt':
             with open(p + "\\" + b_part + "_part" + str(j + 1) + ".csv", 'r') as chunk:
@@ -91,25 +92,19 @@ def drop_rows(file_name, to_drop, col_number):
     p = dirname(abspath(file_name))
     counter = 0
     if name == 'nt':
-        with open(file_name, "r") as fd, open(p + "\\drop_" + b, "w+") as wr:
-            for line in fd:
-                line = line.rstrip()
-                args = line.split(',')
-                if args[col_number] == to_drop:
-                    counter += 1
-                else:
-                    wr.write(line + '\n')
-                    wr.flush()
+        output = p + "\\drop_" + b
     else:
-        with open(file_name, "r") as fd, open(p + "/drop_" + b, "w+") as wr:
-            for line in fd:
-                line = line.rstrip()
-                args = line.split(',')
-                if args[col_number] == to_drop:
-                    counter += 1
-                else:
-                    wr.write(line + '\n')
-                    wr.flush()
+        output = p + "/drop_" + b
+
+    with open(file_name, "r") as fd, open(output, "w+") as wr:
+        for line in fd:
+            line = line.rstrip()
+            args = line.split(',')
+            if args[col_number] == to_drop:
+                counter += 1
+            else:
+                wr.write(line + '\n')
+                wr.flush()
     print("Number of " + to_drop + " found and dropped is: " + str(counter))
 
 

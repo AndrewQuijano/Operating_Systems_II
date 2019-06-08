@@ -39,3 +39,6 @@ sudo apt-get install oracle-java11-installer
 sudo apt-get install cmake
 sudo apt-get install libpcap-dev
 
+# More Attack packages
+sudo pip3 install pexpect
+sudo pip3 install python-nmap
