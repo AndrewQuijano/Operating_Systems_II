@@ -43,16 +43,17 @@ def main():
         train_x, train_y, test_x, test_y = get_cv_set(train_x, train_y)
         p = dirname(abspath(argv[1]))
         b = basename(argv[1])
-        # train = np.concatenate((train_y, train_x), axis=1)
-        # test = np.concatenate((test_y, test_x), axis=1)
+        train = np.concatenate((train_y, train_x), axis=1)
+        test = np.concatenate((test_y, test_x), axis=1)
 
         if name == 'nt':
-            np.savetxt(p + '\\train_' + b, train_x, delimiter=",")
-            np.savetxt(p + "\\test_" + b, test_x, delimiter=",")
+            np.savetxt(p + '\\train_' + b, train, delimiter=",")
+            np.savetxt(p + "\\test_" + b, test, delimiter=",")
         else:
-            np.savetxt(p + "/train_" + b, train_x, delimiter=",")
-            np.savetxt(p + "/test_" + b, test_x, delimiter=",")
+            np.savetxt(p + "/train_" + b, train, delimiter=",")
+            np.savetxt(p + "/test_" + b, test, delimiter=",")
         exit(0)
+
     elif len(argv) == 3:
         # Read the training and testing data-set
         # This assumes the class variable is on the first column!
@@ -78,12 +79,9 @@ def main():
     start_time = time.time()
     svm_line_clf = svm_linear(train_x, train_y)
     svm_rbf_clf = svm_rbf(train_x, train_y)
-    svm_test(svm_line_clf, test_x, test_y, "Linear")
-    svm_test(svm_rbf_clf, test_x, test_y, "Radial")
 
     # 2- Random Forest
     forest_clf = get_forest(train_x, train_y)
-    forest_test(forest_clf, test_x, test_y)
 
     # 3- Neural Networks
     # brain_clf = get_brain(train_x, train_y)
@@ -91,24 +89,29 @@ def main():
 
     # 4- Logistic Regression
     logit_clf = get_logistic(train_x, train_y)
-    log_linear_test(logit_clf, test_x, test_y)
 
     # 5- KNN
     knn_clf = get_knn(train_x, train_y)
-    knn_test(knn_clf, train_x, train_y)
 
     # 6- LDA/QDA
     lda_clf = discriminant_line(train_x, train_y)
     qda_clf = discriminant_quad(train_x, train_y)
-    lda_test(lda_clf, test_x, test_y)
-    qda_test(qda_clf, test_x, test_y)
 
     # 7- Bayes
     bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
-    naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
 
     # 8- Decision Tree
     tree = get_tree(train_x, train_y)
+
+    # Run Testing Now
+    svm_test(svm_line_clf, test_x, test_y, "Linear")
+    svm_test(svm_rbf_clf, test_x, test_y, "Radial")
+    forest_test(forest_clf, test_x, test_y)
+    log_linear_test(logit_clf, test_x, test_y)
+    knn_test(knn_clf, train_x, train_y)
+    lda_test(lda_clf, test_x, test_y)
+    qda_test(qda_clf, test_x, test_y)
+    naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
     tree_test(tree, test_x, test_y)
     print("---Time to complete training everything: %s seconds---" % (time.time() - start_time))
 
@@ -131,7 +134,7 @@ def ids():
 
     # Now make a split between training and testing set from the input data
     start_time = time.time()
-    kf = KFold(n_splits=5)
+    kf = KFold(n_splits=5, shuffle=False)
 
     # 1- Bayes
     print("Fitting Bayes Classifiers...")
@@ -149,32 +152,30 @@ def ids():
     # 3- SVM
     print("Fitting Linear SVM...")
     svm_line_clf = svm_linear(train_x, train_y, n_fold=kf, slow=False)
-    # svm_line_clf = svm_linear_raw(train_x, train_y)
 
     # print("SVM Linear Model Ready!")
     print("Fitting RBF SVM...")
     svm_rbf_clf = svm_rbf(train_x, train_y, n_fold=kf, slow=False)
-    # print("SVM RBF Kernel Ready!")
+    print("SVM RBF Kernel Ready!")
 
     # 4- Random Forest
     print("Fitting Random Forest...")
     forest_clf = get_forest(train_x, train_y, n_fold=kf, slow=False)
-    # print("Random Forest Ready!")
+    print("Random Forest Ready!")
 
     # 5- Logistic Regression
     print("Fitting Logistic Regression...")
     logistic_clf = get_logistic(train_x, train_y, n_fold=kf, slow=False)
-    # print("Logistic Regression Ready!")
+    print("Logistic Regression Ready!")
 
     # 6- KNN
     print("Fitting KNN...")
     knn_clf = get_knn(train_x, train_y, n_fold=kf, slow=False)
-    # print("KNN ready!")
+    print("KNN ready!")
 
     # 7- Decision Tree
     print("Fitting Decision tree...")
     tree = get_tree(train_x, train_y, n_fold=kf, slow=False)
-    # tree = decision_tree_raw(train_x, train_y)
     print("Decision tree ready!")
 
     print("--- Model Training Time: %s seconds ---" % (time.time() - start_time))
@@ -294,30 +295,6 @@ def ids_shell_args(args):
         return
 
 
-# Label the PCAP using ID in PCAP. THIS IS FOR TRAINING DATA LIKE CTU-13 PCAPS
-# Labels is a Hashmap<int, string> where int is the packet id in Wireshark, String is attack name
-def label_training_set(labels, pcap_file, no_label_benign=False):
-    # labels is a dictionary of packet ID
-    # {1:"syn_flood", 2:"neptune",5:"syn_flood"}
-    le = LabelEncoder()
-    attacks = set(labels.values())
-    if no_label_benign:
-        attacks.add("Benign")
-    le.fit(attacks)
-    y = []
-    capture = pyshark.FileCapture(pcap_file)
-    for packet_id in range(len(capture)):
-        if labels[packet_id] is not None:
-            y.append(labels[packet_id])
-        else:
-            y.append("Benign")
-
-    # Convert the List of classes to NP Array
-    # Then, turn to column vector!
-    np_y = np.asarray(le.transform(y))
-    np.transpose(np_y)
-
-
 # THIS IS FOR LABELING TEST DATA GENERATED BY THE FUZZER!
 # THE OUTPUT OF KDDPROCESSOR99 -E Spits last 5 extra columns...
 # SRC IP, SRC PORT, DEST IP, DEST PORT, TIME STAMP
@@ -421,12 +398,12 @@ def stat_column(data_set, label, column_number=2):
     # print(mean_freq(freq_n))
     # print(std_dev_freq(freq_n))
 
-    odfreq_n = collections.OrderedDict(sorted(freq_n.items()))
-    odfreq_a = collections.OrderedDict(sorted(freq_a.items()))
+    order_freq_n = collections.OrderedDict(sorted(freq_n.items().__iter__()))
+    order_freq_a = collections.OrderedDict(sorted(freq_a.items().__iter__()))
     if len(freq_a) == 0:
-        frequency_histogram(odfreq_n)
+        frequency_histogram(order_freq_n)
     else:
-        dual_frequency_histogram(odfreq_n, odfreq_a)
+        dual_frequency_histogram(order_freq_n, order_freq_a)
 
 
 # Purpose: Just get the stats. NO HISTOGRAM
@@ -453,7 +430,7 @@ def stat_one_column(data_set, label, column_number=2):
 
     # To make it easier to figure out most frequent feature value
     # sort the map by value!
-    sorted_freq = OrderedDict(sorted(freq_n.items(), key=itemgetter(1)))
+    sorted_freq = OrderedDict(sorted(freq_n.items().__iter__(), key=itemgetter(1)))
 
     with open("stat_result_" + label + ".txt", "a+") as fd:
         fd.write("-----for Column " + str(column_number) + "-----\n")

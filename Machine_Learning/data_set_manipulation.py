@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import pandas as pd
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from subprocess import call, run
 from os import name, geteuid
 from os.path import basename, dirname, abspath
@@ -123,18 +123,17 @@ def unique_features(file_name, col_number):
 
 
 # Given a file and list of columns to encode, this will take care of that.
-def kdd_prep_2(file_name, to_encode, col_drop=None, shift=True):
+def encode_data(file_name, to_encode, col_drop=None, shift=True):
     # Get the file information
     p = dirname(abspath(file_name))
     b = basename(file_name)
     label_map = {}
-    # encoders = []
+
     for col in to_encode:
         features = unique_features(file_name, col)
         print(features)
         lab = LabelEncoder()
         label = lab.fit_transform(features)
-        # encoders.insert(col, lab)
         label_map[col] = lab
         if name == 'nt':
             with open(p + "\\labels.txt", "a+") as f:
@@ -160,18 +159,13 @@ def kdd_prep_2(file_name, to_encode, col_drop=None, shift=True):
             # Swap using encoder
             line = line.rstrip()
             parts = line.split(',')
-            print("Line")
-            print(parts)
+
             # Starting from 0..
             # I must edit Column 1, 2, 3
             for c in to_encode:
                 en = label_map[c]
-                print("Column to encode: " + str(c))
-                print(parts[c])
                 t.append(parts[c])
                 updated = en.transform(t)
-                print(updated)
-                print(updated[0])
                 parts[c] = str(updated[0])
                 t.clear()
 
@@ -190,72 +184,6 @@ def kdd_prep_2(file_name, to_encode, col_drop=None, shift=True):
             new_line = ','.join(parts)
             write_kdd.write(new_line + '\n')
             write_kdd.flush()
-
-
-def kdd_prep(file_name):
-    # I know that there are some features that need to be encoded
-    services = LabelEncoder()
-    flags = LabelEncoder()
-    protocol_type = LabelEncoder()
-
-    # Have list of stuff
-    proto = ["tcp", "udp", "icmp"]
-    fl = ["SF", "S2", "S1", "S3", "OTH", "REJ", "RSTO", "S0", "RSTR", "RSTOS0", "SH"]
-    serv = ["http", "smtp", "domain_u", "auth", "finger", "telnet", "eco_i", "ftp", "ntp_u",
-            "ecr_i", "other", "urp_i", "private", "pop_3", "ftp_data", "netstat", "daytime", "ssh",
-            "echo", "time", "name", "whois", "domain", "mtp", "gopher", "remote_job", "rje", "ctf",
-            "supdup", "link", "systat", "discard", "X11", "shell", "login", "imap4", "nntp", "uucp",
-            "pm_dump", "IRC", "Z39_50", "netbios_dgm", "ldap", "sunrpc", "courier", "exec", "bgp",
-            "csnet_ns", "http_443", "klogin", "printer", "netbios_ssn", "pop_2", "nnsp", "efs",
-            "hostnames", "uucp_path", "sql_net", "vmnet", "iso_tsap", "netbios_ns", "kshell",
-            "urh_i", "http_2784", "harvest", "aol",
-            "tftp_u", "http_8001", "tim_i", "red_i"]
-
-    # Fit them with the known classes
-    protocol_type.fit(proto)
-    flags.fit(fl)
-    services.fit(serv)
-    proto_hat = protocol_type.transform(proto)
-    fl_hat = flags.transform(fl)
-    serv_hat = services.transform(serv)
-
-    # Build dictionary!
-    encode_protocol = dict(zip(proto, proto_hat))
-    encode_fl = dict(zip(fl, fl_hat))
-    encode_service = dict(zip(serv, serv_hat))
-    with open("./labels.txt", "w") as f:
-        for k, v in encode_protocol.items():
-            f.write(k + "," + str(v) + '\n')
-        f.write('\n')
-        for k, v in encode_fl.items():
-            f.write(k + "," + str(v) + '\n')
-        f.write('\n')
-        for k, v in encode_service.items():
-            f.write(k + "," + str(v) + '\n')
-        f.write('\n')
-
-    with open(file_name) as read_kdd_data, open("./kddcup_prep.csv", "w") as write_kdd:
-        for line in read_kdd_data:
-            # Swap using encoder
-            line = line.rstrip()
-            parts = line.split(",")
-            # Starting from 0..
-            # I must edit Column 1, 2, 3, 41
-            parts[1] = str(encode_protocol[parts[1]])
-            parts[2] = str(encode_service[parts[2]])
-            parts[3] = str(encode_fl[parts[3]])
-
-            # SHIFT COLUMN!
-            # As my ML stuff excepts class on first column
-            last_column = parts[len(parts) - 1]
-            parts.remove(parts[len(parts) - 1])
-            parts.insert(0, last_column)
-
-            # As my ML stuff excepts class on first column
-            new_line = ','.join(parts)
-            write_kdd.write(new_line + '\n')
-            write_kdd.flush()
-    print("KDD Label encoding complete!")
 
 
 # A decent chunk of data sets prefer the class to be the last column
@@ -315,6 +243,7 @@ def pcap(file_path, new_file=None):
         call(["tcpdump", "-r", file_path, "-w", str(file_parts[0]) + ".pcap"])
 
 
+# convert .pcap to .csv file for machine learning
 def process(file_name, new_file=None):
     p = dirname(abspath(file_name))
     file_name = basename(file_name)
@@ -372,6 +301,11 @@ def compare_csv(file_1, file_2):
     return similarity/size
 
 
+def hot_encoder(train_x):
+    oh = OneHotEncoder()
+    oh.fit_transform(train_x)
+
+
 # To convert KDD
 # 1- First Swap columns AND Encode it
 # 2- Drop Columns that are content related
@@ -381,4 +315,4 @@ if __name__ == "__main__":
     if len(argv) == 1:
         drop_columns("./kddcup.csv", [(0, 9), (21, 42)])
     else:
-        kdd_prep_2(argv[1], to_encode=[1, 2, 3], col_drop=[i for i in range(10, 21)])
+        encode_data(argv[1], to_encode=[1, 2, 3], col_drop=[i for i in range(10, 21)])
