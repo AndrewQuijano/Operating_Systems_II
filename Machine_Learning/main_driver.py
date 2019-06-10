@@ -42,15 +42,19 @@ def main():
         train_x, train_y, test_x, test_y = get_cv_set(train_x, train_y)
         p = dirname(abspath(argv[1]))
         b = basename(argv[1])
+
+        # Format columns to be 1-D shape
+        train_y = train_y.reshape(-1, 1)
+        test_y = test_y.reshape(-1, 1)
         train = np.concatenate((train_y, train_x), axis=1)
         test = np.concatenate((test_y, test_x), axis=1)
 
         if name == 'nt':
-            np.savetxt(p + '\\train_' + b, train, delimiter=",")
-            np.savetxt(p + "\\test_" + b, test, delimiter=",")
+            np.savetxt(p + '\\train_' + b, train, fmt="%s", delimiter=",")
+            np.savetxt(p + "\\test_" + b, test, fmt="%s", delimiter=",")
         else:
-            np.savetxt(p + "/train_" + b, train, delimiter=",")
-            np.savetxt(p + "/test_" + b, test, delimiter=",")
+            np.savetxt(p + "/train_" + b, train, fmt="%s", delimiter=",")
+            np.savetxt(p + "/test_" + b, test,  fmt="%s", delimiter=",")
         exit(0)
 
     elif len(argv) == 3:
