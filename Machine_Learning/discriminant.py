@@ -2,7 +2,7 @@ from sklearn.metrics import accuracy_score, classification_report
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
 from misc import *
 import time
-from sklearn.externals.joblib import dump, load
+from joblib import dump, load
 
 
 def discriminant_line(train_x, train_y):

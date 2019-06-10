@@ -3,7 +3,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from misc import *
 import time
-from sklearn.externals.joblib import dump
+from joblib import dump
 from sklearn.metrics import precision_score, recall_score, f1_score, precision_recall_fscore_support
 
 

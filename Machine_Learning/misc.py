@@ -17,14 +17,15 @@ import scikitplot as skplt
 # for easier usage with Classification Reports and stuff.
 def read_data(file, has_header=False):
     columns = n_col(file)
+    print(columns)
     if has_header:
         features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=float,
-                                 autostrip=True, usecols=[i for i in range(1, columns + 1)])
+                                 autostrip=True, usecols=[i for i in range(1, columns)])
         classes = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=str,
                                 autostrip=True, usecols=[0])
     else:
         features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=float,
-                                 autostrip=True, usecols=[i for i in range(1, columns + 1)])
+                                 autostrip=True, usecols=[i for i in range(1, columns)])
         classes = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=str,
                                 autostrip=True, usecols=[0])
     return features, classes

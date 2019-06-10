@@ -4,7 +4,6 @@ from sklearn.metrics import classification_report, accuracy_score
 from misc import *
 import time
 from joblib import dump, load
-# from sklearn.externals.joblib import dump, load
 
 
 # http://scikit-learn.org/stable/auto_examples/calibration/plot_calibration.html#sphx-glr-auto-examples-calibration-plot-calibration-py

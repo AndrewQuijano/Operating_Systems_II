@@ -1,7 +1,7 @@
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn import svm
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
-from sklearn.externals.joblib import dump
+from joblib import dump
 from misc import *
 import time
 
