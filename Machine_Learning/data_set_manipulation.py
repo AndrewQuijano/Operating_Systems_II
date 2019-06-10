@@ -30,7 +30,7 @@ def drop_columns(file_name, ranges, head=False):
 
 
 # Remember Github's Limit is 100 MB or 100,000 KB
-# So to store large datasets, I just split them up by 500,000 row chunks
+# So to store large data sets, I just split them up by 500,000 row chunks
 def split_csv(file_name, size=500000):
     b = basename(file_name)
     p = dirname(abspath(file_name))
@@ -105,7 +105,6 @@ def drop_rows(file_name, to_drop, col_number):
             else:
                 wr.write(line + '\n')
                 wr.flush()
-    print("Number of " + to_drop + " found and dropped is: " + str(counter))
 
 
 def unique_features(file_name, col_number):
@@ -227,48 +226,6 @@ def n_row(file_name):
     return rows
 
 
-# convert .tcpdump to .pcap file!
-def pcap(file_path, new_file=None):
-    file_name = basename(file_path)
-    file_parts = file_name.split('.')
-    run(["sudo", "apparmor_parser", "-R", "/etc/apparmor.d/usr.sbin.tcpdump"])
-    if new_file is not None:
-        call(["tcpdump", "-r", file_path, "-w", new_file])
-    else:
-        call(["tcpdump", "-r", file_path, "-w", str(file_parts[0]) + ".pcap"])
-
-
-# convert .pcap to .csv file for machine learning
-def process(file_name, new_file=None):
-    p = dirname(abspath(file_name))
-    file_name = basename(file_name)
-    if new_file is None:
-        with open(p + "\\" + str(file_name.split(".")[0]) + ".csv", "w") as f:
-            call(["sudo", "./kdd99extractor", file_name], stdout=f)
-    else:
-        with open(new_file, "w") as f:
-            call(["sudo", "./kdd99extractor", file_name], stdout=f)
-
-
-def build_kdd():
-    if geteuid() != 0:
-        print("Need root permission!")
-        exit(0)
-
-    with open("./build_kdd.txt", "r") as f:
-        for line in f:
-            args = line.split()
-            if args[0] == "pcap" and len(args) == 3:
-                pcap(args[1], args[2])
-            elif args[0] == "process" and len(args) == 3:
-                process(args[1], args[2])
-    print("Complete conversion to PCAP!")
-
-    for i in range(35):
-        process("kdd_" + str(i + 1) + ".pcap")
-    merge_csv("kdd", n_parts=35)
-
-
 # Filter out any tuples that are duplicates
 # Used in NSL-KDD as it filters duplicates from KDD-Cup 1999
 def filter_duplicate(original_file, new_file):
@@ -301,6 +258,50 @@ def hot_encoder(train_x):
     oh.fit_transform(train_x)
 
 
+#---------------------PCAP Processing Methods----------------------------------
+# convert .tcpdump to .pcap file!
+def pcap(file_path, new_file=None):
+    file_name = basename(file_path)
+    file_parts = file_name.split('.')
+    run(["sudo", "apparmor_parser", "-R", "/etc/apparmor.d/usr.sbin.tcpdump"])
+    if new_file is not None:
+        call(["tcpdump", "-r", file_path, "-w", new_file])
+    else:
+        call(["tcpdump", "-r", file_path, "-w", str(file_parts[0]) + ".pcap"])
+
+
+# convert .pcap to .csv file for machine learning
+def process(file_name, new_file=None):
+    p = dirname(abspath(file_name))
+    file_name = basename(file_name)
+    if new_file is None:
+        with open(p + "\\" + str(file_name.split(".")[0]) + ".csv", "w+") as f:
+            call(["sudo", "./kdd99extractor", file_name], stdout=f)
+    else:
+        with open(new_file, "w+") as f:
+            call(["sudo", "./kdd99extractor", file_name], stdout=f)
+
+
+def build_kdd():
+    if geteuid() != 0:
+        print("Need root permission!")
+        exit(0)
+
+    with open("./build_kdd.txt", "r") as f:
+        for line in f:
+            args = line.split()
+            if args[0] == "pcap" and len(args) == 3:
+                pcap(args[1], args[2])
+            elif args[0] == "process" and len(args) == 3:
+                process(args[1], args[2])
+    print("Complete conversion to PCAP!")
+
+    for i in range(35):
+        process("kdd_" + str(i + 1) + ".pcap")
+    merge_csv("kdd", n_parts=35)
+# -------------------------------------------------------------------
+
+
 # To convert KDD
 # 1- First Swap columns AND Encode it
 # 2- Drop Columns that are content related
@@ -311,3 +312,12 @@ if __name__ == "__main__":
         drop_columns("./kddcup.csv", [(0, 9), (21, 42)])
     else:
         encode_data(argv[1], to_encode=[1, 2, 3], col_drop=[i for i in range(10, 21)])
+        # Test Merge and Join
+        split_csv(argv[1])
+        merge_csv(argv[1])
+        # Test drop column
+        drop_columns(argv[1], [(0, 9), (21, 41)])
+        # Test drop row
+        drop_rows(argv[1], "normal.", 41)
+        # Shift Column Test
+        shift_column(argv[1])

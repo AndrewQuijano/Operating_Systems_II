@@ -10,7 +10,6 @@ from sys import argv, exit
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import KFold
 import subprocess
-import pyshark
 import collections
 from misc import read_data
 from collections import OrderedDict
@@ -121,7 +120,6 @@ def ids():
     # To run the program I need either
     # 1- the raw PCAP with labels?
     # 2- just the raw CSV pre-processed using Stolfo's KDD Data mining techniques
-
     if len(argv) != 2:
         exit("usage: python3 main_ids <training data set>")
     # PCAP File not accepted for training!
@@ -182,7 +180,6 @@ def ids():
     print("All models are trained...")
 
     while True:
-
         try:
             # Read input from user
             arg = input("Input: ")
@@ -590,11 +587,5 @@ def stats_columns(label):
         stat_one_column('NSL_KDD_train.csv', label, column_number=col)
 
 
-# TODO: Learn to train with generators
 if __name__ == "__main__":
-    # basic_ids()
-    # Get ALL stats about NORMAL
-    # label_testing_set('./test_1.csv', 'shit.csv')
-    # stats_columns('11')
-    load_test("./test_1.csv")
-    # load_test("./test_2.csv")
+    main()
