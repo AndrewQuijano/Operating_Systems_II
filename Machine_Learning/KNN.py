@@ -7,7 +7,7 @@ from misc import *
 
 
 # https://www.pyimagesearch.com/2016/08/15/how-to-tune-hyperparameters-with-python-and-scikit-learn/
-def get_knn(train_x, train_y, n_fold=10, slow=True):
+def get_knn(train_x, train_y, n_fold=10, slow=False):
     n = np.arange(3, 18, 2)
     start = time.time()
     # tune the hyper parameters via a randomized search
@@ -45,7 +45,7 @@ def knn_test(best_knn, test_x, test_y, extra_test=False):
 
     if num_test_y == len(best_knn.classes_):
         with open("classification_reports.txt", "a+") as my_file:
-            my_file.write("---[KNN]---")
+            my_file.write("---[KNN]---\n")
             my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
                                                 labels=[str(i) for i in best_knn.classes_],
                                                 target_names=[str(i) for i in best_knn.classes_]))

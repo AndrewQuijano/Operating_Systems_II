@@ -6,7 +6,20 @@ from misc import *
 import time
 
 
-def svc_rbf_param_selection(x, y, n_folds=10, slow=True):
+def svm_rbf(train_x, train_y, n_fold=10, slow=False):
+    start_time = time.time()
+    svm_radial = svc_rbf_param_selection(train_x, train_y, n_fold, slow)
+    print("--- Best Parameter RBF Time to complete: %s seconds ---" % (time.time() - start_time))
+    print("Best RBF Parameters: " + str(svm_radial.get_params()))
+    print("[SVM_Radial] Training Mean Test Score: " + str(svm_radial.score(train_x, train_y)))
+    with open("results.txt", "a+") as my_file:
+        my_file.write("[SVM_Radial] Best Parameters: " + str(svm_radial.best_params_) + '\n')
+        my_file.write("[SVM Radial] Training Mean Test Score: " + str(svm_radial.score(train_x, train_y)) + '\n')
+    dump(svm_radial, "svm_rbf.joblib")
+    return svm_radial
+
+
+def svc_rbf_param_selection(x, y, n_folds=10, slow=False):
     c = np.arange(0.1, 1, 0.1)
     gammas = np.arange(0.1, 1, 0.1)
     random_grid = {
@@ -25,19 +38,6 @@ def svc_rbf_param_selection(x, y, n_folds=10, slow=True):
     return rbf_search
 
 
-def svc_linear_param_selection(x, y, n_folds=10, slow=False):
-    c = np.arange(0.1, 1, 0.1)
-    param_grid = {'C': c}
-    model = svm.SVC(kernel='linear')
-    if slow:
-        svm_line = GridSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
-    else:
-        svm_line = RandomizedSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
-    svm_line.fit(x, y)
-    # plot_grid_search(svm_line.cv_results_, c, 'SVM_Linear_Cost')
-    return svm_line
-
-
 # http://scikit-learn.org/stable/modules/model_evaluation.html
 def svm_linear(train_x, train_y, n_fold=10, slow=False):
     start_time = time.time()
@@ -52,17 +52,17 @@ def svm_linear(train_x, train_y, n_fold=10, slow=False):
     return svm_line
 
 
-def svm_rbf(train_x, train_y, n_fold=10, slow=False):
-    start_time = time.time()
-    svm_radial = svc_rbf_param_selection(train_x, train_y, n_fold, slow)
-    print("--- Best Parameter RBF Time to complete: %s seconds ---" % (time.time() - start_time))
-    print("Best RBF Parameters: " + str(svm_radial.get_params()))
-    print("[SVM_Radial] Training Mean Test Score: " + str(svm_radial.score(train_x, train_y)))
-    with open("results.txt", "a+") as my_file:
-        my_file.write("[SVM_Radial] Best Parameters: " + str(svm_radial.best_params_) + '\n')
-        my_file.write("[SVM Radial] Training Mean Test Score: " + str(svm_radial.score(train_x, train_y)) + '\n')
-    dump(svm_radial, "svm_rbf.joblib")
-    return svm_radial
+def svc_linear_param_selection(x, y, n_folds=10, slow=False):
+    c = np.arange(0.1, 1, 0.1)
+    param_grid = {'C': c}
+    model = svm.SVC(kernel='linear')
+    if slow:
+        svm_line = GridSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
+    else:
+        svm_line = RandomizedSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
+    svm_line.fit(x, y)
+    # plot_grid_search(svm_line.cv_results_, c, 'SVM_Linear_Cost')
+    return svm_line
 
 
 def svm_test(svm_clf, test_x, test_y, kernel, extra_test=False):

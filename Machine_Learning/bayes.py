@@ -52,7 +52,7 @@ def naive_bayes_test(clf, clf_isotonic, clf_sigmoid, test_x, test_y, extra_test=
 
     if num_test_y == len(clf.classes_):
         with open("classification_reports.txt", "a+") as my_file:
-            my_file.write("---[Bayes with Sigmoid Calibration]---")
+            my_file.write("---[Bayes with Sigmoid Calibration]---\n")
             my_file.write(classification_report(y_true=test_y, y_pred=prob_pos_sigmoid,
                                                 labels=[str(i) for i in clf_sigmoid.classes_],
                                                 target_names=[str(i) for i in clf_sigmoid.classes_]))
@@ -66,7 +66,7 @@ def naive_bayes_test(clf, clf_isotonic, clf_sigmoid, test_x, test_y, extra_test=
             my_file.write('\n')
 
         with open("classification_reports.txt", "a+") as my_file:
-            my_file.write("---[Naive Bayes]---")
+            my_file.write("---[Naive Bayes]---\n")
             my_file.write(classification_report(y_true=test_y, y_pred=prob_pos_clf,
                                                 labels=[str(i) for i in clf.classes_],
                                                 target_names=[str(i) for i in clf.classes]))

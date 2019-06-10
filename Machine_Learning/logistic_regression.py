@@ -7,7 +7,7 @@ from joblib import dump
 from sklearn.metrics import precision_score, recall_score, f1_score, precision_recall_fscore_support
 
 
-def get_logistic(train_x, train_y, n_fold=10, slow=True):
+def get_logistic(train_x, train_y, n_fold=10, slow=False):
     start = time.time()
     n = np.logspace(-3, 3)
     param_grid = {'C': n}
@@ -49,7 +49,7 @@ def log_linear_test(clf, test_x, test_y, extra_test=False):
 
     if num_y_test == len(clf.classes_):
         with open("classification_reports.txt", "a+") as my_file:
-            my_file.write("---[Logistic Regression]---")
+            my_file.write("---[Logistic Regression]---\n")
             my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
                                                 labels=[str(i) for i in clf.classes_],
                                                 target_names=[str(i) for i in clf.classes_]))

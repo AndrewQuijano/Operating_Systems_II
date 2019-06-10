@@ -11,20 +11,16 @@ def get_brain(train_x, train_y):
     start_time = time.time()
     clf = tune_brain(train_x, train_y)
     print("--- Best Parameter NN Generation: %s seconds ---" % (time.time() - start_time))
-    # Print Training and Test Error
-    # print("Best NN Parameters: " + str(clf.)
     print("[NN] Training Mean Test Score: " + str(clf.score(train_x, train_y)))
 
     with open("results.txt", "a") as my_file:
         my_file.write("[Neural_Network] Best Parameters: " + str(clf.get_params()) + '\n')
         my_file.write("[Neural_Network] Training Mean Test Score: " + str(clf.score(train_x, train_y)) + '\n')
-
-    # print(classification_report(test_y, y_hat, target_names=[str(i) for i in clf.classes_]))
     return clf
 
 
 # Note alpha needs to grow exponentially!
-def tune_brain(train_x, train_y, n_fold=10):
+def tune_brain(train_x, train_y, n_fold=10, slow=False):
     # want to go from 0.001 to 1, but on exponential scale!
     alphas = np.logspace(start=-5, stop=0, endpoint=True, num=5)
     hidden_layer = np.arange(3, 10, 1)

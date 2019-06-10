@@ -13,7 +13,6 @@ def discriminant_line(train_x, train_y):
     print("Training Score (LDA): " + str(lda.score(train_x, train_y)))
 
     with open("results.txt", "a+") as my_file:
-        # my_file.write("[LDA] Best Parameters: " + str(lda.get_params()) + '\n')
         my_file.write("[LDA] Training Mean Test Score: " + str(lda.score(train_x, train_y)) + '\n')
     dump(lda, "LDA.joblib")
     return lda
@@ -51,7 +50,6 @@ def discriminant_quad(train_x, train_y):
     print("Training Score is (QDA): " + str(qda.score(train_x, train_y)))
 
     with open("results.txt", "a+") as my_file:
-        # my_file.write("[QDA] Best Parameters: " + str(qda.get_params()) + '\n')
         my_file.write("[QDA] Training Mean Test Score: " + str(qda.score(train_x, train_y)) + '\n')
     dump(qda, "QDA.joblib")
     return qda

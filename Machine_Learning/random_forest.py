@@ -24,7 +24,7 @@ def get_forest(train_x, train_y, n_fold=10, slow=False):
 # https://towardsdatascience.com/hyperparameter-tuning-the-random-forest-in-python-using-scikit-learn-28d2aa77dd74
 # http://scikit-learn.org/stable/auto_examples/model_selection/plot_randomized_search.html#sphx-glr-auto-examples-model-selection-plot-randomized-search-py
 # https://towardsdatascience.com/random-forest-in-python-24d0893d51c0
-def tune_forest(train_features, train_labels, n_fold=10, slow=True):
+def tune_forest(train_features, train_labels, n_fold=10, slow=False):
     # Number of trees in random forest
     n_estimators = np.arange(10, 510, 10)
     # Number of features to consider at every split
@@ -53,6 +53,7 @@ def tune_forest(train_features, train_labels, n_fold=10, slow=True):
         tune_rf = RandomizedSearchCV(estimator=rf, param_distributions=random_grid,
                                      cv=n_fold, n_jobs=-1, verbose=2)
     tune_rf.fit(train_features, train_labels)
+
     # plot_grid_search(rf_estimate.cv_results_, n_estimators, 'n_estimators')
     # plot_grid_search(rf_max.cv_results_, max_features, 'max_features')
     # plot_grid_search(rf_distro.cv_results_, max_depth, 'max_depth')
@@ -74,7 +75,7 @@ def forest_test(best_forest, test_x, test_y, extra_test=False):
 
     if num_test_y == len(best_forest.classes_):
         with open("classification_reports.txt", "a+") as my_file:
-            my_file.write("---[Random_Forest]---")
+            my_file.write("---[Random_Forest]---\n")
             my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
                                                 labels=[str(i) for i in best_forest.classes_],
                                                 target_names=[str(i) for i in best_forest.classes_]))

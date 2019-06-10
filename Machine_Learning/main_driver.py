@@ -80,21 +80,21 @@ def main():
 
     # 1- SVM
     start_time = time.time()
-    svm_line_clf = svm_linear(train_x, train_y)
-    svm_rbf_clf = svm_rbf(train_x, train_y)
+    svm_line_clf = svm_linear(train_x, train_y, slow=True)
+    svm_rbf_clf = svm_rbf(train_x, train_y, slow=True)
 
     # 2- Random Forest
-    forest_clf = get_forest(train_x, train_y)
+    forest_clf = get_forest(train_x, train_y, slow=True)
 
     # 3- Neural Networks
     # brain_clf = get_brain(train_x, train_y)
     # brain_test(brain_clf, test_x, test_y)
 
     # 4- Logistic Regression
-    logit_clf = get_logistic(train_x, train_y)
+    logit_clf = get_logistic(train_x, train_y, slow=True)
 
     # 5- KNN
-    knn_clf = get_knn(train_x, train_y)
+    knn_clf = get_knn(train_x, train_y, slow=True)
 
     # 6- LDA/QDA
     lda_clf = discriminant_line(train_x, train_y)
@@ -104,7 +104,7 @@ def main():
     bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
 
     # 8- Decision Tree
-    tree = get_tree(train_x, train_y)
+    tree = get_tree(train_x, train_y, slow=False)
 
     # Run Testing Now
     svm_test(svm_line_clf, test_x, test_y, "Linear")
