@@ -343,14 +343,16 @@ def start_and_clean_up():
     try:
         # Now give user an option to delete everything and start
         # OR discontinue
-        if check_files():
+        if existing_files():
             # Read input from user
             args = input("Files Found! Delete them and run script? If so, press CTRL-D.\n"
                          "Otherwise, press any key to exit!")
             if args is not None:
                 exit(0)
         else:
-            print("Begin Running!")
+            mkdir("./Confusion_Matrix")
+            mkdir("./Cross_Validation")
+            mkdir("./Classifiers")
     except EOFError:
         # 3- If approved to delete, Remove it now!
         if path.exists("./results.txt") and path.isfile("./results.txt"):
@@ -367,7 +369,7 @@ def start_and_clean_up():
         mkdir("./Classifiers")
 
 
-def check_files():
+def existing_files():
     if path.exists("./results.txt") and path.isfile("./results.txt"):
         return True
 
