@@ -72,9 +72,11 @@ def naive_bayes_test(clf, clf_isotonic, clf_sigmoid, test_x, test_y, extra_test=
                                                 target_names=[str(i) for i in clf.classes]))
             my_file.write('\n')
 
-        make_confusion_matrix(y_true=test_y, y_pred=prob_pos_clf, clf=clf, clf_name='Naive_Bayes')
-        make_confusion_matrix(y_true=test_y, y_pred=prob_pos_isotonic, clf=clf_isotonic, clf_name='Naive_Bayes_Isotonic')
-        make_confusion_matrix(y_true=test_y, y_pred=prob_pos_sigmoid, clf=clf_sigmoid, clf_name='Naive_Bayes_Sigmoid')
+        make_confusion_matrix(y_true=test_y, y_predict=prob_pos_clf, clf=clf, clf_name='Naive_Bayes')
+        make_confusion_matrix(y_true=test_y, y_predict=prob_pos_isotonic, clf=clf_isotonic,
+                              clf_name='Naive_Bayes_Isotonic')
+        make_confusion_matrix(y_true=test_y, y_predict=prob_pos_sigmoid, clf=clf_sigmoid,
+                              clf_name='Naive_Bayes_Sigmoid')
     else:
         print("TODO")
 
@@ -82,7 +84,7 @@ def naive_bayes_test(clf, clf_isotonic, clf_sigmoid, test_x, test_y, extra_test=
 def bayes_load_test(test_set, test_x=None, test_y=None):
     clf = load('./Classifiers/naive_bayes.joblib')
     clf_isotonic = load('./Classifiers/NB_Isotonic.joblib')
-    clf_sigmoid= load('./Classifiers/NB_Sigmoid.joblib')
+    clf_sigmoid = load('./Classifiers/NB_Sigmoid.joblib')
     if test_x is None or test_y is None:
         test_x, test_y = read_data(test_set)
     naive_bayes_test(clf, clf_isotonic, clf_sigmoid, test_x, test_y, extra_test=False)

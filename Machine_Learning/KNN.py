@@ -28,7 +28,7 @@ def get_knn(train_x, train_y, n_fold=10, slow=False):
     with open("results.txt", "a+") as my_file:
         my_file.write("[KNN] KNN-Best Parameters: " + str(best_knn.best_params_) + '\n')
         my_file.write("[KNN] Training Mean Test Score: " + str(best_knn.score(train_x, train_y)) + '\n')
-    dump(best_knn, "knn.joblib")
+    dump(best_knn, "./Classifiers/knn.joblib")
     return best_knn
 
 
@@ -51,6 +51,6 @@ def knn_test(best_knn, test_x, test_y, extra_test=False):
                                                 labels=[str(i) for i in best_knn.classes_],
                                                 target_names=[str(i) for i in best_knn.classes_]))
             my_file.write('\n')
-        make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=best_knn, clf_name='KNN')
+        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=best_knn, clf_name='KNN')
     else:
         print("TODO")

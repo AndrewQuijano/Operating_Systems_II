@@ -14,7 +14,7 @@ def discriminant_line(train_x, train_y):
 
     with open("results.txt", "a+") as my_file:
         my_file.write("[LDA] Training Mean Test Score: " + str(lda.score(train_x, train_y)) + '\n')
-    dump(lda, "LDA.joblib")
+    dump(lda, "./Classifiers/LDA.joblib")
     return lda
 
 
@@ -33,7 +33,7 @@ def lda_test(lda, test_x, test_y, extra_test=False):
                                                 labels=[str(i) for i in lda.classes_],
                                                 target_names=[str(i) for i in lda.classes_]))
             my_file.write('\n')
-        make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=lda, clf_name='LDA')
+        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=lda, clf_name='LDA')
     else:
         print("Not full test set!")
 
@@ -51,7 +51,7 @@ def discriminant_quad(train_x, train_y):
 
     with open("results.txt", "a+") as my_file:
         my_file.write("[QDA] Training Mean Test Score: " + str(qda.score(train_x, train_y)) + '\n')
-    dump(qda, "QDA.joblib")
+    dump(qda, "./Classifiers/QDA.joblib")
     return qda
 
 

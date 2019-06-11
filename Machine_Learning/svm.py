@@ -87,6 +87,6 @@ def svm_test(svm_clf, test_x, test_y, kernel, extra_test=False):
                                                 labels=[str(i) for i in svm.classes_],
                                                 target_names=[str(i) for i in svm_clf.classes_]))
             my_file.write('\n')
-        make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=svm_clf, clf_name='SVM_' + str(kernel))
+        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=svm_clf, clf_name='SVM_' + str(kernel))
     else:
         print("TODO")

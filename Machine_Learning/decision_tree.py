@@ -76,7 +76,7 @@ def tree_test(tree, test_x, test_y, extra_test=False):
                                                 labels=[str(i) for i in tree.classes_],
                                                 target_names=[str(i) for i in tree.classes_]))
             my_file.write('\n')
-        make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=tree, clf_name='Decision_Tree')
+        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=tree, clf_name='Decision_Tree')
     else:
         # TODO: Manually build this!
         print("Not all tests here!")

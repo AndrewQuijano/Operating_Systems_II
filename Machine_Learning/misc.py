@@ -94,7 +94,7 @@ def frequency_histogram(hash_map):
     ax.set_ylabel('count')
     ax.set_title('Frequency histogram')
 
-    def autolabel(rects, xpos='center'):
+    def autolabel(rectangles, xpos='center'):
         """
         Attach a text label above each bar in *rects*, displaying its height.
 
@@ -106,7 +106,7 @@ def frequency_histogram(hash_map):
         ha = {'center': 'center', 'right': 'left', 'left': 'right'}
         offset = {'center': 0.5, 'right': 0.57, 'left': 0.43}  # x_txt = x + w*off
 
-        for rect in rects:
+        for rect in rectangles:
             height = rect.get_height()
             ax.text(rect.get_x() + rect.get_width()*offset[xpos], 1.01*height,
                     '{}'.format(height), ha=ha[xpos], va='bottom')

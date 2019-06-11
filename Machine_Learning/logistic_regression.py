@@ -54,7 +54,7 @@ def log_linear_test(clf, test_x, test_y, extra_test=False):
                                                 labels=[str(i) for i in clf.classes_],
                                                 target_names=[str(i) for i in clf.classes_]))
             my_file.write('\n')
-        make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=clf, clf_name='Logistic_Regression')
+        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=clf, clf_name='Logistic_Regression')
     else:
         # It will crash if you don't have same number of stuff.
         # The Classification report stuff must be obtained manually
