@@ -161,9 +161,9 @@ def dual_frequency_histogram(hash_map1, hash_map2):
     plt.close()
 
 
-def plot_roc(y_test, y_hat):
+def plot_roc(y_test, y_hat, clf_name):
     skplt.metrics.plot_roc_curve(y_test, y_hat)
-    plt.show()
+    plt.savefig(str('./' + clf_name + '_ROC.png'))
 
 
 def get_cv_set(training_set, test_set, percentile=0.2):

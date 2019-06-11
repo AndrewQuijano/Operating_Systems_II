@@ -65,25 +65,25 @@ def svc_linear_param_selection(x, y, n_folds=10, slow=False):
     return svm_line
 
 
-def svm_test(svm_clf, test_x, test_y, kernel, extra_test=False):
+def svm_test(clf, test_x, test_y, kernel, extra_test=False):
     num_test_y = len(np.unique(test_y))
-    y_hat = svm_clf.predict(test_x)
+    y_hat = clf.predict(test_x)
     print("[SVM_" + kernel + "] Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
 
     with open("results.txt", "a+") as my_file:
         my_file.write("[SVM_" + kernel + "] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 
     if extra_test:
-        top(svm_clf, test_x, test_y, "SVM_" + str(kernel), extra_attempts=1)
-        top(svm_clf, test_x, test_y, "SVM_" + str(kernel), extra_attempts=2)
+        top(clf, test_x, test_y, "SVM_" + str(kernel), extra_attempts=1)
+        top(clf, test_x, test_y, "SVM_" + str(kernel), extra_attempts=2)
 
-    if num_test_y == len(svm_clf.classes_):
+    if num_test_y == len(clf.classes_):
         with open("classification_reports.txt", "a+") as my_file:
             my_file.write("---[SVM_" + str(kernel) + "]---\n")
             my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
                                                 labels=[str(i) for i in svm.classes_],
-                                                target_names=[str(i) for i in svm_clf.classes_]))
+                                                target_names=[str(i) for i in clf.classes_]))
             my_file.write('\n')
-        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=svm_clf, clf_name='SVM_' + str(kernel))
+        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=clf, clf_name='SVM_' + str(kernel))
     else:
         print("TODO")

@@ -62,24 +62,24 @@ def tune_forest(train_features, train_labels, n_fold=10, slow=False):
     return tune_rf
 
 
-def forest_test(best_forest, test_x, test_y, extra_test=False):
+def forest_test(clf, test_x, test_y, extra_test=False):
     num_test_y = len(np.unique(test_y))
-    y_hat = best_forest.predict(test_x)
+    y_hat = clf.predict(test_x)
     print("[Random_Forest] Testing Mean Test Score " + str(accuracy_score(test_y, y_hat)))
     with open("results.txt", "a+") as my_file:
         my_file.write("[Random_Forest] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 
     if extra_test:
-        top(best_forest, test_x, test_y, "Random_Forest", extra_attempts=1)
-        top(best_forest, test_x, test_y, "Random_Forest", extra_attempts=3)
+        top(clf, test_x, test_y, "Random_Forest", extra_attempts=1)
+        top(clf, test_x, test_y, "Random_Forest", extra_attempts=3)
 
-    if num_test_y == len(best_forest.classes_):
+    if num_test_y == len(clf.classes_):
         with open("classification_reports.txt", "a+") as my_file:
             my_file.write("---[Random_Forest]---\n")
             my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
-                                                labels=[str(i) for i in best_forest.classes_],
-                                                target_names=[str(i) for i in best_forest.classes_]))
+                                                labels=[str(i) for i in clf.classes_],
+                                                target_names=[str(i) for i in clf.classes_]))
             my_file.write('\n')
-        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=best_forest, clf_name='Random_Forest')
+        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=clf, clf_name='Random_Forest')
     else:
         print("TODO")

@@ -6,6 +6,7 @@ from logistic_regression import *
 from random_forest import *
 from svm import *
 from decision_tree import *
+from neural_network import *
 from sys import argv, exit
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import KFold
@@ -84,43 +85,42 @@ def main():
 
     # 1- SVM
     start_time = time.time()
-    # svm_line_clf = svm_linear(train_x, train_y, slow=True)
-    # svm_rbf_clf = svm_rbf(train_x, train_y, slow=True)
+    svm_line_clf = svm_linear(train_x, train_y, slow=False)
+    svm_rbf_clf = svm_rbf(train_x, train_y, slow=False)
 
     # 2- Random Forest
-    # forest_clf = get_forest(train_x, train_y, slow=True)
+    forest_clf = get_forest(train_x, train_y, slow=True)
 
     # 3- Neural Networks
-    # brain_clf = get_brain(train_x, train_y)
+    brain_clf = get_brain(train_x, train_y)
 
     # 4- Logistic Regression
-    # logit_clf = get_logistic(train_x, train_y, slow=True)
+    logistic_clf = get_logistic(train_x, train_y, slow=True)
 
     # 5- KNN
-    # knn_clf = get_knn(train_x, train_y, slow=True)
+    knn_clf = get_knn(train_x, train_y, slow=True)
 
     # 6- LDA/QDA
-    # lda_clf = discriminant_line(train_x, train_y)
-    # qda_clf = discriminant_quad(train_x, train_y)
+    lda_clf = discriminant_line(train_x, train_y)
+    qda_clf = discriminant_quad(train_x, train_y)
 
     # 7- Bayes
-    # bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
+    bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
 
     # 8- Decision Tree
     tree = get_tree(train_x, train_y, slow=False)
-    tree = get_tree(train_x, train_y, slow=True)
 
     # Run Testing Now
-    # svm_test(svm_line_clf, test_x, test_y, "Linear")
-    # svm_test(svm_rbf_clf, test_x, test_y, "Radial")
-    # forest_test(forest_clf, test_x, test_y)
-    # log_linear_test(logit_clf, test_x, test_y)
-    # knn_test(knn_clf, train_x, train_y)
-    # lda_test(lda_clf, test_x, test_y)
-    # qda_test(qda_clf, test_x, test_y)
-    # naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
+    svm_test(svm_line_clf, test_x, test_y, "Linear")
+    svm_test(svm_rbf_clf, test_x, test_y, "Radial")
+    forest_test(forest_clf, test_x, test_y)
+    log_linear_test(logistic_clf, test_x, test_y)
+    knn_test(knn_clf, train_x, train_y)
+    lda_test(lda_clf, test_x, test_y)
+    qda_test(qda_clf, test_x, test_y)
+    naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
     tree_test(tree, test_x, test_y)
-    # brain_test(brain_clf, test_x, test_y)
+    brain_test(brain_clf, test_x, test_y)
     print("---Time to complete training everything: %s seconds---" % (time.time() - start_time))
 
 

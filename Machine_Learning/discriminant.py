@@ -18,22 +18,22 @@ def discriminant_line(train_x, train_y):
     return lda
 
 
-def lda_test(lda, test_x, test_y, extra_test=False):
+def lda_test(clf, test_x, test_y, extra_test=False):
     num_test_y = len(np.unique(test_y))
-    y_hat = lda.predict(test_x)
+    y_hat = clf.predict(test_x)
     print("Testing Score is (LDA): " + str(accuracy_score(test_y, y_hat)))
 
     with open("results.txt", "a+") as my_file:
         my_file.write("[LDA] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 
-    if num_test_y == len(lda.classes_):
+    if num_test_y == len(clf.classes_):
         with open("classification_reports.txt", "a+") as my_file:
             my_file.write("---[LDA]---\n")
             my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
-                                                labels=[str(i) for i in lda.classes_],
-                                                target_names=[str(i) for i in lda.classes_]))
+                                                labels=[str(i) for i in clf.classes_],
+                                                target_names=[str(i) for i in clf.classes_]))
             my_file.write('\n')
-        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=lda, clf_name='LDA')
+        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=clf, clf_name='LDA')
     else:
         print("Not full test set!")
 
@@ -55,26 +55,26 @@ def discriminant_quad(train_x, train_y):
     return qda
 
 
-def qda_test(qda, test_x, test_y, extra_test=False):
+def qda_test(clf, test_x, test_y, extra_test=False):
     num_test_y = len(np.unique(test_y))
-    y_hat = qda.predict(test_x)
+    y_hat = clf.predict(test_x)
     print("Prediction Score is (QDA): " + str(accuracy_score(test_y, y_hat)))
 
     with open("results.txt", "a") as my_file:
         my_file.write("[QDA] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
 
     if extra_test:
-        top(qda, test_x, test_y, "QDA", extra_attempts=1)
-        top(qda, test_x, test_y, "QDA", extra_attempts=3)
+        top(clf, test_x, test_y, "QDA", extra_attempts=1)
+        top(clf, test_x, test_y, "QDA", extra_attempts=3)
 
-    if num_test_y == len(qda.classes_):
+    if num_test_y == len(clf.classes_):
         with open("classification_reports.txt", "a") as my_file:
             my_file.write("---[QDA]---\n")
             my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
-                                                labels=[str(i) for i in qda.classes_],
-                                                target_names=[str(i) for i in qda.classes_]))
+                                                labels=[str(i) for i in clf.classes_],
+                                                target_names=[str(i) for i in clf.classes_]))
             my_file.write('\n')
-        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=qda, clf_name='QDA')
+        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=clf, clf_name='QDA')
     else:
         print("TODO")
 
