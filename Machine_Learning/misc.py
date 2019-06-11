@@ -18,7 +18,6 @@ import scikitplot as skplt
 # for easier usage with Classification Reports and stuff.
 def read_data(file, has_header=False):
     columns = n_col(file)
-    print(columns)
     if has_header:
         features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=float,
                                  autostrip=True, usecols=[i for i in range(1, columns)])
@@ -349,8 +348,10 @@ def start_and_clean_up():
                 exit(0)
     except EOFError:
         # 3- If approved to delete, Remove it now!
-        remove("./results.txt")
-        remove("./classification_reports.txt")
+        if path.exists("./results.txt") and path.isfile("./results.txt"):
+            remove("./results.txt")
+        if path.exists("./classification_reports.txt") and path.isfile("./classification_reports.txt"):
+            remove("./classification_reports.txt")
         rmtree("./Cross_Validation")
         rmtree("./Confusion_Matrix")
         rmtree("./Classifiers")
