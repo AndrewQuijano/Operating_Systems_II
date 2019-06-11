@@ -54,12 +54,11 @@ def tune_forest(train_features, train_labels, n_fold=10, slow=False):
                                      cv=n_fold, n_jobs=-1, verbose=2)
     tune_rf.fit(train_features, train_labels)
 
-    if slow:
-        plot_grid_search(tune_rf.cv_results_, n_estimators, 'n_estimators')
-        plot_grid_search(tune_rf.cv_results_, max_features, 'max_features')
-        plot_grid_search(tune_rf.cv_results_, max_depth, 'max_depth')
-        plot_grid_search(tune_rf.cv_results_, min_samples_split, 'min_samples_split')
-        plot_grid_search(tune_rf.cv_results_, min_samples_leaf, 'min_samples_leaf')
+    plot_grid_search(tune_rf, 'n_estimators', 'Random_Forest')
+    plot_grid_search(tune_rf, 'max_features', 'Random_Forest')
+    plot_grid_search(tune_rf, 'max_depth', 'Random_Forest')
+    plot_grid_search(tune_rf, 'min_samples_split', 'Random_Forest')
+    plot_grid_search(tune_rf, 'min_samples_leaf', 'Random_Forest')
     return tune_rf
 
 

@@ -33,9 +33,8 @@ def svc_rbf_param_selection(x, y, n_folds=10, slow=False):
         rbf_search = RandomizedSearchCV(svm.SVC(kernel='rbf', gamma='scale'), param_distributions=random_grid,
                                         cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
     rbf_search.fit(x, y)
-    if slow:
-        plot_grid_search(rbf_search.cv_results_, c, 'SVM_RBF_Cost')
-        plot_grid_search(rbf_search.cv_results_, gammas, 'SVM_RBF_Gamma')
+    plot_grid_search(rbf_search, 'C', 'SVM_RBF')
+    plot_grid_search(rbf_search, 'gamma', 'SVM_RBF')
     return rbf_search
 
 
@@ -62,9 +61,7 @@ def svc_linear_param_selection(x, y, n_folds=10, slow=False):
     else:
         svm_line = RandomizedSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
     svm_line.fit(x, y)
-
-    if slow:
-        plot_grid_search(svm_line.cv_results_, c, 'SVM_Linear_Cost')
+    plot_grid_search(svm_line, 'C', 'SVM_Linear')
     return svm_line
 
 

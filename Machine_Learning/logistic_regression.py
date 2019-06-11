@@ -18,11 +18,7 @@ def get_logistic(train_x, train_y, n_fold=10, slow=False):
         log_model = RandomizedSearchCV(log, param_grid, n_jobs=-1, cv=n_fold, verbose=2)
     log_model.fit(train_x, train_y)
 
-    if slow:
-        plot_grid_search(log_model.cv_results_, n, 'Logistic_Regression_Cost')
-    else:
-        print(n.shape)
-        print(len(log_model.cv_results['mean_test_score']))
+    plot_grid_search(log_model, 'C', 'Logistic_Regression')
 
     print("[INFO] Logistic Regression-Best Parameters: " + str(log_model.best_params_))
     print("[INFO] randomized search took {:.2f} seconds".format(time.time() - start))

@@ -27,9 +27,9 @@ def tune_tree(train_x, train_y, n_fold=10, slow=False, n_iter_search=10):
         tree = RandomizedSearchCV(estimator=DecisionTreeClassifier(), param_distributions=random_grid,
                                   cv=n_fold, verbose=2, n_iter=n_iter_search, n_jobs=-1)
     tree.fit(train_x, train_y)
-    plot_grid_search(tree, min_samples_split, 'min_samples_split')
-    plot_grid_search(tree, min_samples_leaf, 'min_samples_leaf')
-    plot_grid_search(tree, max_depth, 'max_depth')
+    plot_grid_search(tree, 'min_samples_split', 'Decision_Tree')
+    plot_grid_search(tree, 'min_samples_leaf', 'Decision_Tree')
+    plot_grid_search(tree, 'max_depth', 'Decision_Tree')
     return tree
 
 

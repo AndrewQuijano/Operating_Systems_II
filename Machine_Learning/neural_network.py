@@ -35,11 +35,9 @@ def tune_brain(train_x, train_y, n_fold=10, slow=False):
         clf = RandomizedSearchCV(MLPClassifier(warm_start=False), param_grid, n_jobs=-1, cv=n_fold)
 
     clf.fit(train_x, train_y)
-
-    if slow:
-        plot_grid_search(clf.cv_results_, alphas, 'alpha')
-        plot_grid_search(clf.cv_results_, hidden_layer, 'hidden_layer')
-        plot_grid_search(clf.cv_results_, solvers, 'solver')
+    plot_grid_search(clf, 'alpha', 'NN')
+    plot_grid_search(clf, 'hidden_layer_sizes', 'NN')
+    plot_grid_search(clf, 'solver', 'NN')
     return clf
 
 

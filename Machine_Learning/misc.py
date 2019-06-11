@@ -232,18 +232,13 @@ def scale_and_pca(train_x, test_x):
     return pr_comp.transform(scaled_train_x), pr_comp.transform(scaled_test_x)
 
 
-def plot_grid_search(clf, grid_param, name_param, directory="Cross_Validation"):
+def plot_grid_search(clf, name_param, clf_name, directory="Cross_Validation"):
     # Get Test Scores Mean
     # Get the specific parameter to compare with CV
     coordinates = dict()
     scores_mean = clf.cv_results_['mean_test_score']
     parameters = clf.cv_results_['param_' + name_param]
     scores_mean = np.array(scores_mean).reshape(len(parameters), 1)
-
-    print("Parameters")
-    print(parameters)
-    print("Scores")
-    print(scores_mean)
 
     # Step 1- Build dictionary
     for x, y in zip(parameters, scores_mean):
@@ -252,6 +247,7 @@ def plot_grid_search(clf, grid_param, name_param, directory="Cross_Validation"):
         else:
             if coordinates[x] > y:
                 coordinates[x] = y
+
     # Step 2- Make into ordered set, sort by key!
     coordinates = OrderedDict(sorted(coordinates.items().__iter__()))
 
@@ -263,7 +259,7 @@ def plot_grid_search(clf, grid_param, name_param, directory="Cross_Validation"):
     ax.set_ylabel('CV Average Score', fontsize=16)
     ax.legend(loc="best", fontsize=15)
     ax.grid(True)
-    plt.savefig(str('./' + directory + '/CV_Plot_' + name_param + '.png'))
+    plt.savefig(str('./' + directory + '/CV_Plot_' + clf_name + '_' + name_param + '.png'))
     plt.close()
 
 
