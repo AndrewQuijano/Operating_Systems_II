@@ -345,10 +345,12 @@ def start_and_clean_up():
         # OR discontinue
         if check_files():
             # Read input from user
-            args = input("Files Found! Delete them and run script? If so, press CTRL-D.\n "
+            args = input("Files Found! Delete them and run script? If so, press CTRL-D.\n"
                          "Otherwise, press any key to exit!")
             if args is not None:
                 exit(0)
+        else:
+            print("Begin Running!")
     except EOFError:
         # 3- If approved to delete, Remove it now!
         if path.exists("./results.txt") and path.isfile("./results.txt"):
@@ -360,9 +362,9 @@ def start_and_clean_up():
         rmtree("./Classifiers")
 
         # 4- Build new directory path!
-        mkdir("Confusion_Matrix")
-        mkdir("Cross_Validation")
-        mkdir("Classifiers")
+        mkdir("./Confusion_Matrix")
+        mkdir("./Cross_Validation")
+        mkdir("./Classifiers")
 
 
 def check_files():
@@ -372,15 +374,12 @@ def check_files():
     if path.exists("./classification_reports.txt") and path.isfile("./classification_reports.txt"):
         return True
 
-    if path.exists("./classification_reports.txt") and path.isfile("./classification_reports.txt"):
+    if path.exists("./Cross_Validation") and path.isdir("./Cross_Validation"):
         return True
 
-    if path.exists("./Cross_Validation") and path.isfile("./Cross_Validation"):
+    if path.exists("./Confusion_Matrix") and path.isdir("./Confusion_Matrix"):
         return True
 
-    if path.exists("./Confusion_Matrix") and path.isfile("./Confusion_Matrix"):
-        return True
-
-    if path.exists("./Classifiers") and path.isfile("./Classifiers"):
+    if path.exists("./Classifiers") and path.isdir("./Classifiers"):
         return True
     return False
