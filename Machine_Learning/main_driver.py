@@ -76,6 +76,10 @@ def main():
         print("Usage: python3 main_driver <train-set> <test-set>")
         exit(0)
 
+    # First thing, Check if there was a previous run or not!
+    # Then the user chooses to delete and run or not
+    start_and_clean_up()
+
     # Now train ALL classifiers!
 
     # 1- SVM

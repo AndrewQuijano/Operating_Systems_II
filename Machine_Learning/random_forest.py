@@ -16,7 +16,7 @@ def get_forest(train_x, train_y, n_fold=10, slow=False):
     with open("results.txt", "a+") as my_file:
         my_file.write("[Random_Forest] Best Parameters: " + str(best_forest.best_params_) + '\n')
         my_file.write("[Random_Forest] Training Mean Test Score: " + str(best_forest.score(train_x, train_y)) + '\n')
-    dump(best_forest, "random_forest.joblib")
+    dump(best_forest, "./Classifiers/random_forest.joblib")
     return best_forest
 
 
@@ -54,11 +54,12 @@ def tune_forest(train_features, train_labels, n_fold=10, slow=False):
                                      cv=n_fold, n_jobs=-1, verbose=2)
     tune_rf.fit(train_features, train_labels)
 
-    # plot_grid_search(rf_estimate.cv_results_, n_estimators, 'n_estimators')
-    # plot_grid_search(rf_max.cv_results_, max_features, 'max_features')
-    # plot_grid_search(rf_distro.cv_results_, max_depth, 'max_depth')
-    # plot_grid_search(rf_min_split.cv_results_, min_samples_split, 'min_samples_split')
-    # plot_grid_search(rf_min_leaf.cv_results_, min_samples_leaf, 'min_samples_leaf')
+    if slow:
+        plot_grid_search(tune_rf.cv_results_, n_estimators, 'n_estimators')
+        plot_grid_search(tune_rf.cv_results_, max_features, 'max_features')
+        plot_grid_search(tune_rf.cv_results_, max_depth, 'max_depth')
+        plot_grid_search(tune_rf.cv_results_, min_samples_split, 'min_samples_split')
+        plot_grid_search(tune_rf.cv_results_, min_samples_leaf, 'min_samples_leaf')
     return tune_rf
 
 

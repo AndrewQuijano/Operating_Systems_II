@@ -19,7 +19,8 @@ def get_knn(train_x, train_y, n_fold=10, slow=False):
                                       n_jobs=-1, cv=n_fold, verbose=2)
     best_knn.fit(train_x, train_y)
     # Plot the CV-Curve
-    # plot_grid_search(best_knn.cv_results_, n, 'KNN_n_neighbors')
+    if slow:
+        plot_grid_search(best_knn.cv_results_, n, 'KNN_n_neighbors')
     print("[INFO] KNN-Best Parameters: " + str(best_knn.best_params_))
     print("[INFO] Tuning took {:.2f} seconds".format(time.time() - start))
     print("[KNN] Training Score is: " + str(best_knn.score(train_x, train_y)))

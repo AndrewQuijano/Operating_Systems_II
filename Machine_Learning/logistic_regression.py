@@ -31,7 +31,7 @@ def get_logistic(train_x, train_y, n_fold=10, slow=False):
         my_file.write("[Logistic Regression] Best Parameters: " + str(log_model.best_params_) + '\n')
         my_file.write("[Logistic Regression] Training Mean Test Score: " +
                       str(log_model.score(train_x, train_y)) + '\n')
-    dump(log_model, "logistic.joblib")
+    dump(log_model, "./Classifiers/logistic.joblib")
     return log_model
 
 

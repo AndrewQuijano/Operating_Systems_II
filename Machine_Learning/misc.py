@@ -1,7 +1,8 @@
 import itertools
 import numpy as np
 import random
-from os import mkdir, path
+from os import mkdir, path, remove
+from shutil import rmtree
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.model_selection import validation_curve
@@ -233,21 +234,14 @@ def scale_and_pca(train_x, test_x):
 
 
 def plot_grid_search(cv_results, grid_param, name_param, directory="Cross_Validation"):
-    # Create target Directory if don't exist
-    if not path.exists(directory):
-        mkdir(directory)
-    #    print("Directory ", directory, " Created! ")
-    # else:
-        # print("Directory ", "Cross_Validation", " already exists")
-
-    # Get Test Scores Mean and std for each grid search
+    # Get Test Scores Mean
     scores_mean = cv_results['mean_test_score']
-    scores_mean = np.array(scores_mean).reshape(len(grid_param))
+    scores_mean = np.array(scores_mean).reshape(len(grid_param), 1)
 
-    # Plot Grid search scores
-    _, ax = plt.subplots(1, 1)
+    # Get the specific parameter to compare with CV
 
     # Param1 is the X-axis, Param 2 is represented as a different curve (color line)
+    _, ax = plt.subplots(1, 1)
     ax.plot(grid_param, scores_mean, label="CV-Curve")
     ax.set_title("Grid Search Scores", fontsize=20, fontweight='bold')
     ax.set_xlabel(name_param, fontsize=16)
@@ -322,16 +316,9 @@ def plot_confusion_matrix(cm, classes,
     plt.xlabel('Predicted label')
 
 
-def make_confusion_matrix(y_true, y_pred, clf, clf_name, directory="Confusion_Matrix"):
-    # Create target Directory if don't exist
-    if not path.exists(directory):
-        mkdir("Confusion_Matrix")
-    #    print("Directory ", directory, " Created ")
-    # else:
-    #    print("Directory ", directory, " already exists")
-
+def make_confusion_matrix(y_true, y_predict, clf, clf_name, directory="Confusion_Matrix"):
     # Compute confusion matrix
-    cnf_matrix = confusion_matrix(y_true, y_pred, labels=[str(i) for i in clf.classes_])
+    cnf_matrix = confusion_matrix(y_true, y_predict, labels=[str(i) for i in clf.classes_])
     np.set_printoptions(precision=2)
     # Plot non-normalized confusion matrix
     plt.figure()
@@ -348,3 +335,48 @@ def make_confusion_matrix(y_true, y_pred, clf, clf_name, directory="Confusion_Ma
     plt.savefig(str('./' + directory + '/Normalized_Confusion_Matrix_' + clf_name + '.png'))
     # plt.show()
     plt.close()
+
+
+def start_and_clean_up():
+    try:
+        # Now give user an option to delete everything and start
+        # OR discontinue
+        if check_files():
+            # Read input from user
+            args = input("Files Found! Delete them and run script? If so, press CTRL-D.\n "
+                         "Otherwise, press any key to exit!")
+            if args is not None:
+                exit(0)
+    except EOFError:
+        # 3- If approved to delete, Remove it now!
+        remove("./results.txt")
+        remove("./classification_reports.txt")
+        rmtree("./Cross_Validation")
+        rmtree("./Confusion_Matrix")
+        rmtree("./Classifiers")
+
+        # 4- Build new directory path!
+        mkdir("Confusion_Matrix")
+        mkdir("Cross_Validation")
+        mkdir("Classifiers")
+
+
+def check_files():
+    if path.exists("./results.txt") and path.isfile("./results.txt"):
+        return True
+
+    if path.exists("./classification_reports.txt") and path.isfile("./classification_reports.txt"):
+        return True
+
+    if path.exists("./classification_reports.txt") and path.isfile("./classification_reports.txt"):
+        return True
+
+    if path.exists("./Cross_Validation") and path.isfile("./Cross_Validation"):
+        return True
+
+    if path.exists("./Confusion_Matrix") and path.isfile("./Confusion_Matrix"):
+        return True
+
+    if path.exists("./Classifiers") and path.isfile("./Classifiers"):
+        return True
+    return False

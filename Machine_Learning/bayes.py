@@ -25,9 +25,9 @@ def naive_bayes(train_x, train_y, n_fold=10):
         my_file.write("[NB] Training Mean Test Score: " + str(clf.score(train_x, train_y)) + '\n')
         my_file.write("[NB Isotonic] Training Mean Test Score: " + str(clf_isotonic.score(train_x, train_y)) + '\n')
         my_file.write("[NB Sigmoid] Training Mean Test Score: " + str(clf_sigmoid.score(train_x, train_y)) + '\n')
-    dump(clf, "naive_bayes.joblib")
-    dump(clf_sigmoid, "NB_Sig.joblib")
-    dump(clf_isotonic, "NB_Isotonic.joblib")
+    dump(clf, "./Classifiers/naive_bayes.joblib")
+    dump(clf_sigmoid, "./Classifiers/NB_Sig.joblib")
+    dump(clf_isotonic, "./Classifiers/NB_Isotonic.joblib")
     return clf, clf_isotonic, clf_sigmoid
 
 
@@ -80,9 +80,9 @@ def naive_bayes_test(clf, clf_isotonic, clf_sigmoid, test_x, test_y, extra_test=
 
 
 def bayes_load_test(test_set, test_x=None, test_y=None):
-    clf = load('naive_bayes.joblib')
-    clf_isotonic = load('NB_Isotonic.joblib')
-    clf_sigmoid= load('NB_Sigmoid.joblib')
+    clf = load('./Classifiers/naive_bayes.joblib')
+    clf_isotonic = load('./Classifiers/NB_Isotonic.joblib')
+    clf_sigmoid= load('./Classifiers/NB_Sigmoid.joblib')
     if test_x is None or test_y is None:
         test_x, test_y = read_data(test_set)
     naive_bayes_test(clf, clf_isotonic, clf_sigmoid, test_x, test_y, extra_test=False)
