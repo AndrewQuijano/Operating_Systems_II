@@ -8,7 +8,7 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import validation_curve
 from sklearn.metrics import confusion_matrix
 from matplotlib import pyplot as plt
-from collections import Counter
+from collections import Counter, OrderedDict
 import pandas as pd
 from data_set_manipulation import n_col
 import scikitplot as skplt
@@ -235,16 +235,29 @@ def scale_and_pca(train_x, test_x):
 def plot_grid_search(clf, grid_param, name_param, directory="Cross_Validation"):
     # Get Test Scores Mean
     # Get the specific parameter to compare with CV
+    coordinates = dict()
     scores_mean = clf.cv_results_['mean_test_score']
     parameters = clf.cv_results_['param_' + name_param]
-    print(parameters)
-    print(len(parameters))
-    print(len(scores_mean))
     scores_mean = np.array(scores_mean).reshape(len(parameters), 1)
+
+    print("Parameters")
+    print(parameters)
+    print("Scores")
+    print(scores_mean)
+
+    # Step 1- Build dictionary
+    for x, y in zip(parameters, scores_mean):
+        if x not in coordinates:
+            coordinates[x] = y
+        else:
+            if coordinates[x] > y:
+                coordinates[x] = y
+    # Step 2- Make into ordered set, sort by key!
+    coordinates = OrderedDict(sorted(coordinates.items().__iter__()))
 
     # Param1 is the X-axis, Param 2 is represented as a different curve (color line)
     _, ax = plt.subplots(1, 1)
-    ax.plot(parameters, scores_mean, label="CV-Curve")
+    ax.plot(coordinates.keys(), coordinates.values(), label="CV-Curve")
     ax.set_title("Grid Search Scores", fontsize=20, fontweight='bold')
     ax.set_xlabel(name_param, fontsize=16)
     ax.set_ylabel('CV Average Score', fontsize=16)
@@ -294,10 +307,6 @@ def plot_confusion_matrix(cm, classes,
     """
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-    #    print("Normalized confusion matrix")
-    # else:
-    #    print('Confusion matrix, without normalization')
-    # print(cm)
 
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title)
