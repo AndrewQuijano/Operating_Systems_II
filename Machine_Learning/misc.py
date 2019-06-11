@@ -232,16 +232,19 @@ def scale_and_pca(train_x, test_x):
     return pr_comp.transform(scaled_train_x), pr_comp.transform(scaled_test_x)
 
 
-def plot_grid_search(cv_results, grid_param, name_param, directory="Cross_Validation"):
+def plot_grid_search(clf, grid_param, name_param, directory="Cross_Validation"):
     # Get Test Scores Mean
-    scores_mean = cv_results['mean_test_score']
-    scores_mean = np.array(scores_mean).reshape(len(grid_param), 1)
-
     # Get the specific parameter to compare with CV
+    scores_mean = clf.cv_results_['mean_test_score']
+    parameters = clf.cv_results_['param_' + name_param]
+    print(parameters)
+    print(len(parameters))
+    print(len(scores_mean))
+    scores_mean = np.array(scores_mean).reshape(len(parameters), 1)
 
     # Param1 is the X-axis, Param 2 is represented as a different curve (color line)
     _, ax = plt.subplots(1, 1)
-    ax.plot(grid_param, scores_mean, label="CV-Curve")
+    ax.plot(parameters, scores_mean, label="CV-Curve")
     ax.set_title("Grid Search Scores", fontsize=20, fontweight='bold')
     ax.set_xlabel(name_param, fontsize=16)
     ax.set_ylabel('CV Average Score', fontsize=16)

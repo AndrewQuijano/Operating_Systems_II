@@ -74,7 +74,7 @@ def qda_test(qda, test_x, test_y, extra_test=False):
                                                 labels=[str(i) for i in qda.classes_],
                                                 target_names=[str(i) for i in qda.classes_]))
             my_file.write('\n')
-        make_confusion_matrix(y_true=test_y, y_pred=y_hat, clf=qda, clf_name='QDA')
+        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=qda, clf_name='QDA')
     else:
         print("TODO")
 

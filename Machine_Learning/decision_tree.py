@@ -29,12 +29,12 @@ def tune_tree(train_x, train_y, n_fold=10, slow=False, n_iter_search=10):
     tree.fit(train_x, train_y)
 
     if slow:
-        plot_grid_search(tree.cv_results_, min_samples_split, 'min_samples_split')
-        plot_grid_search(tree.cv_results_, min_samples_leaf, 'min_samples_leaf')
-        plot_grid_search(tree.cv_results_, max_depth, 'max_depth')
+        plot_grid_search(tree, min_samples_split, 'min_samples_split')
+        plot_grid_search(tree, min_samples_leaf, 'min_samples_leaf')
+        plot_grid_search(tree, max_depth, 'max_depth')
     else:
         print("Starting SLOW!")
-        scores_mean = tree.cv_results_.cv_results['mean_test_score']
+        scores_mean = tree.cv_results_['mean_test_score']
         print("Size of Scores: " + str(len(scores_mean)))
         scores_mean = np.array(scores_mean).reshape(len(random_grid), 1)
         print(scores_mean.shape)
