@@ -85,43 +85,84 @@ def main():
 
     # 1- SVM
     start_time = time.time()
-    svm_line_clf = svm_linear(train_x, train_y, slow=False)
-    svm_rbf_clf = svm_rbf(train_x, train_y, slow=False)
+    # svm_line_clf = svm_linear(train_x, train_y, slow=False)
+    # svm_rbf_clf = svm_rbf(train_x, train_y, slow=False)
 
     # 2- Random Forest
-    forest_clf = get_forest(train_x, train_y, slow=True)
+    # forest_clf = get_forest(train_x, train_y, slow=True)
 
     # 3- Neural Networks
-    brain_clf = get_brain(train_x, train_y)
+    # brain_clf = get_brain(train_x, train_y)
 
     # 4- Logistic Regression
-    logistic_clf = get_logistic(train_x, train_y, slow=True)
+    # logistic_clf = get_logistic(train_x, train_y, slow=True)
 
     # 5- KNN
-    knn_clf = get_knn(train_x, train_y, slow=True)
+    # knn_clf = get_knn(train_x, train_y, slow=True)
 
     # 6- LDA/QDA
-    lda_clf = discriminant_line(train_x, train_y)
-    qda_clf = discriminant_quad(train_x, train_y)
+    # lda_clf = discriminant_line(train_x, train_y)
+    # qda_clf = discriminant_quad(train_x, train_y)
 
     # 7- Bayes
-    bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
+    # bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
 
     # 8- Decision Tree
     tree = get_tree(train_x, train_y, slow=False)
+    print("---Time to complete training everything: %s seconds---" % (time.time() - start_time))
 
     # Run Testing Now
-    svm_test(svm_line_clf, test_x, test_y, "Linear")
-    svm_test(svm_rbf_clf, test_x, test_y, "Radial")
-    forest_test(forest_clf, test_x, test_y)
-    log_linear_test(logistic_clf, test_x, test_y)
-    knn_test(knn_clf, train_x, train_y)
-    lda_test(lda_clf, test_x, test_y)
-    qda_test(qda_clf, test_x, test_y)
-    naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
+    # svm_test(svm_line_clf, test_x, test_y, "Linear")
+    # svm_test(svm_rbf_clf, test_x, test_y, "Radial")
+    # forest_test(forest_clf, test_x, test_y)
+    # log_linear_test(logistic_clf, test_x, test_y)
+    # knn_test(knn_clf, train_x, train_y)
+    # lda_test(lda_clf, test_x, test_y)
+    # qda_test(qda_clf, test_x, test_y)
+    # naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
     tree_test(tree, test_x, test_y)
-    brain_test(brain_clf, test_x, test_y)
+    # brain_test(brain_clf, test_x, test_y)
+
+    # New code!
+    # names, classifiers = clf_list(train_x, train_y)
+    # for clf_name, clf in zip(names, classifiers):
+    #    test_classifier(clf, clf_name, test_x, test_y, extra_test=False)
+
+
+def clf_list(train_x, train_y, speed):
+    names = ["SVM_Linear", "SVM_Radial", "Random_Forest", "Logistic_Regression", "KNN",
+             "LDA", "QDA", "Decision_tree", "NB", "NB_Isotonic", "NB_Sigmoid", "NN"]
+
+    # 1- SVM
+    start_time = time.time()
+    svm_line_clf = svm_linear(train_x, train_y, speed)
+    svm_rbf_clf = svm_rbf(train_x, train_y,  speed)
+
+    # 2- Random Forest
+    forest_clf = get_forest(train_x, train_y, speed)
+
+    # 3- Logistic Regression
+    logistic_clf = get_logistic(train_x, train_y, speed)
+
+    # 4- KNN
+    knn_clf = get_knn(train_x, train_y, speed)
+
+    # 5- LDA/QDA
+    lda_clf = discriminant_line(train_x, train_y)
+    qda_clf = discriminant_quad(train_x, train_y)
+
+    # 6- Bayes
+    bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
+
+    # 7- Decision Tree
+    tree = get_tree(train_x, train_y, speed)
+
+    # 8- Neural Networks
+    brain_clf = get_brain(train_x, train_y, speed)
+    classifiers = [svm_line_clf, svm_rbf_clf, forest_clf, logistic_clf, knn_clf,
+                   lda_clf, qda_clf, tree, bayes, bayes_isotonic, bayes_sigmoid, brain_clf]
     print("---Time to complete training everything: %s seconds---" % (time.time() - start_time))
+    return names, classifiers
 
 
 # Use this to run IDS using Classifier!

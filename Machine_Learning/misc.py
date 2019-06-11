@@ -11,7 +11,10 @@ from matplotlib import pyplot as plt
 from collections import Counter, OrderedDict
 import pandas as pd
 from data_set_manipulation import n_col
-import scikitplot as skplt
+import scikitplot as sk_plt
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import precision_score, recall_score, f1_score, precision_recall_fscore_support
+from matplotlib.cm import get_cmap
 
 
 # After a lot of tinkering around, it is always best to have your classes be strings
@@ -161,11 +164,6 @@ def dual_frequency_histogram(hash_map1, hash_map2):
     plt.close()
 
 
-def plot_roc(y_test, y_hat, clf_name):
-    skplt.metrics.plot_roc_curve(y_test, y_hat)
-    plt.savefig(str('./' + clf_name + '_ROC.png'))
-
-
 def get_cv_set(training_set, test_set, percentile=0.2):
     row = np.shape(training_set)[0]
     col = np.shape(training_set)[1]
@@ -263,7 +261,6 @@ def plot_grid_search(clf, name_param, clf_name, directory="Cross_Validation"):
     plt.close()
 
 
-# METHOD IS NOT USED AT THE MOMENT!
 def plot_validation_curve(x, y, param_range, param_name, clf, clf_name):
     train_scores, test_scores = validation_curve(
         clf, x, y, param_name=param_name, param_range=param_range,
@@ -295,15 +292,14 @@ def plot_validation_curve(x, y, param_range, param_name, clf, clf_name):
 # https://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
 def plot_confusion_matrix(cm, classes,
                           normalize=False,
-                          title='Confusion matrix',
-                          cmap=plt.cm.Blues):
+                          title='Confusion matrix'):
+    cmap = get_cmap('Blues')
     """
     This function prints and plots the confusion matrix.
     Normalization can be applied by setting `normalize=True`.
     """
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title)
     plt.colorbar()
@@ -344,6 +340,43 @@ def make_confusion_matrix(y_true, y_predict, clf, clf_name, directory="Confusion
     plt.close()
 
 
+def test_classifier(clf, clf_name, test_x, test_y, extra_test=False):
+    num_test_y = len(np.unique(test_y))
+
+    y_hat = clf.predict(test_x)
+    print("[" + clf_name + "] Testing Score is: " + str(accuracy_score(test_y, y_hat)))
+    with open("results.txt", "a+") as my_file:
+        my_file.write("[" + clf_name + "] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
+
+    if extra_test:
+        top(clf, test_x, test_y, clf_name, extra_attempts=1)
+        top(clf, test_x, test_y, clf_name, extra_attempts=3)
+
+    if num_test_y == len(clf.classes_):
+        with open("classification_reports.txt", "a+") as my_file:
+            my_file.write("---[" + clf_name + "]---\n")
+            my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
+                                                labels=[str(i) for i in clf.classes_],
+                                                target_names=[str(i) for i in clf.classes_]))
+            my_file.write('\n')
+        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=clf, clf_name=clf_name)
+    else:
+        print("To Do...")
+        precision_score(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
+        f1_score(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
+        recall_score(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
+        precision_recall_fscore_support(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
+        # Use the library this time?
+        sk_plt.metrics.plot_confusion_matrix(y_true=test_y, y_pred=y_hat)
+        plt.savefig(str('./Confusion_Matrix/Normalized_Confusion_Matrix_' + clf_name + '.png'))
+        plt.close()
+
+    # Plot ROC Curve
+    sk_plt.metrics.plot_roc_curve(test_y, y_hat)
+    plt.savefig(str('./ROC/' + clf_name + '_ROC.png'))
+    plt.close()
+
+
 def start_and_clean_up():
     try:
         # Now give user an option to delete everything and start
@@ -358,6 +391,7 @@ def start_and_clean_up():
             mkdir("./Confusion_Matrix")
             mkdir("./Cross_Validation")
             mkdir("./Classifiers")
+            mkdir("./ROC")
     except EOFError:
         # 3- If approved to delete, Remove it now!
         if path.exists("./results.txt") and path.isfile("./results.txt"):
@@ -367,11 +401,13 @@ def start_and_clean_up():
         rmtree("./Cross_Validation")
         rmtree("./Confusion_Matrix")
         rmtree("./Classifiers")
+        rmtree("./ROC")
 
         # 4- Build new directory path!
         mkdir("./Confusion_Matrix")
         mkdir("./Cross_Validation")
         mkdir("./Classifiers")
+        mkdir("./ROC")
 
 
 def existing_files():
@@ -388,5 +424,8 @@ def existing_files():
         return True
 
     if path.exists("./Classifiers") and path.isdir("./Classifiers"):
+        return True
+
+    if path.exists("./ROC") and path.isdir("./ROC"):
         return True
     return False

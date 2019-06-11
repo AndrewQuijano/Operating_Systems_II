@@ -47,9 +47,13 @@ def knn_test(clf, test_x, test_y, extra_test=False):
         with open("classification_reports.txt", "a+") as my_file:
             my_file.write("---[KNN]---\n")
             my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
-                                                labels=[str(i) for i in best_knn.classes_],
-                                                target_names=[str(i) for i in best_knn.classes_]))
+                                                labels=[str(i) for i in clf.classes_],
+                                                target_names=[str(i) for i in clf.classes_]))
             my_file.write('\n')
-        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=best_knn, clf_name='KNN')
+        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=clf, clf_name='KNN')
     else:
+        precision_score(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
+        f1_score(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
+        recall_score(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
+        precision_recall_fscore_support(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
         print("TODO")
