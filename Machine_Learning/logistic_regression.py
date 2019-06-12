@@ -29,33 +29,3 @@ def get_logistic(train_x, train_y, n_fold=10, slow=False):
                       str(log_model.score(train_x, train_y)) + '\n')
     dump(log_model, "./Classifiers/Logistic_Regression.joblib")
     return log_model
-
-
-def log_linear_test(clf, test_x, test_y, extra_test=False):
-    num_y_test = len(np.unique(test_y))
-    y_hat = clf.predict(test_x)
-    print("[Logistic] Testing Score is: " + str(accuracy_score(y_true=test_y, y_pred=y_hat)))
-
-    with open("results.txt", "a+") as my_file:
-        my_file.write("[Logistic Regression] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
-
-    if extra_test:
-        top(clf, test_x, test_y, "Logistic_Regression", extra_attempts=1)
-        top(clf, test_x, test_y, "Logistic_Regression", extra_attempts=3)
-
-    if num_y_test == len(clf.classes_):
-        with open("classification_reports.txt", "a+") as my_file:
-            my_file.write("---[Logistic Regression]---\n")
-            my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
-                                                labels=[str(i) for i in clf.classes_],
-                                                target_names=[str(i) for i in clf.classes_]))
-            my_file.write('\n')
-        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=clf, clf_name='Logistic_Regression')
-    else:
-        # It will crash if you don't have same number of stuff.
-        # The Classification report stuff must be obtained manually
-        # precision, recall, f1-score, Support
-        precision_score(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
-        f1_score(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
-        recall_score(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
-        precision_recall_fscore_support(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)

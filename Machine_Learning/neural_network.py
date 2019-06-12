@@ -39,26 +39,3 @@ def tune_brain(train_x, train_y, n_fold=10, slow=False):
     plot_grid_search(clf, 'hidden_layer_sizes', 'NN')
     plot_grid_search(clf, 'solver', 'NN')
     return clf
-
-
-def brain_test(clf, test_x, test_y, extra_test=False):
-    num_test_y = len(np.unique(test_y))
-    y_hat = clf.predict(test_x)
-    print("[NN] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)))
-
-    if extra_test:
-        top(clf, test_x, test_y, "Neural_Network", extra_attempts=1)
-        top(clf, test_x, test_y, "Neural_Network", extra_attempts=3)
-
-    if num_test_y == len(clf.classes_):
-        with open("results.txt", "a") as my_file:
-            my_file.write("[Neural_Network] Testing Mean Test Score: " + str(accuracy_score(test_y, y_hat)) + '\n')
-
-        with open("classification_reports.txt", "a") as my_file:
-            my_file.write("---[Neural_Network]---\n")
-            my_file.write(classification_report(y_true=test_y, y_pred=y_hat,
-                                                target_names=[str(i) for i in clf.classes_]))
-            my_file.write('\n')
-        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=clf, clf_name='Neural_Network')
-    else:
-        print("TODO")
