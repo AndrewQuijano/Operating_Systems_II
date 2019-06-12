@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.network.Ip4.Timestamp;
 
 public class ConversationReconstructor 
@@ -151,11 +152,11 @@ public class ConversationReconstructor
 			// Check if conversation is timedout
 			if (ip_proto == UDP) 
 			{
-				is_timedout = (conv->get_last_ts() <= max_udp);
+				is_timedout = (conv.get_last_ts() <= max_udp);
 			}
 			else if (ip_proto == ICMP) 
 			{
-				is_timedout = (conv->get_last_ts() <= max_icmp);
+				is_timedout = (conv.get_last_ts() <= max_icmp);
 			}
 			else if (ip_proto == TCP) 
 			{
@@ -163,28 +164,28 @@ public class ConversationReconstructor
 				{
 				case S0:
 				case S1:
-					is_timedout = (conv->get_last_ts() <= max_tcp_syn);
+					is_timedout = (conv.get_last_ts() <= max_tcp_syn);
 					break;
 
 				case ESTAB:
-					is_timedout = (conv->get_last_ts() <= max_tcp_estab);
+					is_timedout = (conv.get_last_ts() <= max_tcp_estab);
 					break;
 
 				case REJ:
 				case RSTO:
 				case RSTOS0:
 				case RSTR:
-					is_timedout = (conv->get_last_ts() <= max_tcp_rst);
+					is_timedout = (conv.get_last_ts() <= max_tcp_rst);
 					break;
 
 				case S2:
 				case S3:
-					is_timedout = (conv->get_last_ts() <= max_tcp_fin);
+					is_timedout = (conv.get_last_ts() <= max_tcp_fin);
 					break;
 
 				case S2F:
 				case S3F:
-					is_timedout = (conv->get_last_ts() <= max_tcp_last_ack);
+					is_timedout = (conv.get_last_ts() <= max_tcp_last_ack);
 					break;
 
 				default:
@@ -226,7 +227,7 @@ public class ConversationReconstructor
 		ConversationMap.iterator it = conv_map.begin();
 		while (it != conv_map.end()) 
 		{
-			Conversation conv = it->second;
+			Conversation conv = it.second;
 			timedout_convs.push_back(conv);
 			conv_map.erase(it++);
 		}

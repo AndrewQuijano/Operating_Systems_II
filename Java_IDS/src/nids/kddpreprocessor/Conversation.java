@@ -4,6 +4,132 @@ import org.jnetpcap.protocol.network.Ip4.Timestamp;
 
 public class Conversation
 {
+	// From Conversation.h
+	/**
+	 * Conversatiov states 
+	 *	- INIT & SF for all protocols except TCP
+	 *	- other states specific to TCP
+	 * Description from https://www.bro.org/sphinx/scripts/base/protocols/conn/main.bro.html
+	 */
+	enum conversation_state_t {
+		// General states
+		INIT,		// Nothing happened yet.
+		SF,			// Normal establishment and termination. Note that this is the same 
+					// symbol as for state S1. You can tell the two apart because for S1 there
+					// will not be any byte counts in the summary, while for SF there will be.
+
+		// TCP specific
+		S0,			// Connection attempt seen, no reply.
+		S1,			// Connection established, not terminated.
+		S2,			// Connection established and close attempt by originator seen (but no reply from responder).
+		S3,			// Connection established and close attempt by responder seen (but no reply from originator).
+		REJ,		// Connection attempt rejected.
+		RSTOS0,		// Originator sent a SYN followed by a RST, we never saw a SYN-ACK from the responder.
+		RSTO,		// Connection established, originator aborted (sent a RST).
+		RSTR,		// Established, responder aborted.
+		SH,			// Originator sent a SYN followed by a FIN, we never saw a SYN ACK from the responder (hence the connection was “half” open).
+		RSTRH,		// Responder sent a SYN ACK followed by a RST, we never saw a SYN from the (purported) originator.
+		SHR,		// Responder sent a SYN ACK followed by a FIN, we never saw a SYN from the originator.
+		OTH,		// No SYN seen, just midstream traffic (a “partial connection” that was not later closed).
+
+		// Internal states (TCP-specific)
+		ESTAB,		// Established - ACK send by originator in S1 state; externally represented as S1
+		S4,			// SYN ACK seen - State between INIT and (RSTRH or SHR); externally represented as OTH
+		S2F,		// FIN send by responder in state S2 - waiting for final ACK; externally represented as S2
+		S3F			// FIN send by originator in state S3 - waiting for final ACK; externally represented as S3
+	};
+	
+	/**
+	 * Services
+	 * ! order & number of services must be the same in string mapping
+	 * see Conversation::SERVICE_NAMES[] in Conversation.cpp
+	 */
+	enum service_t {
+		// General
+		SRV_OTHER,
+		SRV_PRIVATE,
+
+		// ICMP
+		SRV_ECR_I,
+		SRV_URP_I,
+		SRV_URH_I,
+		SRV_RED_I,
+		SRV_ECO_I,
+		SRV_TIM_I,
+		SRV_OTH_I,
+
+		// UDP
+		SRV_DOMAIN_U,
+		SRV_TFTP_U,
+		SRV_NTP_U,
+
+		// TCP
+		SRV_IRC,
+		SRV_X11,
+		SRV_Z39_50,
+		SRV_AOL,
+		SRV_AUTH,
+		SRV_BGP,
+		SRV_COURIER,
+		SRV_CSNET_NS,
+		SRV_CTF,
+		SRV_DAYTIME,
+		SRV_DISCARD,
+		SRV_DOMAIN,
+		SRV_ECHO,
+		SRV_EFS,
+		SRV_EXEC,
+		SRV_FINGER,
+		SRV_FTP,
+		SRV_FTP_DATA,
+		SRV_GOPHER,
+		SRV_HARVEST,
+		SRV_HOSTNAMES,
+		SRV_HTTP,
+		SRV_HTTP_2784,
+		SRV_HTTP_443,
+		SRV_HTTP_8001,
+		SRV_ICMP,
+		SRV_IMAP4,
+		SRV_ISO_TSAP,
+		SRV_KLOGIN,
+		SRV_KSHELL,
+		SRV_LDAP,
+		SRV_LINK,
+		SRV_LOGIN,
+		SRV_MTP,
+		SRV_NAME,
+		SRV_NETBIOS_DGM,
+		SRV_NETBIOS_NS,
+		SRV_NETBIOS_SSN,
+		SRV_NETSTAT,
+		SRV_NNSP,
+		SRV_NNTP,
+		SRV_PM_DUMP,
+		SRV_POP_2,
+		SRV_POP_3,
+		SRV_PRINTER,
+		SRV_REMOTE_JOB,
+		SRV_RJE,
+		SRV_SHELL,
+		SRV_SMTP,
+		SRV_SQL_NET,
+		SRV_SSH,
+		SRV_SUNRPC,
+		SRV_SUPDUP,
+		SRV_SYSTAT,
+		SRV_TELNET,
+		SRV_TIME,
+		SRV_UUCP,
+		SRV_UUCP_PATH,
+		SRV_VMNET,
+		SRV_WHOIS,
+
+		// This must be the last 
+		NUMBER_OF_SERVICES
+	};
+	
+//----------------Conversation.cpp-------------------------------------
 	// Array for mapping service_t to string (char *)
 	// ! Update with enum service_t (in Conversation.h)
 	public static String SERVICE_NAMES [] = {
@@ -100,36 +226,48 @@ public class Conversation
 	private int dst_packets;
 	private int wrong_fragments;
 	private int urgent_packets;
-
+	private conversation_state_t state;
 	
-	public Conversation()
-		: five_tuple(), state(INIT)
-		, start_ts(), last_ts()
-		, src_bytes(0), dst_bytes(0)
-		, packets(0), src_packets(0), dst_packets(0)
-		, wrong_fragments(0), urgent_packets(0)
+	public Conversation(FiveTuple f, start_ts, last_ts)
 	{
-		
+		five_tuple = f;
+		state = conversation_state_t.valueOf("INIT");
+		src_bytes = 0;
+		dst_bytes = 0;
+		packets = 0;
+		src_packets = 0;
+		dst_packets = 0;
+		wrong_fragments = 0;
+		urgent_packets = 0;
 	}
 
-	public Conversation(FiveTuple *tuple)
-		: five_tuple(*tuple), state(INIT)
+	public Conversation(FiveTuple tuple)
+		: five_tuple(*tuple), 
 		, start_ts(), last_ts()
-		, src_bytes(0), dst_bytes(0)
-		, packets(0), src_packets(0), dst_packets(0)
-		, wrong_fragments(0), urgent_packets(0)
+
 	{
-		
+		state = conversation_state_t.valueOf("INIT");
+		src_bytes = 0;
+		dst_bytes = 0;
+		packets = 0;
+		src_packets = 0;
+		dst_packets = 0;
+		wrong_fragments = 0;
+		urgent_packets = 0;
 	}
 
 	public Conversation(const Packet *packet)
-		: five_tuple(packet->get_five_tuple()), state(INIT)
+		: five_tuple(packet->get_five_tuple()),
 		, start_ts(), last_ts()
-		, src_bytes(0), dst_bytes(0)
-		, packets(0), src_packets(0), dst_packets(0)
-		, wrong_fragments(0), urgent_packets(0)
 	{
-		
+		state = conversation_state_t.valueOf("INIT");
+		src_bytes = 0;
+		dst_bytes = 0;
+		packets = 0;
+		src_packets = 0;
+		dst_packets = 0;
+		wrong_fragments = 0;
+		urgent_packets = 0;
 	}
 
 	public FiveTuple get_five_tuple()
@@ -145,28 +283,23 @@ public class Conversation
 	public conversation_state_t get_state()
 	{
 		// Replace internal states
-		switch (state) {
-		case ESTAB:
-			return S1;
-			break;
+		switch (state) 
+		{
+			case ESTAB:
+				return S1;
 
-		case S4:
-			return OTH;
-			break;
+			case S4:
+				return OTH;
 
-		case S2F:
-			return S2;
-			break;
+			case S2F:
+				return S2;
 
-		case S3F:
-			return S3;
-			break;
+			case S3F:
+				return S3;
 
-		default:
-			return state;
-			break;
+			default:
+				return state;
 		}
-		return state;
 	}
 
 	boolean is_in_final_state()
@@ -240,7 +373,8 @@ public class Conversation
 
 	String get_protocol_type_str()
 	{
-		switch (five_tuple.get_ip_proto()) {
+		switch (five_tuple.get_ip_proto()) 
+		{
 		case TCP:
 			return "tcp";
 			break;
@@ -263,7 +397,8 @@ public class Conversation
 
 	boolean is_serror()
 	{
-		switch (get_state()) {
+		switch (get_state())
+		{
 		case S0:
 		case S1:
 		case S2:
@@ -287,24 +422,27 @@ public class Conversation
 	{
 		// Timestamps
 		if (packets == 0)
-			start_ts = packet->get_start_ts();
+		{
+			start_ts = packet.get_start_ts();
+		}
 		last_ts = packet.get_end_ts();
 
 		// Add byte counts for correct direction
-		if (packet->get_src_ip() == five_tuple.get_src_ip()) {
-			src_bytes += packet->get_length();
+		if (packet.get_src_ip() == five_tuple.get_src_ip()) 
+		{
+			src_bytes += packet.get_length();
 			src_packets++;
 		}
 		else 
 		{
-			dst_bytes += packet->get_length();
+			dst_bytes += packet.get_length();
 			dst_packets++;
 		}
 
 		// Packet counts
 		// TODO: wrong_fragments
 		packets++;
-		if (packet->get_tcp_flags().urg())
+		if (packet.get_tcp_flags().urg())
 			urgent_packets++;
 
 		// Make state transitions according to packet
@@ -328,80 +466,70 @@ public class Conversation
 	// TODO: use mapping by array fo char*s ?
 	String state_to_str(conversation_state_t state)
 	{
-		switch (state) {
-		case INIT: return "INIT"; break;
-		case S0: return "S0"; break;
-		case S1: return "S1"; break;
-		case S2: return "S2"; break;
-		case S3: return "S3"; break;
-		case SF: return "SF"; break;
-		case REJ: return "REJ"; break;
-		case RSTOS0: return "RSTOS0"; break;
-		case RSTO: return "RSTO"; break;
-		case RSTR: return "RSTR"; break;
-		case SH: return "SH"; break;
-		case RSTRH: return "RSTRH"; break;
-		case SHR: return "SHR"; break;
-		case OTH: return "OTH"; break;
-		case ESTAB: return "ESTAB"; break;
-		case S4: return "S4"; break;
-		case S2F: return "S2F"; break;
-		case S3F: return "S3F"; break;
-		default: break;
+		switch (state) 
+		{
+		case INIT: 
+			return "INIT"; 
+			break;
+		case S0: 
+			return "S0"; 
+			break;
+		case S1: 
+			return "S1"; 
+			break;
+		case S2: 
+			return "S2"; 
+			break;
+		case S3: 
+			return "S3"; 
+			break;
+		case SF: 
+			return "SF"; 
+			break;
+		case REJ: 
+			return "REJ"; 
+			break;
+		case RSTOS0: 
+			return "RSTOS0"; 
+			break;
+		case RSTO: 
+			return "RSTO"; 
+			break;
+		case RSTR: 
+			return "RSTR"; 
+			break;
+		case SH: 
+			return "SH"; 
+			break;
+		case RSTRH: 
+			return "RSTRH"; 
+			break;
+		case SHR: 
+			return "SHR"; 
+			break;
+		case OTH: 
+			return "OTH"; 
+			break;
+		case ESTAB: 
+			return "ESTAB"; 
+			break;
+		case S4: 
+			return "S4"; 
+			break;
+		case S2F: 
+			return "S2F"; 
+			break;
+		case S3F: 
+			return "S3F"; 
+			break;
+		default: 
+			break;
 		}
-
 		return "UNKNOWN";
 	}
 	
 	boolean Conversation less(Conversation other)
 	{
 		return (this.get_last_ts() < other.get_last_ts());
-	}
-	
-	void Cprint_human() 
-	{
-		// TODO: WTF ugly code, just for debugging, so nasrac..
-		stringstream ss;
-
-		struct tm *ltime;
-		//struct tm timeinfo;
-		char timestr[16];
-		time_t local_tv_sec;
-		//local_tv_sec = start_ts.get_secs();
-		ltime = localtime(&local_tv_sec);
-		//localtime_s(&timeinfo, &local_tv_sec);
-		strftime(timestr, sizeof timestr, "%H:%M:%S", ltime);
-		//strftime(timestr, sizeof timestr, "%H:%M:%S", &timeinfo);
-
-		ss << "CONVERSATION ";
-		if (five_tuple.get_ip_proto() == ICMP) {
-			ss << " > ICMP";
-		}
-		else if (five_tuple.get_ip_proto() == TCP) {
-			ss << " > TCP ";
-		}
-		else if (five_tuple.get_ip_proto() == UDP) {
-			ss << " > UDP ";
-		}
-		ss << " > " << get_service_str() << endl;
-		ss << timestr;
-		ss << " duration=" << get_duration_ms() << "ms" << endl;
-
-		// Cast ips to arrays of octets
-		// TODO: WTF ugly code, aaah..
-		uint32_t src_ip = five_tuple.get_src_ip();
-		uint32_t dst_ip = five_tuple.get_dst_ip();
-		uint8_t *sip = (uint8_t *)&src_ip;
-		uint8_t *dip = (uint8_t *)&dst_ip;
-
-		ss << "  " << (int)sip[0] << "." << (int)sip[1] << "." << (int)sip[2] << "." << (int)sip[3] << ":" << five_tuple.get_src_port();
-		ss << " --> " << (int)dip[0] << "." << (int)dip[1] << "." << (int)dip[2] << "." << (int)dip[3] << ":" << five_tuple.get_dst_port() << endl;
-		ss << "  src_bytes=" << src_bytes << " dst_bytes=" << dst_bytes << " land=" << land() << endl;
-		ss << "  pkts=" << packets << " src_pkts=" << src_packets << " dst_pkts=" << dst_packets << endl;
-		ss << "  wrong_frags=" << wrong_fragments << " urg_pkts=" << urgent_packets << endl;
-		ss << "  state=" << get_state_str() << " internal_state=" << state_to_str(state) << endl;
-		ss << endl;
-
-		cout << ss.str();
 	}
 }
