@@ -414,16 +414,15 @@ def start_and_clean_up():
             rmtree("./Cross_Validation")
         if path.exists("./Confusion_Matrix") and path.isdir("./Confusion_Matrix"):
             rmtree("./Confusion_Matrix")
-        if path.exists("./Classifiers") and path.isdir("./Classifiers"):
-            rmtree("./Classifiers")
         if path.exists("./ROC") and path.isdir("./ROC"):
             rmtree("./ROC")
-
+        # if path.exists("./Classifiers") and path.isdir("./Classifiers"):
+        #    rmtree("./Classifiers")
         # 4- Build new directory path!
         mkdir("./Confusion_Matrix")
         mkdir("./Cross_Validation")
-        mkdir("./Classifiers")
         mkdir("./ROC")
+        # mkdir("./Classifiers")
 
 
 def existing_files():
@@ -439,9 +438,9 @@ def existing_files():
     if path.exists("./Confusion_Matrix") and path.isdir("./Confusion_Matrix"):
         return True
 
-    if path.exists("./Classifiers") and path.isdir("./Classifiers"):
-        return True
-
     if path.exists("./ROC") and path.isdir("./ROC"):
         return True
+
+    # if path.exists("./Classifiers") and path.isdir("./Classifiers"):
+    #    return True
     return False
