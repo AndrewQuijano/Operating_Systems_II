@@ -32,7 +32,8 @@ def read_data(file, has_header=False):
                                  autostrip=True, usecols=[i for i in range(1, columns)])
         classes = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=str,
                                 autostrip=True, usecols=[0])
-    print(classes)
+    print("Classes Loaded...")
+    print(np.unique(classes))
     return features, classes
 
 
@@ -344,9 +345,11 @@ def classifier_test(clf, clf_name, test_x, test_y, extra_test=False):
     # Check if classifier exists to load and test?
     if clf is None:
         p = "./Classifiers/" + clf_name + ".joblib"
-        if path.exists(p) and path.isdir(p):
+        if path.exists(p) and path.isfile(p):
+            print("Loaded: " + clf_name)
             clf = load(p)
         else:
+            print("No Classifier found...")
             return
     num_test_y = len(np.unique(test_y))
 
@@ -383,9 +386,9 @@ def classifier_test(clf, clf_name, test_x, test_y, extra_test=False):
         print("It shouldn't be possible to have more classes in test set than training set?")
     make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=clf, clf_name=clf_name)
     # Plot ROC Curve
-    sk_plt.metrics.plot_roc(test_y, y_hat)
-    plt.savefig(str('./ROC/' + clf_name + '_ROC.png'))
-    plt.close()
+    # sk_plt.metrics.plot_roc(test_y, y_hat)
+    # plt.savefig(str('./ROC/' + clf_name + '_ROC.png'))
+    # plt.close()
 
 
 def start_and_clean_up():
