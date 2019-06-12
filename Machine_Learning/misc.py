@@ -390,7 +390,7 @@ def classifier_test(clf, clf_name, test_x, test_y, extra_test=False):
         print("It shouldn't be possible to have more classes in test set than training set?")
     make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=clf, clf_name=clf_name)
     # Plot ROC Curve
-    sk_plt.metrics.plot_roc(test_y, y_hat)
+    sk_plt.metrics.plot_roc(test_y, clf.predict_proba(test_x))
     plt.savefig(str('./ROC/' + clf_name + '_ROC.png'))
     plt.close()
 
