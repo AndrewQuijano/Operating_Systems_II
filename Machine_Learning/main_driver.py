@@ -108,8 +108,8 @@ def main():
     # bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
 
     # 8- Decision Tree
-    classifier_test(None, "Decision_Tree", test_x, test_y, extra_test=False)
-    tree = get_tree(train_x, train_y, slow=True)
+    load_and_test(test_x, test_y)
+    tree = get_tree(train_x, train_y, slow=False)
     print("---Time to complete training everything: %s seconds---" % (time.time() - start_time))
 
     # Run Testing Now

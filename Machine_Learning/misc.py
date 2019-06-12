@@ -343,12 +343,11 @@ def make_confusion_matrix(y_true, y_predict, clf, clf_name, directory="Confusion
     plt.close()
 
 
-def load_and_test(test_x, test_y, directory="./Classifiers", extra_test=False):
+def load_and_test(test_x, test_y, directory="./Classifiers/", extra_test=False):
     files = [f for f in listdir(directory) if isfile(join(directory, f))]
     for f in files:
-        print(f)
-        # clf = load(f)
-        # classifier_test(clf, clf_name, test_x, test_y, extra_test)
+        clf = load(directory + f)
+        classifier_test(clf, f.split('.')[0], test_x, test_y, extra_test)
 
 
 def classifier_test(clf, clf_name, test_x, test_y, extra_test=False):
