@@ -327,8 +327,7 @@ def make_confusion_matrix(y_true, y_predict, clf, clf_name, directory="Confusion
     plt.figure()
     plot_confusion_matrix(cnf_matrix, classes=[str(i) for i in clf.classes_], normalize=False,
                           title='Confusion matrix, without normalization: ')
-    plt.savefig(str('./' + directory + '/Normalized_Confusion_Matrix_' + clf_name + '.png'))
-    # plt.show()
+    plt.savefig(str('./' + directory + '/Confusion_Matrix_' + clf_name + '.png'))
     plt.close()
 
     # Plot normalized confusion matrix
@@ -336,7 +335,6 @@ def make_confusion_matrix(y_true, y_predict, clf, clf_name, directory="Confusion
     plot_confusion_matrix(cnf_matrix, classes=[str(i) for i in clf.classes_], normalize=True,
                           title='Normalized confusion matrix')
     plt.savefig(str('./' + directory + '/Normalized_Confusion_Matrix_' + clf_name + '.png'))
-    # plt.show()
     plt.close()
 
 
@@ -352,6 +350,9 @@ def test_classifier(clf, clf_name, test_x, test_y, extra_test=False):
         top(clf, test_x, test_y, clf_name, extra_attempts=1)
         top(clf, test_x, test_y, clf_name, extra_attempts=3)
 
+    print(np.unique(test_y))
+    print(clf.classes_)
+
     if num_test_y == len(clf.classes_):
         with open("classification_reports.txt", "a+") as my_file:
             my_file.write("---[" + clf_name + "]---\n")
@@ -359,8 +360,7 @@ def test_classifier(clf, clf_name, test_x, test_y, extra_test=False):
                                                 labels=[str(i) for i in clf.classes_],
                                                 target_names=[str(i) for i in clf.classes_]))
             my_file.write('\n')
-        make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=clf, clf_name=clf_name)
-    else:
+    elif num_test_y < len(clf.classes_):
         print("To Do...")
         precision_score(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
         f1_score(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
@@ -370,9 +370,11 @@ def test_classifier(clf, clf_name, test_x, test_y, extra_test=False):
         sk_plt.metrics.plot_confusion_matrix(y_true=test_y, y_pred=y_hat)
         plt.savefig(str('./Confusion_Matrix/Normalized_Confusion_Matrix_' + clf_name + '.png'))
         plt.close()
-
+    else:
+        print("It shouldn't be possible to have more classes in test set than training set?")
+    make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=clf, clf_name=clf_name)
     # Plot ROC Curve
-    sk_plt.metrics.plot_roc_curve(test_y, y_hat)
+    sk_plt.metrics.plot_roc(test_y, y_hat)
     plt.savefig(str('./ROC/' + clf_name + '_ROC.png'))
     plt.close()
 
