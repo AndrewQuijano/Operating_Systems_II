@@ -23,15 +23,19 @@ from joblib import load
 def read_data(file, has_header=False):
     columns = n_col(file)
     if has_header:
-        features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=float,
-                                 autostrip=True, usecols=[i for i in range(1, columns)])
-        classes = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=str,
-                                autostrip=True, usecols=[0])
+        with open(file, mode='r', encoding='utf-8-sig') as fd:
+            features = np.genfromtxt(fd, delimiter=',', skip_header=1, dtype=float,
+                                     autostrip=True, usecols=[i for i in range(1, columns)])
+        with open(file, mode='r', encoding='utf-8-sig') as fd:
+            classes = np.genfromtxt(fd, delimiter=',', skip_header=1, dtype=str,
+                                    autostrip=True, usecols=[0])
     else:
-        features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=float,
-                                 autostrip=True, usecols=[i for i in range(1, columns)])
-        classes = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=str,
-                                autostrip=True, usecols=[0])
+        with open(file, mode='r', encoding='utf-8-sig') as fd:
+            features = np.genfromtxt(fd, delimiter=',', skip_header=0, dtype=float,
+                                     autostrip=True, usecols=[i for i in range(1, columns)])
+        with open(file, mode='r', encoding='utf-8-sig') as fd:
+            classes = np.genfromtxt(fd, delimiter=',', skip_header=0, dtype=str,
+                                    autostrip=True, usecols=[0])
     print("Classes Loaded...")
     print(np.unique(classes))
     return features, classes
@@ -398,7 +402,7 @@ def start_and_clean_up():
         if existing_files():
             # Read input from user
             args = input("Files Found! Delete them and run script? If so, press CTRL-D.\n"
-                         "Otherwise, press any key to exit!")
+                         "Otherwise, press any key to exit\n")
             if args is not None:
                 exit(0)
         else:
