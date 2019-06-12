@@ -1,4 +1,3 @@
-from sklearn.metrics import accuracy_score, classification_report
 from sklearn import svm
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from joblib import dump
@@ -26,11 +25,12 @@ def svc_rbf_param_selection(x, y, n_folds=10, slow=False):
         'C': c,
         'gamma': gammas
     }
+    model = svm.SVC(kernel='rbf', probability=True)
     if slow:
-        rbf_search = GridSearchCV(svm.SVC(kernel='rbf', gamma='scale'), param_grid=random_grid, cv=n_folds,
+        rbf_search = GridSearchCV(model, param_grid=random_grid, cv=n_folds,
                                   n_jobs=-1, error_score='raise', verbose=2)
     else:
-        rbf_search = RandomizedSearchCV(svm.SVC(kernel='rbf', gamma='scale'), param_distributions=random_grid,
+        rbf_search = RandomizedSearchCV(model, param_distributions=random_grid,
                                         cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
     rbf_search.fit(x, y)
     plot_grid_search(rbf_search, 'C', 'SVM_RBF')
@@ -55,7 +55,7 @@ def svm_linear(train_x, train_y, n_fold=10, slow=False):
 def svc_linear_param_selection(x, y, n_folds=10, slow=False):
     c = np.arange(0.1, 1, 0.1)
     param_grid = {'C': c}
-    model = svm.SVC(kernel='linear')
+    model = svm.SVC(kernel='linear', probability=True)
     if slow:
         svm_line = GridSearchCV(model, param_grid, cv=n_folds, n_jobs=-1, error_score='raise', verbose=2)
     else:
@@ -63,4 +63,3 @@ def svc_linear_param_selection(x, y, n_folds=10, slow=False):
     svm_line.fit(x, y)
     plot_grid_search(svm_line, 'C', 'SVM_Linear')
     return svm_line
-

@@ -34,8 +34,7 @@ def read_data(file, has_header=False):
 
         classes = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=str,
                                 autostrip=True, usecols=[0], encoding='utf-8-sig')
-    print("Classes Loaded...")
-    print(np.unique(classes))
+    print("Classes Loaded..." + str(np.unique(classes))
     return features, classes
 
 
@@ -371,9 +370,6 @@ def classifier_test(clf, clf_name, test_x, test_y, extra_test=False):
         top(clf, test_x, test_y, clf_name, extra_attempts=1)
         top(clf, test_x, test_y, clf_name, extra_attempts=3)
 
-    print(np.unique(test_y))
-    print(clf.classes_)
-
     if num_test_y == len(clf.classes_):
         with open("classification_reports.txt", "a+") as my_file:
             my_file.write("---[" + clf_name + "]---\n")
@@ -381,13 +377,12 @@ def classifier_test(clf, clf_name, test_x, test_y, extra_test=False):
                                                 labels=[str(i) for i in clf.classes_],
                                                 target_names=[str(i) for i in clf.classes_]))
             my_file.write('\n')
-    elif num_test_y < len(clf.classes_):
+    else:
         precision_score(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
         f1_score(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
         recall_score(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
         precision_recall_fscore_support(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
-    else:
-        print("It shouldn't be possible to have more classes in test set than training set?")
+
     make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=clf, clf_name=clf_name)
     # Plot ROC Curve
     sk_plt.metrics.plot_roc(test_y, clf.predict_proba(test_x))

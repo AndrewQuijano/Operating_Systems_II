@@ -1,5 +1,4 @@
 import time
-from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 from joblib import dump

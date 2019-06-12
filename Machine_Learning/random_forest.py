@@ -1,7 +1,5 @@
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, accuracy_score
-from sklearn.model_selection import RandomizedSearchCV
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 from misc import *
 import time
 from joblib import dump

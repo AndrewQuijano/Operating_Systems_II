@@ -100,7 +100,7 @@ def clf_list(train_x, train_y, speed):
              "Decision_tree",
              "NB",
              "NB_Isotonic",
-             "NB_Sigmoid",
+             "NB_Sigmoid"
              ]
 
     # 1- SVM
@@ -214,51 +214,6 @@ def ids():
                     continue
                 test_x, test_y = read_data(args[1])
 
-                naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
-                lda_test(lda_clf, test_x, test_y)
-                qda_test(qda_clf, test_x, test_y)
-
-                if svm_line_clf is not None:
-                    svm_test(svm_line_clf, test_x, test_y, "Linear")
-                if svm_rbf_clf is not None:
-                    svm_test(svm_rbf_clf, test_x, test_y, "Radial")
-                if forest_clf is not None:
-                    forest_test(forest_clf, test_x, test_y)
-                if logistic_clf is not None:
-                    log_linear_test(logistic_clf, test_x, test_y)
-                if knn_clf is not None:
-                    knn_test(knn_clf, test_x, test_y)
-                if tree is not None:
-                    tree_test(tree, test_x, test_y)
-
-            # Bring new ML model!
-            elif args[0] == "tune":
-                if args[1] == "line_svm":
-                    print("Fitting Linear SVM...")
-                    svm_line_clf = svm_linear(train_x, train_y)
-                    print("SVM Linear Linear Ready!")
-                elif args[1] == "line_svm":
-                    print("Fitting RBF SVM...")
-                    svm_rbf_clf = svm_rbf(train_x, train_y)
-                    print("SVM RBF Kernel Ready!")
-                elif args[1] == "forest":
-                    print("Fitting Random Forest...")
-                    forest_clf = get_forest(train_x, train_y)
-                    print("Random Forest Ready!")
-                elif args[1] == "log":
-                    print("Fitting Logistic Regression...")
-                    logistic_clf = get_logistic(train_x, train_y)
-                    print("Logistic Regression Ready!")
-                elif args[1] == "knn":
-                    print("Fitting KNN...")
-                    knn_clf = get_knn(train_x, train_y)
-                    print("KNN ready!")
-                elif args[1] == "tree":
-                    print("Fitting Decision tree...")
-                    tree = get_tree(train_x, train_y)
-                    print("Decision tree ready!")
-                else:
-                    continue
             else:
                 ids_shell_args(args)
         except EOFError:

@@ -1,10 +1,8 @@
-from sklearn.metrics import accuracy_score, classification_report
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from misc import *
 import time
 from joblib import dump
-from sklearn.metrics import precision_score, recall_score, f1_score, precision_recall_fscore_support
 
 
 def get_logistic(train_x, train_y, n_fold=10, slow=False):

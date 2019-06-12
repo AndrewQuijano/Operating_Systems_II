@@ -1,4 +1,3 @@
-from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.neural_network import MLPClassifier
 from joblib import dump
