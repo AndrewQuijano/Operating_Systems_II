@@ -640,4 +640,5 @@ def stats_columns(label):
 
 
 if __name__ == "__main__":
+    load_and_test()
     main()

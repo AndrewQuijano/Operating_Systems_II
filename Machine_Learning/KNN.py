@@ -27,7 +27,7 @@ def get_knn(train_x, train_y, n_fold=10, slow=False):
     with open("results.txt", "a+") as my_file:
         my_file.write("[KNN] KNN-Best Parameters: " + str(best_knn.best_params_) + '\n')
         my_file.write("[KNN] Training Mean Test Score: " + str(best_knn.score(train_x, train_y)) + '\n')
-    dump(best_knn, "./Classifiers/knn.joblib")
+    dump(best_knn, "./Classifiers/KNN.joblib")
     return best_knn
 
 

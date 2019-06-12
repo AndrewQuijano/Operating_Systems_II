@@ -16,7 +16,7 @@ def get_forest(train_x, train_y, n_fold=10, slow=False):
     with open("results.txt", "a+") as my_file:
         my_file.write("[Random_Forest] Best Parameters: " + str(best_forest.best_params_) + '\n')
         my_file.write("[Random_Forest] Training Mean Test Score: " + str(best_forest.score(train_x, train_y)) + '\n')
-    dump(best_forest, "./Classifiers/random_forest.joblib")
+    dump(best_forest, "./Classifiers/Random_Forest.joblib")
     return best_forest
 
 

@@ -13,7 +13,7 @@ def get_brain(train_x, train_y, slow=False):
     clf = tune_brain(train_x, train_y, slow)
     print("--- Best Parameter NN Generation: %s seconds ---" % (time.time() - start_time))
     print("[NN] Training Mean Test Score: " + str(clf.score(train_x, train_y)))
-    dump(clf, "./Classifiers/neural_network.joblib")
+    dump(clf, "./Classifiers/NN.joblib")
 
     with open("results.txt", "a") as my_file:
         my_file.write("[Neural_Network] Best Parameters: " + str(clf.best_params_) + '\n')

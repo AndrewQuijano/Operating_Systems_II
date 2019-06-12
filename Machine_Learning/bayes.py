@@ -25,8 +25,8 @@ def naive_bayes(train_x, train_y, n_fold=10):
         my_file.write("[NB] Training Mean Test Score: " + str(clf.score(train_x, train_y)) + '\n')
         my_file.write("[NB Isotonic] Training Mean Test Score: " + str(clf_isotonic.score(train_x, train_y)) + '\n')
         my_file.write("[NB Sigmoid] Training Mean Test Score: " + str(clf_sigmoid.score(train_x, train_y)) + '\n')
-    dump(clf, "./Classifiers/naive_bayes.joblib")
-    dump(clf_sigmoid, "./Classifiers/NB_Sig.joblib")
+    dump(clf, "./Classifiers/NB.joblib")
+    dump(clf_sigmoid, "./Classifiers/NB_Sigmoid.joblib")
     dump(clf_isotonic, "./Classifiers/NB_Isotonic.joblib")
     return clf, clf_isotonic, clf_sigmoid
 

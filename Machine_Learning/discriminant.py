@@ -38,8 +38,8 @@ def lda_test(clf, test_x, test_y, extra_test=False):
         print("Not full test set!")
 
     if extra_test:
-        top(lda, test_x, test_y, "LDA", extra_attempts=1)
-        top(lda, test_x, test_y, "LDA", extra_attempts=3)
+        top(clf, test_x, test_y, "LDA", extra_attempts=1)
+        top(clf, test_x, test_y, "LDA", extra_attempts=3)
 
 
 def discriminant_quad(train_x, train_y):

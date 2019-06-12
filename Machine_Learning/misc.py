@@ -1,7 +1,8 @@
 import itertools
 import numpy as np
 import random
-from os import mkdir, path, remove
+from os import mkdir, path, remove, listdir
+from os.path import isfile, join
 from shutil import rmtree
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
@@ -23,19 +24,16 @@ from joblib import load
 def read_data(file, has_header=False):
     columns = n_col(file)
     if has_header:
-        with open(file, mode='r', encoding='utf-8-sig') as fd:
-            features = np.genfromtxt(fd, delimiter=',', skip_header=1, dtype=float,
-                                     autostrip=True, usecols=[i for i in range(1, columns)])
-        with open(file, mode='r', encoding='utf-8-sig') as fd:
-            classes = np.genfromtxt(fd, delimiter=',', skip_header=1, dtype=str,
-                                    autostrip=True, usecols=[0])
+        features = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=float,
+                                 autostrip=True, usecols=[i for i in range(1, columns)], encoding='utf-8-sig')
+        classes = np.genfromtxt(file, delimiter=',', skip_header=1, dtype=str,
+                                autostrip=True, usecols=[0], encoding='utf-8-sig')
     else:
-        with open(file, mode='r', encoding='utf-8-sig') as fd:
-            features = np.genfromtxt(fd, delimiter=',', skip_header=0, dtype=float,
-                                     autostrip=True, usecols=[i for i in range(1, columns)])
-        with open(file, mode='r', encoding='utf-8-sig') as fd:
-            classes = np.genfromtxt(fd, delimiter=',', skip_header=0, dtype=str,
-                                    autostrip=True, usecols=[0])
+        features = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=float,
+                                 autostrip=True, usecols=[i for i in range(1, columns)], encoding='utf-8-sig')
+
+        classes = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=str,
+                                autostrip=True, usecols=[0], encoding='utf-8-sig')
     print("Classes Loaded...")
     print(np.unique(classes))
     return features, classes
@@ -343,6 +341,14 @@ def make_confusion_matrix(y_true, y_predict, clf, clf_name, directory="Confusion
                           title='Normalized confusion matrix')
     plt.savefig(str('./' + directory + '/Normalized_Confusion_Matrix_' + clf_name + '.png'))
     plt.close()
+
+
+def load_and_test(test_x, test_y, directory="./Classifiers", extra_test=False):
+    files = [f for f in listdir(directory) if isfile(join(directory, f))]
+    for f in files:
+        print(f)
+        # clf = load(f)
+        # classifier_test(clf, clf_name, test_x, test_y, extra_test)
 
 
 def classifier_test(clf, clf_name, test_x, test_y, extra_test=False):

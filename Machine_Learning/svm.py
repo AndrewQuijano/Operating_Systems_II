@@ -15,7 +15,7 @@ def svm_rbf(train_x, train_y, n_fold=10, slow=False):
     with open("results.txt", "a+") as my_file:
         my_file.write("[SVM_Radial] Best Parameters: " + str(svm_radial.best_params_) + '\n')
         my_file.write("[SVM Radial] Training Mean Test Score: " + str(svm_radial.score(train_x, train_y)) + '\n')
-    dump(svm_radial, "./Classifiers/svm_rbf.joblib")
+    dump(svm_radial, "./Classifiers/SVM_Radial.joblib")
     return svm_radial
 
 
@@ -48,7 +48,7 @@ def svm_linear(train_x, train_y, n_fold=10, slow=False):
     with open("results.txt", "a+") as my_file:
         my_file.write("[SVM_Linear] Best Parameters: " + str(svm_line.best_params_) + '\n')
         my_file.write("[SVM_Linear] Training Mean Test Score: " + str(svm_line.score(train_x, train_y)) + '\n')
-    dump(svm_line, "./Classifiers/svm_line.joblib")
+    dump(svm_line, "./Classifiers/SVM_Linear.joblib")
     return svm_line
 
 
