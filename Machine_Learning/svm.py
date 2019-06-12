@@ -10,7 +10,7 @@ def svm_rbf(train_x, train_y, n_fold=10, slow=False):
     start_time = time.time()
     svm_radial = svc_rbf_param_selection(train_x, train_y, n_fold, slow)
     print("--- Best Parameter RBF Time to complete: %s seconds ---" % (time.time() - start_time))
-    print("Best RBF Parameters: " + str(svm_radial.get_params()))
+    print("Best RBF Parameters: " + str(svm_radial.best_params_))
     print("[SVM_Radial] Training Mean Test Score: " + str(svm_radial.score(train_x, train_y)))
     with open("results.txt", "a+") as my_file:
         my_file.write("[SVM_Radial] Best Parameters: " + str(svm_radial.best_params_) + '\n')

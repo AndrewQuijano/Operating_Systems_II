@@ -101,7 +101,6 @@ def clf_list(train_x, train_y, speed):
              "NB",
              "NB_Isotonic",
              "NB_Sigmoid",
-             "NN"
              ]
 
     # 1- SVM
@@ -129,9 +128,10 @@ def clf_list(train_x, train_y, speed):
     tree = get_tree(train_x, train_y, kf, speed)
 
     # 8- Neural Networks
-    brain_clf = get_brain(train_x, train_y, kf, speed)
+    # brain_clf = get_brain(train_x, train_y, kf, speed)
     classifiers = [svm_line_clf, svm_rbf_clf, forest_clf, logistic_clf, knn_clf,
-                   lda_clf, qda_clf, tree, bayes, bayes_isotonic, bayes_sigmoid, brain_clf]
+                   lda_clf, qda_clf, tree, bayes, bayes_isotonic, bayes_sigmoid
+                   ]
     print("---Time to complete training everything: %s seconds---" % (time.time() - start_time))
     return names, classifiers
 

@@ -8,7 +8,7 @@ from misc import *
 
 # https://www.pyimagesearch.com/2016/08/15/how-to-tune-hyperparameters-with-python-and-scikit-learn/
 def get_knn(train_x, train_y, n_fold=10, slow=False):
-    n = np.arange(3, 18, 2)
+    n = np.arange(3, 22, 2)
     start = time.time()
     # tune the hyper parameters via a randomized search
     if slow:
