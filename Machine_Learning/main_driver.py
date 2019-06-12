@@ -79,7 +79,7 @@ def main():
 
     # First thing, Check if there was a previous run or not!
     # Then the user chooses to delete and run or not
-    start_and_clean_up()
+    start_and_clean_up(test_x, test_y)
 
     # Now train ALL classifiers!
 
@@ -113,27 +113,23 @@ def main():
     print("---Time to complete training everything: %s seconds---" % (time.time() - start_time))
 
     # Run Testing Now
-    # svm_test(svm_line_clf, test_x, test_y, "Linear")
-    # svm_test(svm_rbf_clf, test_x, test_y, "Radial")
-    # forest_test(forest_clf, test_x, test_y)
-    # log_linear_test(logistic_clf, test_x, test_y)
-    # knn_test(knn_clf, train_x, train_y)
-    # lda_test(lda_clf, test_x, test_y)
-    # qda_test(qda_clf, test_x, test_y)
-    # naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
-    # tree_test(tree, test_x, test_y)
-    classifier_test(tree, "Decision_Tree", test_x, test_y, extra_test=False)
-    # brain_test(brain_clf, test_x, test_y)
-
-    # New code!
-    # names, classifiers = clf_list(train_x, train_y)
-    # for clf_name, clf in zip(names, classifiers):
-    #    classifier_test(clf, clf_name, test_x, test_y, extra_test=False)
+    load_and_test(test_x, test_y)
 
 
 def clf_list(train_x, train_y, speed):
-    names = ["SVM_Linear", "SVM_Radial", "Random_Forest", "Logistic_Regression", "KNN",
-             "LDA", "QDA", "Decision_tree", "NB", "NB_Isotonic", "NB_Sigmoid", "NN"]
+    names = ["SVM_Linear",
+             "SVM_Radial",
+             "Random_Forest",
+             "Logistic_Regression",
+             "KNN",
+             "LDA",
+             "QDA",
+             "Decision_tree",
+             "NB",
+             "NB_Isotonic",
+             "NB_Sigmoid",
+             "NN"
+             ]
 
     # 1- SVM
     start_time = time.time()
@@ -556,10 +552,6 @@ def kdd_prep_test(file):
     protocol_type = LabelEncoder()
 
     # Have list of stuff
-    # y = ["normal.", "back.", "buffer_overflow.", "ftp_write.", "guess_passwd.",
-    #             "imap.", "ipsweep.", "land.", "loadmodule.", "multihop.", "neptune.",
-    #             "nmap.", "perl.", "phf.", "pod.", "portsweep.", "rootkit.", "satan.", "smurf.",
-    #             "spy.", "teardrop.", "warezclient.", "warezmaster."]
     proto = ["tcp", "udp", "icmp"]
     fl = ["SF", "S2", "S1", "S3", "OTH", "REJ", "RSTO", "S0", "RSTR", "RSTOS0", "SH"]
     serv = ["http", "smtp", "domain_u", "auth", "finger", "telnet", "eco_i", "ftp", "ntp_u",
@@ -573,7 +565,6 @@ def kdd_prep_test(file):
             "tftp_u", "http_8001", "tim_i", "red_i"]
 
     # Fit them with the known classes
-    # classes.fit(y)
     protocol_type.fit(proto)
     flags.fit(fl)
     services.fit(serv)
@@ -588,9 +579,6 @@ def kdd_prep_test(file):
     encode_fl = dict(zip(fl, fl_hat))
     encode_service = dict(zip(serv, serv_hat))
     with open("./test_labels.txt", "w") as f:
-        # for k, v in encode_class.items():
-        #    f.write(k + "," + str(v) + '\n')
-        # f.write('\n')
         for k, v in encode_protocol.items():
             f.write(k + "," + str(v) + '\n')
         f.write('\n')
@@ -620,25 +608,10 @@ def kdd_prep_test(file):
     print("KDD Label encoding complete!")
 
 
-def load_test(test_set):
-    test_x, test_y = read_data(test_set)
-    forest_clf = load('random_forest.joblib')
-    logistic_clf = load('logistic.joblib')
-    knn_clf = load('knn.joblib')
-    tree = load('tree.joblib')
-    bayes_load_test(test_set, test_x, test_y)
-    discriminant_load_test(test_set, test_x, test_y)
-    forest_test(forest_clf, test_x, test_y)
-    log_linear_test(logistic_clf, test_x, test_y)
-    knn_test(knn_clf, test_x, test_y)
-    tree_test(tree, test_x, test_y)
-
-
-def stats_columns(label):
+def stats_columns(file_name, label):
     for col in range(0, 29, 1):
-        stat_one_column('NSL_KDD_train.csv', label, column_number=col)
+        stat_one_column(file_name, label, column_number=col)
 
 
 if __name__ == "__main__":
-    load_and_test()
     main()

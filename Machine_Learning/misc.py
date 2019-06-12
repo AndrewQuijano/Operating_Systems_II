@@ -235,7 +235,7 @@ def scale_and_pca(train_x, test_x):
     return pr_comp.transform(scaled_train_x), pr_comp.transform(scaled_test_x)
 
 
-def plot_grid_search(clf, name_param, clf_name, directory="Cross_Validation"):
+def plot_grid_search(clf, name_param, clf_name, directory="./Cross_Validation/"):
     # Get Test Scores Mean
     # Get the specific parameter to compare with CV
     coordinates = dict()
@@ -262,7 +262,7 @@ def plot_grid_search(clf, name_param, clf_name, directory="Cross_Validation"):
     ax.set_ylabel('CV Average Score', fontsize=16)
     ax.legend(loc="best", fontsize=15)
     ax.grid(True)
-    plt.savefig(str('./' + directory + '/CV_Plot_' + clf_name + '_' + name_param + '.png'))
+    plt.savefig(str(directory + 'CV_Plot_' + clf_name + '_' + name_param + '.png'))
     plt.close()
 
 
@@ -324,22 +324,22 @@ def plot_confusion_matrix(cm, classes,
     plt.xlabel('Predicted label')
 
 
-def make_confusion_matrix(y_true, y_predict, clf, clf_name, directory="Confusion_Matrix"):
+def make_confusion_matrix(y_true, y_predict, clf, clf_name, directory="./Confusion_Matrix/"):
     # Compute confusion matrix
     cnf_matrix = confusion_matrix(y_true, y_predict, labels=[str(i) for i in clf.classes_])
     np.set_printoptions(precision=2)
     # Plot non-normalized confusion matrix
     plt.figure()
     plot_confusion_matrix(cnf_matrix, classes=[str(i) for i in clf.classes_], normalize=False,
-                          title='Confusion matrix, without normalization: ')
-    plt.savefig(str('./' + directory + '/Confusion_Matrix_' + clf_name + '.png'))
+                          title='Confusion matrix, without normalization')
+    plt.savefig(str(directory + 'Confusion_Matrix_' + clf_name + '.png'))
     plt.close()
 
     # Plot normalized confusion matrix
     plt.figure()
     plot_confusion_matrix(cnf_matrix, classes=[str(i) for i in clf.classes_], normalize=True,
                           title='Normalized confusion matrix')
-    plt.savefig(str('./' + directory + '/Normalized_Confusion_Matrix_' + clf_name + '.png'))
+    plt.savefig(str(directory + 'Normalized_Confusion_Matrix_' + clf_name + '.png'))
     plt.close()
 
 
@@ -382,25 +382,20 @@ def classifier_test(clf, clf_name, test_x, test_y, extra_test=False):
                                                 target_names=[str(i) for i in clf.classes_]))
             my_file.write('\n')
     elif num_test_y < len(clf.classes_):
-        print("To Do...")
         precision_score(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
         f1_score(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
         recall_score(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
         precision_recall_fscore_support(y_true=test_y, y_pred=y_hat, average='weighted', labels=clf.classes_)
-        # Use the library this time?
-        sk_plt.metrics.plot_confusion_matrix(y_true=test_y, y_pred=y_hat)
-        plt.savefig(str('./Confusion_Matrix/Normalized_Confusion_Matrix_' + clf_name + '.png'))
-        plt.close()
     else:
         print("It shouldn't be possible to have more classes in test set than training set?")
     make_confusion_matrix(y_true=test_y, y_predict=y_hat, clf=clf, clf_name=clf_name)
     # Plot ROC Curve
-    # sk_plt.metrics.plot_roc(test_y, y_hat)
-    # plt.savefig(str('./ROC/' + clf_name + '_ROC.png'))
-    # plt.close()
+    sk_plt.metrics.plot_roc(test_y, y_hat)
+    plt.savefig(str('./ROC/' + clf_name + '_ROC.png'))
+    plt.close()
 
 
-def start_and_clean_up():
+def start_and_clean_up(test_x, test_y):
     try:
         # Now give user an option to delete everything and start
         # OR discontinue
@@ -428,13 +423,16 @@ def start_and_clean_up():
             rmtree("./Confusion_Matrix")
         if path.exists("./ROC") and path.isdir("./ROC"):
             rmtree("./ROC")
-        # if path.exists("./Classifiers") and path.isdir("./Classifiers"):
-        #    rmtree("./Classifiers")
+        if path.exists("./Classifiers") and path.isdir("./Classifiers"):
+            rmtree("./Classifiers")
         # 4- Build new directory path!
         mkdir("./Confusion_Matrix")
         mkdir("./Cross_Validation")
         mkdir("./ROC")
-        # mkdir("./Classifiers")
+        mkdir("./Classifiers")
+    except KeyboardInterrupt:
+        load_and_test(test_x, test_y)
+        exit(0)
 
 
 def existing_files():
