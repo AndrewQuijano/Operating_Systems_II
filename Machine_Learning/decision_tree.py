@@ -43,7 +43,7 @@ def get_tree(train_x, train_y, n_fold=10, slow=False):
     with open("results.txt", "a+") as my_file:
         my_file.write("[Decision Tree] Best Parameters: " + str(tree.best_params_) + '\n')
         my_file.write("[Decision Tree] Training Mean Test Score: " + str(tree.score(train_x, train_y)) + '\n')
-    dump(tree, "./Classifiers/tree.joblib")
+    dump(tree, "./Classifiers/Decision_Tree.joblib")
     return tree
 
 

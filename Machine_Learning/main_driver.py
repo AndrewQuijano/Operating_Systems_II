@@ -108,6 +108,7 @@ def main():
     # bayes, bayes_isotonic, bayes_sigmoid = naive_bayes(train_x, train_y)
 
     # 8- Decision Tree
+    classifier_test(None, "Decision_Tree", test_x, test_y, extra_test=False)
     tree = get_tree(train_x, train_y, slow=True)
     print("---Time to complete training everything: %s seconds---" % (time.time() - start_time))
 
@@ -121,13 +122,13 @@ def main():
     # qda_test(qda_clf, test_x, test_y)
     # naive_bayes_test(bayes, bayes_isotonic, bayes_sigmoid, test_x, test_y)
     # tree_test(tree, test_x, test_y)
-    test_classifier(tree, "Decision_Tree", test_x, test_y, extra_test=False)
+    classifier_test(tree, "Decision_Tree", test_x, test_y, extra_test=False)
     # brain_test(brain_clf, test_x, test_y)
 
     # New code!
     # names, classifiers = clf_list(train_x, train_y)
     # for clf_name, clf in zip(names, classifiers):
-    #    test_classifier(clf, clf_name, test_x, test_y, extra_test=False)
+    #    classifier_test(clf, clf_name, test_x, test_y, extra_test=False)
 
 
 def clf_list(train_x, train_y, speed):

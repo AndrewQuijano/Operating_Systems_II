@@ -15,6 +15,7 @@ import scikitplot as sk_plt
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.metrics import precision_score, recall_score, f1_score, precision_recall_fscore_support
 from matplotlib.cm import get_cmap
+from joblib import load
 
 
 # After a lot of tinkering around, it is always best to have your classes be strings
@@ -338,7 +339,14 @@ def make_confusion_matrix(y_true, y_predict, clf, clf_name, directory="Confusion
     plt.close()
 
 
-def test_classifier(clf, clf_name, test_x, test_y, extra_test=False):
+def classifier_test(clf, clf_name, test_x, test_y, extra_test=False):
+    # Check if classifier exists to load and test?
+    if clf is None:
+        p = "./Classifiers/" + clf_name + ".joblib"
+        if path.exists(p) and path.isdir(p):
+            clf = load(p)
+        else:
+            return
     num_test_y = len(np.unique(test_y))
 
     y_hat = clf.predict(test_x)
@@ -401,13 +409,13 @@ def start_and_clean_up():
         if path.exists("./classification_reports.txt") and path.isfile("./classification_reports.txt"):
             remove("./classification_reports.txt")
         # Remove directories
-        if path.exists("./Cross_Validation") and path.isfile("./Cross_Validation"):
+        if path.exists("./Cross_Validation") and path.isdir("./Cross_Validation"):
             rmtree("./Cross_Validation")
-        if path.exists("./Confusion_Matrix") and path.isfile("./Confusion_Matrix"):
+        if path.exists("./Confusion_Matrix") and path.isdir("./Confusion_Matrix"):
             rmtree("./Confusion_Matrix")
-        if path.exists("./Classifiers") and path.isfile("./Classifiers"):
+        if path.exists("./Classifiers") and path.isdir("./Classifiers"):
             rmtree("./Classifiers")
-        if path.exists("./ROC") and path.isfile("./ROC"):
+        if path.exists("./ROC") and path.isdir("./ROC"):
             rmtree("./ROC")
 
         # 4- Build new directory path!
