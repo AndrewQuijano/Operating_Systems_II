@@ -8,6 +8,8 @@ import org.jnetpcap.protocol.network.Ip4.Timestamp;
 import org.jnetpcap.protocol.tcpip.Tcp;
 import org.jnetpcap.protocol.tcpip.Udp;
 
+import nids.kddpreprocessor.Net.tcp_field_flags_t;
+
 public class Packet 
 {
 	private Timestamp start_ts;
@@ -16,7 +18,7 @@ public class Packet
 	private int icmp_code = 0;
 	private int length = 0;
 	private Ethernet eth_type = null;
-	private Tcp tcp_flags = null;
+	private tcp_field_flags_t tcp_flags = null;
 	private Udp udp = null;
     private Icmp icmp_type = null;
     
@@ -151,12 +153,12 @@ public class Packet
 		this.five_tuple.set_dst_port(dst_port);
 	}
 
-	Tcp get_tcp_flags()
+	tcp_field_flags_t get_tcp_flags()
 	{
 		return tcp_flags;
 	}
 
-	void set_tcp_flags(Tcp tcp_flags)
+	void set_tcp_flags(tcp_field_flags_t tcp_flags)
 	{
 		this.tcp_flags = tcp_flags;
 	}

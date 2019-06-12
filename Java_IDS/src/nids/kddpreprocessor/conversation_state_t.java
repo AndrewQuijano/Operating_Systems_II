@@ -34,4 +34,10 @@ public enum conversation_state_t
 	S4,			// SYN ACK seen - State between INIT and (RSTRH or SHR); externally represented as OTH
 	S2F,		// FIN send by responder in state S2 - waiting for final ACK; externally represented as S2
 	S3F			// FIN send by originator in state S3 - waiting for final ACK; externally represented as S3
+	;
+	
+	public int getValue() 
+	{
+		return 0;
+	}
 };

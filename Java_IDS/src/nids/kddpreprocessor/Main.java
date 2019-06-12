@@ -9,6 +9,12 @@ import org.jnetpcap.protocol.lan.Ethernet;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.network.Ip4.Timestamp;
 
+import nids.kddpreprocessor.Net.eth_field_type_t;
+import nids.kddpreprocessor.Net.ip_field_protocol_t;
+
+import static nids.kddpreprocessor.Net.ip_field_protocol_t.*;
+import static nids.kddpreprocessor.Net.eth_field_type_t.*;
+
 public class Main 
 {
 	static boolean temination_requested = false;
@@ -73,10 +79,9 @@ public class Main
 			{
 				// Do some assertion about the type of packet just to be sure
 				// If sniffer's filter fails to fulfill this assertion, "continue" can be used here
-				Ethernet eth_type = frag.get_eth_type();
-				Ip4 ip_proto = frag.get_ip_proto();
-				assert((eth_type == IPV4 && (ip_proto == TCP || ip_proto == UDP || ip_proto == ICMP))
-					&& "Sniffer returned packet that is not (TCP or UDP or ICMP)");
+				eth_field_type_t eth_type = frag.get_eth_type();
+				ip_field_protocol_t ip_proto = frag.get_ip_proto();
+				assert(eth_type == IPV4 && (ip_proto == TCP || ip_proto == UDP || ip_proto == ICMP));
 
 				Timestamp now = frag.get_end_ts();
 
@@ -124,7 +129,6 @@ public class Main
 		// Option '-' originally meant to use big read timeouts and exit on first timeout. Other approach used
 		// because original approach did not work (does this option make sense now?).
 		System.out.println("KDD'99-like feature extractor");
-		//System.out.println("Build time : " << __DATE__ << " " << __TIME__ << endl << endl
 		System.out.println("Usage: " + name + " [OPTION]... [FILE]");
 		System.out.println(" -h, --help    Display this usage  ");
 		System.out.println(" -l, --list    List interfaces  ");

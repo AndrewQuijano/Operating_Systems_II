@@ -398,10 +398,15 @@ def start_and_clean_up():
             remove("./results.txt")
         if path.exists("./classification_reports.txt") and path.isfile("./classification_reports.txt"):
             remove("./classification_reports.txt")
-        rmtree("./Cross_Validation")
-        rmtree("./Confusion_Matrix")
-        rmtree("./Classifiers")
-        rmtree("./ROC")
+        # Remove directories
+        if path.exists("./Cross_Validation") and path.isfile("./Cross_Validation"):
+            rmtree("./Cross_Validation")
+        if path.exists("./Confusion_Matrix") and path.isfile("./Confusion_Matrix"):
+            rmtree("./Confusion_Matrix")
+        if path.exists("./Classifiers") and path.isfile("./Classifiers"):
+            rmtree("./Classifiers")
+        if path.exists("./ROC") and path.isfile("./ROC"):
+            rmtree("./ROC")
 
         # 4- Build new directory path!
         mkdir("./Confusion_Matrix")

@@ -232,31 +232,33 @@ public class TcpConnection
 		// Get state with internal states replaced
 		switch (this.get_state())
 		{
-		case INIT:
-		case S0:
-		case S1:
-		case S4:
-		case ESTAB:
-		case S2:
-		case S3:
-			return false;
-			break;
+			case INIT:
+			case S0:
+			case S1:
+			case S4:
+			case ESTAB:
+			case S2:
+			case S3:
+				return false;
 
-		// States ended with RST should get additional timeout
-		// to process delayed packets
-		// TODO: consider adding RSTRH
-		case REJ:
-		case RSTO:
-		case RSTR:
-		case RSTOS0:
-			return false;
-			break;
 
-		default:
-			return true;
-			break;
+				// States ended with RST should get additional timeout
+				// to process delayed packets
+				// TODO: consider adding RSTRH
+			case REJ:
+			case RSTO:
+			case RSTR:
+			case RSTOS0:
+				return false;
+
+			default:
+				return true;
 		}
-		return true;
+	}
+
+	private conversation_state_t get_state() 
+	{
+		return state;
 	}
 
 	service_t get_service()
