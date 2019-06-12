@@ -8,9 +8,9 @@ from misc import *
 
 # http://scikit-learn.org/stable/auto_examples/neural_networks/plot_mlp_alpha.html#sphx-glr-auto-examples-neural-networks-plot-mlp-alpha-py
 # http://scikit-learn.org/stable/auto_examples/neural_networks/plot_mlp_training_curves.html#sphx-glr-auto-examples-neural-networks-plot-mlp-training-curves-py
-def get_brain(train_x, train_y, slow=False):
+def get_brain(train_x, train_y, n_fold=10, slow=False):
     start_time = time.time()
-    clf = tune_brain(train_x, train_y, slow)
+    clf = tune_brain(train_x, train_y, n_fold, slow)
     print("--- Best Parameter NN Generation: %s seconds ---" % (time.time() - start_time))
     print("[NN] Training Mean Test Score: " + str(clf.score(train_x, train_y)))
     dump(clf, "./Classifiers/NN.joblib")
