@@ -2,6 +2,7 @@ package nids.kddpreprocessor;
 
 import org.jnetpcap.packet.JPacket;
 import org.jnetpcap.packet.JPacketHandler;
+import org.jnetpcap.protocol.tcpip.Tcp.Timestamp;
 
 public class Sniffer implements JPacketHandler<StringBuilder>
 {
@@ -50,7 +51,7 @@ public class Sniffer implements JPacketHandler<StringBuilder>
 		}
 
 		// Jump to the selected adapter
-		for (d = alldevs, i = 1; d && i < inum; d = d->next, i++);
+		for (d = alldevs, i = 1; d && i < inum; d = d.next, i++);
 
 		if (inum < 1 || inum > i)
 		{
@@ -107,13 +108,15 @@ public class Sniffer implements JPacketHandler<StringBuilder>
 
 		IpFragment f = new IpFragment();
 		Timestamp ts(header.ts);
-		f->set_start_ts(ts);
-		f->set_length(header.len + additional_frame_length);	// Additional lenght for e.g. CRC of Ethernet
+		f.set_start_ts(ts);
+		f.set_length(header.len + additional_frame_length);	// Additional lenght for e.g. CRC of Ethernet
 
 		// Ethernet type/length field
 		ether_header_t *eth = (ether_header_t *)data;
 		if (!eth.is_ethernet2())
+		{
 			return f;
+		}
 		f.set_eth2(true);
 		f.set_eth_type((eth_field_type_t)ntohs(eth->type_length));
 		if (!eth.is_type_ipv4())
@@ -177,6 +180,6 @@ public class Sniffer implements JPacketHandler<StringBuilder>
 	public void nextPacket(JPacket arg0, StringBuilder arg1) 
 	{
 		// TODO Auto-generated method stub
-			
+		
 	}
 }

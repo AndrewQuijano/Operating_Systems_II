@@ -1,66 +1,66 @@
 package nids.kddpreprocessor;
 
-// Net.h
-/*
- * Ethernet type/length field
- */
-public enum eth_field_type_t  
-{
-	TYPE_ZERO(0),
-	MIN_ETH2(0x600),
-	IPV4(0x800);
-	private int value;
-
-	private eth_field_type_t(int value) 
-	{
-		this.value = value;
-	}
-};
-
-/*
- * ICMP type field
- * Values from linux source code used
- * https://github.com/torvalds/linux/blob/master/include/uapi/linux/icmp.h
- */
-public enum icmp_field_type_t
-{
-	ECHOREPLY(0),
-	DEST_UNREACH(3),
-	SOURCE_QUENCH(4),
-	REDIRECT(5),
-	ECHO(8),
-	TIME_EXCEEDED(11),
-	PARAMETERPROB(12),
-	TIMESTAMP(13),
-	TIMESTAMPREPLY(14),
-	INFO_REQUEST(15),
-	INFO_REPLY(16),
-	ADDRESS(17),
-	ADDRESSREPLY(18);
-	private int value;
-
-	private icmp_field_type_t(int value) 
-	{
-		this.value = value;
-	}
-};
-
-/*
- * IP protocol field
- */
-enum ip_field_protocol_t
-{
-	PROTO_ZERO(0), ICMP(1), TCP(6), UDP(17);
-	private int value;
-
-	private ip_field_protocol_t(int value) 
-	{
-		this.value = value;
-	}
-};
-
 public class Net 
 {
+	// Net.h
+	/*
+	 * Ethernet type/length field
+	 */
+	enum eth_field_type_t  
+	{
+		TYPE_ZERO(0),
+		MIN_ETH2(0x600),
+		IPV4(0x800);
+		private int value;
+
+		private eth_field_type_t(int value) 
+		{
+			this.value = value;
+		}
+	};
+
+	/*
+	 * ICMP type field
+	 * Values from linux source code used
+	 * https://github.com/torvalds/linux/blob/master/include/uapi/linux/icmp.h
+	 */
+	enum icmp_field_type_t
+	{
+		ECHOREPLY(0),
+		DEST_UNREACH(3),
+		SOURCE_QUENCH(4),
+		REDIRECT(5),
+		ECHO(8),
+		TIME_EXCEEDED(11),
+		PARAMETERPROB(12),
+		TIMESTAMP(13),
+		TIMESTAMPREPLY(14),
+		INFO_REQUEST(15),
+		INFO_REPLY(16),
+		ADDRESS(17),
+		ADDRESSREPLY(18);
+		private int value;
+
+		private icmp_field_type_t(int value) 
+		{
+			this.value = value;
+		}
+	};
+	
+	/*
+	 * IP protocol field
+	 */
+	enum ip_field_protocol_t
+	{
+		PROTO_ZERO(0), ICMP(1), TCP(6), UDP(17);
+		private final int value;
+
+		private ip_field_protocol_t(int value) 
+		{
+			this.value = value;
+		}
+	};
+	
 	/*
 	 * Ethernet header
 	 */
@@ -190,71 +190,63 @@ public class Net
 	/*
 	* TCP flags field
 	*/
-	public tcp_field_flags_t() 
+	public class tcp_field_flags_t 
 	{
-		uint8_t flags;
-
+		int flags;
 		tcp_field_flags_t();
-		tcp_field_flags_t(uint8_t flags);
-		boolean fin();	
-		boolean syn();
-		boolean rst();
-		boolean psh();
-		boolean ack();
+		tcp_field_flags_t(int flags);
 		boolean urg();	// Urgent
 		boolean ece();	// ECN Echo
 		boolean cwr();	// Congestion Window Reduced
-		tcp_field_flags_t::tcp_field_flags_t(uint8_t flags)
-		: flags(flags)
-	{
-		
-	}
+		public tcp_field_flags_t(int flags)
+		{
 
-	tcp_field_flags_t::tcp_field_flags_t()
-		: flags(0)
-	{
-		
-	}
+		}
 
-	boolean tcp_field_flags_t::fin()
-	{
-		return ((flags & 0x01) != 0);
-	}
+		public tcp_field_flags_t()
+		{
+			flags = 0;
+		}
 
-	boolean tcp_field_flags_t::syn()
-	{
-		return ((flags & 0x02) != 0);
-	}
+		boolean fin()
+		{
+			return ((flags & 0x01) != 0);
+		}
 
-	boolean tcp_field_flags_t::rst()
-	{
-		return ((flags & 0x04) != 0);
-	}
+		boolean syn()
+		{
+			return ((flags & 0x02) != 0);
+		}
 
-	boolean tcp_field_flags_t::psh()
-	{
-		return ((flags & 0x08) != 0);
-	}
+		boolean rst()
+		{
+			return ((flags & 0x04) != 0);
+		}
 
-	boolean tcp_field_flags_t::ack()
-	{
-		return ((flags & 0x10) != 0);
-	}
+		boolean psh()
+		{
+			return ((flags & 0x08) != 0);
+		}
 
-	boolean tcp_field_flags_t::urg()
-	{
-		return ((flags & 0x20) != 0);
-	}
+		boolean ack()
+		{
+			return ((flags & 0x10) != 0);
+		}
 
-	boolean tcp_field_flags_t::ece()
-	{
-		return ((flags & 0x40) != 0);
-	}
+		boolean urg()
+		{
+			return ((flags & 0x20) != 0);
+		}
 
-	boolean tcp_field_flags_t::cwr()
-	{
-		return ((flags & 0x80) != 0);
-	}
+		boolean ece()
+		{
+			return ((flags & 0x40) != 0);
+		}
+
+		boolean cwr()
+		{
+			return ((flags & 0x80) != 0);
+		}
 	};
 
 	/*
@@ -262,16 +254,16 @@ public class Net
 	 */
 	public tcp_header_t()
 	{
-		uint16_t src_port;
-		uint16_t dst_port;
-		uint32_t seq;
-		uint32_t ack;
-		uint8_t data_offset;  // 4 bits offset + 4 bits reserved
+		int src_port;
+		int dst_port;
+		int seq;
+		int ack;
+		int data_offset;  // 4 bits offset + 4 bits reserved
 		tcp_field_flags_t flags;
-		uint16_t window_size;
-		uint16_t checksum;
-		uint16_t urgent_p;
-		final static int TCP_MIN_HEADER_LENGTH = 20;
+		int window_size;
+		int checksum;
+		int urgent_p;
+		final int TCP_MIN_HEADER_LENGTH = 20;
 	};
 
 	/*
@@ -282,7 +274,7 @@ public class Net
 		icmp_field_type_t type;
 		int code;
 		int checksum;
-		static final int ICMP_MIN_HEADER_LENGTH = 8;
+		final int ICMP_MIN_HEADER_LENGTH = 8;
 	};
 
 	// Net.cpp

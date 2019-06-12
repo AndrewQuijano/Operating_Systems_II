@@ -1,0 +1,93 @@
+package nids.kddpreprocessor;
+
+/**
+ * Services
+ * ! order & number of services must be the same in string mapping
+ * see Conversation::SERVICE_NAMES[] in Conversation.cpp
+ */
+
+public enum service_t 
+{
+	// General
+	SRV_OTHER,
+	SRV_PRIVATE,
+
+	// ICMP
+	SRV_ECR_I,
+	SRV_URP_I,
+	SRV_URH_I,
+	SRV_RED_I,
+	SRV_ECO_I,
+	SRV_TIM_I,
+	SRV_OTH_I,
+
+	// UDP
+	SRV_DOMAIN_U,
+	SRV_TFTP_U,
+	SRV_NTP_U,
+
+	// TCP
+	SRV_IRC,
+	SRV_X11,
+	SRV_Z39_50,
+	SRV_AOL,
+	SRV_AUTH,
+	SRV_BGP,
+	SRV_COURIER,
+	SRV_CSNET_NS,
+	SRV_CTF,
+	SRV_DAYTIME,
+	SRV_DISCARD,
+	SRV_DOMAIN,
+	SRV_ECHO,
+	SRV_EFS,
+	SRV_EXEC,
+	SRV_FINGER,
+	SRV_FTP,
+	SRV_FTP_DATA,
+	SRV_GOPHER,
+	SRV_HARVEST,
+	SRV_HOSTNAMES,
+	SRV_HTTP,
+	SRV_HTTP_2784,
+	SRV_HTTP_443,
+	SRV_HTTP_8001,
+	SRV_ICMP,
+	SRV_IMAP4,
+	SRV_ISO_TSAP,
+	SRV_KLOGIN,
+	SRV_KSHELL,
+	SRV_LDAP,
+	SRV_LINK,
+	SRV_LOGIN,
+	SRV_MTP,
+	SRV_NAME,
+	SRV_NETBIOS_DGM,
+	SRV_NETBIOS_NS,
+	SRV_NETBIOS_SSN,
+	SRV_NETSTAT,
+	SRV_NNSP,
+	SRV_NNTP,
+	SRV_PM_DUMP,
+	SRV_POP_2,
+	SRV_POP_3,
+	SRV_PRINTER,
+	SRV_REMOTE_JOB,
+	SRV_RJE,
+	SRV_SHELL,
+	SRV_SMTP,
+	SRV_SQL_NET,
+	SRV_SSH,
+	SRV_SUNRPC,
+	SRV_SUPDUP,
+	SRV_SYSTAT,
+	SRV_TELNET,
+	SRV_TIME,
+	SRV_UUCP,
+	SRV_UUCP_PATH,
+	SRV_VMNET,
+	SRV_WHOIS,
+
+	// This must be the last 
+	NUMBER_OF_SERVICES
+}

@@ -2,10 +2,16 @@ package nids.kddpreprocessor;
 
 import org.jnetpcap.packet.JPacket;
 
+import nids.kddpreprocessor.Net.tcp_field_flags_t;
+
+import static nids.kddpreprocessor.conversation_state_t.*;
+import static nids.kddpreprocessor.Net.tcp_field_flags_t.*;
+import static nids.kddpreprocessor.service_t.*;
+
 public class TcpConnection 
 {
 	private FiveTuple five_tuple;
-	
+	private conversation_state_t state;
 	public TcpConnection()
 	{
 		
@@ -18,9 +24,8 @@ public class TcpConnection
 
 	public TcpConnection(Packet packet)
 	{
-		
+		five_tuple = packet.get_five_tuple();
 	}
-
 
 	void update_state(Packet packet)
 	{
@@ -32,36 +37,55 @@ public class TcpConnection
 		{
 		case INIT:
 			if (f.syn() && f.ack())
-				state = S4;
+			{
+				state = conversation_state_t.S4;
+			}
 			else if (f.syn())
-				state = S1;
+			{
+				state = conversation_state_t.S1;
+			}
 			else
-				state = OTH;
+			{
+				state = conversation_state_t.OTH;
+			}
 			break;
 
 		case S0:
 			if (originator) 
 			{
 				if (f.rst())
-					state = RSTOS0;
+				{
+					state = conversation_state_t.RSTOS0;
+				}
 				else if (f.fin())
-					state = SH;
+				{
+					state = conversation_state_t.SH;
+				}
 			}
 			else 
 			{ // from responder
 				if (f.rst())
-					state = REJ;
+				{
+					state = conversation_state_t.REJ;
+				}
 				else if (f.syn() && f.ack())
-					state = S1;
+				{
+					state = conversation_state_t.S1;
+				}
 			}
 			break;
 
 		case S4:
-			if (originator) {
+			if (originator) 
+			{
 				if (f.rst())
-					state = RSTRH;
+				{
+					state = conversation_state_t.RSTRH;
+				}
 				else if (f.fin())
-					state = SHR;
+				{
+					state = conversation_state_t.SHR;
+				}
 			}
 			break;
 
@@ -69,14 +93,21 @@ public class TcpConnection
 			if (originator) 
 			{
 				if (f.rst())
-					state = RSTO;
+				{
+					state = conversation_state_t.RSTO;
+				}
 				else if (f.ack())
-					state = ESTAB;
+				{
+					state = conversation_state_t.ESTAB;
+				}
 			}
 			else 
-			{ // responder
+			{ 
+				// responder
 				if (f.rst())
-					state = RSTR;
+				{
+					state = conversation_state_t.RSTR;
+				}
 			}
 			break;
 
@@ -84,16 +115,25 @@ public class TcpConnection
 			if (originator) 
 			{
 				if (f.rst())
-					state = RSTO;
+				{
+					state = conversation_state_t.RSTO;
+				}
 				else if (f.fin())
-					state = S2;
+				{
+					state = conversation_state_t.S2;
+				}
 			}
 			else 
-			{ // responder
+			{ 
+				// responder
 				if (f.rst())
-					state = RSTR;
+				{
+					state = conversation_state_t.RSTR;
+				}
 				else if (f.fin())
-					state = S3;
+				{
+					state = conversation_state_t.S3;
+				}
 			}
 			break;
 
@@ -101,14 +141,21 @@ public class TcpConnection
 			if (originator) 
 			{
 				if (f.rst())
-					state = RSTO;
+				{
+					state = conversation_state_t.RSTO;
+				}
 			}
 			else 
-			{ // responder
+			{ 
+				// responder
 				if (f.rst())
-					state = RSTR;
+				{
+					state = conversation_state_t.RSTR;
+				}
 				else if (f.fin())
-					state = S2F;
+				{
+					state = conversation_state_t.S2F;
+				}
 			}
 			break;
 
@@ -116,14 +163,20 @@ public class TcpConnection
 			if (originator) 
 			{
 				if (f.rst())
-					state = RSTO;
+				{
+					state = conversation_state_t.RSTO;
+				}
 				else if (f.fin())
-					state = S3F;
+				{
+					state = conversation_state_t.S3F;
+				}
 			}
 			else 
 			{ // responder
 				if (f.rst())
-					state = RSTR;
+				{
+					state = conversation_state_t.RSTR;
+				}
 			}
 			break;
 
@@ -131,14 +184,20 @@ public class TcpConnection
 			if (originator) 
 			{
 				if (f.rst())
-					state = RSTO;
+				{
+					state = conversation_state_t.RSTO;
+				}
 				else if (f.ack())
-					state = SF;
+				{
+					state = conversation_state_t.SF;
+				}
 			}
 			else 
 			{ // responder
 				if (f.rst())
-					state = RSTR;
+				{
+					state = conversation_state_t.RSTR;
+				}
 			}
 			break;
 
@@ -146,20 +205,25 @@ public class TcpConnection
 			if (originator) 
 			{
 				if (f.rst())
-					state = RSTO;
+				{
+					state = conversation_state_t.RSTO;
+				}
 			}
 			else 
 			{ // responder
 				if (f.rst())
-					state = RSTR;
+				{
+					state = conversation_state_t.RSTR;
+				}
 				else if (f.ack())
-					state = SF;
+				{
+					state = conversation_state_t.SF;
+				}
 			}
 			break;
 
 		default:
 			break;
-
 		}
 	}
 
@@ -199,7 +263,8 @@ public class TcpConnection
 	{
 		// Identify FTP data in active FTP can be identified by source port
 		// TODO: passive FTP (only through FTP control payload inspection?)
-		if (five_tuple.get_src_port() == 20) {
+		if (five_tuple.get_src_port() == 20) 
+		{
 			return SRV_FTP_DATA;
 		}
 
@@ -216,8 +281,7 @@ public class TcpConnection
 		case 6669:
 		case 6697: // Internet Relay Chat via TLS/SSL   
 			return SRV_IRC;
-			break;
-
+			
 		case 6000: // X Window System (6000-6063)
 		case 6001:
 		case 6002:
@@ -283,11 +347,9 @@ public class TcpConnection
 		case 6062:
 		case 6063:
 			return SRV_X11;
-			break;
 
 		case 210: // ANSI Z39.50
 			return SRV_Z39_50;
-			break;
 
 		case 5190: // America-Online
 		case 5191: // AmericaOnline1
@@ -295,7 +357,6 @@ public class TcpConnection
 		case 5193: // AmericaOnline3
 		case 531: // AOL Instant Messenger
 			return SRV_AOL;
-			break;
 
 		case 113: // Authentication Service
 		case 31: // MSG Authentication
@@ -330,64 +391,49 @@ public class TcpConnection
 		case 19194: // UserAuthority SecureAgent
 		case 27999: // TW Authentication/Key Distribution and
 			return SRV_AUTH;
-			break;
 
 		case 179: // Border Gateway Protocol
 			return SRV_BGP;
-			break;
 
 		case 530: // rpc
 		case 165: // Xerox (xns-courier)
 			return SRV_COURIER;
-			break;
 
 		case 105: // Mailbox Name Nameserver
 			return SRV_CSNET_NS;
-			break;
 
 		case 84: // Common Trace Facility
 			return SRV_CTF;
-			break;
 
 		case 13: // Daytime
 			return SRV_DAYTIME;
-			break;
 
 		case 9: // Discard
 			return SRV_DISCARD;
-			break;
 
 		case 53: // Domain Name Server
 			return SRV_DOMAIN;
-			break;
 
 		case 7: // 
 			return SRV_ECHO;
-			break;
 
 		case 520: // extended file name server
 			return SRV_EFS;
-			break;
 
 		case 512: // remote process execution; authentication performed using passwords and UNIX login names
 			return SRV_EXEC;
-			break;
 
 		case 79: // Finger
 			return SRV_FINGER;
-			break;
 
 		case 21: // File Transfer Protocol [Control]
 			return SRV_FTP;
-			break;
 
 		case 20: // File Transfer [Default Data] (TODO)
 			return SRV_FTP_DATA;
-			break;
 
 		case 70: // Gopher
 			return SRV_GOPHER;
-			break;
 
 		// TODO: service harvest port number
 		//case: // 
@@ -396,93 +442,72 @@ public class TcpConnection
 
 		case 101: // NIC Host Name Server
 			return SRV_HOSTNAMES;
-			break;
 
 		case 80: // World Wide Web HTTP
 		case 8008: // HTTP Alternate
 		case 8080: // HTTP Alternate
 			return SRV_HTTP;
-			break;
 
 		case 2784: // world wide web - development (www-dev)
 			return SRV_HTTP_2784;
-			break;
 
 		case 443: // http protocol over TLS/SSL
 			return SRV_HTTP_443;
-			break;
 
 		case 8001: // VCOM Tunnel(iana) / Commonly used for Internet radio streams such as SHOUTcast (wiki)
 			return SRV_HTTP_8001;
-			break;
 
 		case 5813: // ICMPD
 			return SRV_ICMP;
-			break;
 
 		case 143: // imap4 protocol over TLS/SSL (imaps)
 		case 993: // imap4 protocol over TLS/SSL (imaps)
 			return SRV_IMAP4;
-			break;
 
 		case 102: // ISO-TSAP Class 0
 		case 309: // ISO Transport Class 2 Non-Control over TCP
 			return SRV_ISO_TSAP;
-			break;
 
 		case 543: // klogin
 			return SRV_KLOGIN;
-			break;
-
+	
 		case 544: // krcmd
 			return SRV_KSHELL;
-			break;
 
 		case 389: // Lightweight Directory Access Protocol
 		case 636: // ldap protocol over TLS/SSL (was sldap) (ldaps)
 			return SRV_LDAP;
-			break;
-
+			
 		case 245: // LINK
 			return SRV_LINK;
-			break;
 
 		case 513: // "remote login a la telnet; automatic authentication performed based on priviledged port numbers and distributed data bases which identify ""authentication domains"""
 			return SRV_LOGIN;
-			break;
 
 		case 1911: // Starlight Networks Multimedia Transport Protocol
 			return SRV_MTP;
-			break;
 
 		case 42: // Host Name Server
 			return SRV_NAME;
-			break;
 
 		case 138: // NETBIOS Datagram Service
 			return SRV_NETBIOS_DGM;
-			break;
 
 		case 137: // NETBIOS Name Service
 			return SRV_NETBIOS_NS;
-			break;
 
 		case 139: // NETBIOS Session Service
 			return SRV_NETBIOS_SSN;
-			break;
 
 		case 15: // Unassigned [was netstat]
 			return SRV_NETSTAT;
-			break;
 
 		case 433: // NNSP
 			return SRV_NNSP;
-			break;
 
 		case 119: // Network News Transfer Protocol
 		case 563: // nntp protocol over TLS/SSL (was snntp)
 			return SRV_NNTP;
-			break;
 
 		// TODO: service pm_dump port number
 		//case: // 
@@ -491,96 +516,77 @@ public class TcpConnection
 
 		case 109: // Post Office Protocol Version 2
 			return SRV_POP_2;
-			break;
 
 		case 110: // Post Office Protocol Version 3
 			return SRV_POP_3;
-			break;
 
 		case 515: // spooler
 			return SRV_PRINTER;
-			break;
 
 		case 71: // Remote Job Service (netrjs-1)
 		case 72: // Remote Job Service (netrjs-2)
 		case 73: // Remote Job Service (netrjs-3)
 		case 74: // Remote Job Service (netrjs-4)
 			return SRV_REMOTE_JOB;
-			break;
 
 		case 5: // Remote Job Entry
 		case 77: // any private RJE service
 			return SRV_RJE;
-			break;
 
 		case 514: // "cmd like exec
 			return SRV_SHELL;
-			break;
 
 		case 25: // Simple Mail Transfer
 			return SRV_SMTP;
-			break;
-
+			
 		case 66: // Oracle SQL*NET
 		case 150: // SQL-NET
 			return SRV_SQL_NET;
-			break;
 
 		case 22: // The Secure Shell (SSH) Protocol
 			return SRV_SSH;
-			break;
 
 		case 111: // SUN Remote Procedure Call
 			return SRV_SUNRPC;
-			break;
 
 		case 95: // SUPDUP
 			return SRV_SUPDUP;
-			break;
 
 		case 11: // Active Users
 			return SRV_SYSTAT;
-			break;
 
 		case 23: // Telnet
 			return SRV_TELNET;
-			break;
 
 		case 37: // Time
 			return SRV_TIME;
-			break;
 
 		case 540: // uucpd
 		case 4031: // UUCP over SSL
 			return SRV_UUCP;
-			break;
 
 		case 117: // UUCP Path Service
 			return SRV_UUCP_PATH;
-			break;
 
 		case 175: // VMNET
 			return SRV_VMNET;
-			break;
 
 		case 43: // Who Is
 		case 4321: // Remote Who Is (rwhois)
 			return SRV_WHOIS;
-			break;
-
-
 
 		default:
 			// Private ports defined by IANA in RFC 6335 section 6:
 			// Dynamic Ports, also known as the Private or Ephemeral Ports,
 			// from 49152 - 65535 (never assigned)
 			if (five_tuple.get_dst_port() >= 49152)
+			{
 				return SRV_PRIVATE; // or other?
+			}
 			else
+			{
 				return SRV_OTHER;
-			break;
+			}
 		}
-
-		return SRV_OTHER;
 	}
 }

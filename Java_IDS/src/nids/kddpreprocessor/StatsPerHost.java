@@ -1,7 +1,7 @@
 package nids.kddpreprocessor;
 
-public class StatsPerHost {
-	
+public class StatsPerHost 
+{	
 	//StatsperHost.h
 	private FeatureUpdater feature_updater;	// Used to update features in ConversationFeatures object
 
@@ -107,5 +107,4 @@ public class StatsPerHost {
 	{
 		return (count == 0);
 	}
-
 }
