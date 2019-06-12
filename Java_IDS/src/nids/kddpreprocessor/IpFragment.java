@@ -1,13 +1,11 @@
 package nids.kddpreprocessor;
 
-import org.jnetpcap.protocol.network.Ip4.Timestamp;
-
 public class IpFragment 
 {
-	int ip_id;
-	boolean ip_flag_mf = false;
-	int ip_frag_offset = 0;
-	int ip_payload_length = 0;
+	private int ip_id = 0;
+	private boolean ip_flag_mf = false;
+	private int ip_frag_offset = 0;
+	private int ip_payload_length = 0;
 	
 	public IpFragment(Packet packet)
 	{
@@ -52,10 +50,5 @@ public class IpFragment
 	void set_ip_payload_length(int ip_payload_length)
 	{
 		this.ip_payload_length = ip_payload_length;
-	}
-
-	public Timestamp get_end_ts() 
-	{
-		return null;
 	}
 }

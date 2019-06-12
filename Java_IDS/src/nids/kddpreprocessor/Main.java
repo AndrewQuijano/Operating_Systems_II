@@ -9,11 +9,11 @@ import org.jnetpcap.protocol.lan.Ethernet;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.network.Ip4.Timestamp;
 
-import nids.kddpreprocessor.Net.eth_field_type_t;
+import nids.kddpreprocessor.enums.eth_field_type_t;
 import nids.kddpreprocessor.Net.ip_field_protocol_t;
 
 import static nids.kddpreprocessor.Net.ip_field_protocol_t.*;
-import static nids.kddpreprocessor.Net.eth_field_type_t.*;
+import static nids.kddpreprocessor.enums.eth_field_type_t.*;
 
 public class Main 
 {

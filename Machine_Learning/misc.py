@@ -34,7 +34,7 @@ def read_data(file, has_header=False):
 
         classes = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=str,
                                 autostrip=True, usecols=[0], encoding='utf-8-sig')
-    print("Classes Loaded..." + str(np.unique(classes))
+    print("Classes Loaded: " + str(np.unique(classes)))
     return features, classes
 
 
@@ -137,9 +137,6 @@ def dual_frequency_histogram(hash_map1, hash_map2):
     ax.set_ylabel('Number of Connections')
     ax.set_xticks(ind2)
     ax.set_xticklabels(tuple(hash_map1.keys))
-#    ax.set_xticklabels(('ICMP', 'TCP', 'UDP'))
-#    ax.set_xticklabels(('OTH', 'REJ', 'RSTO', 'RSTOS0', 'RSTR', 'S0', 'S1', 'S2', 'S3', 'SF', 'SH'))
-#    ax.set_xticklabels(("SF", "S2", "S1", "S3", "OTH", "REJ", "RSTO", "S0", "RSTR", "RSTOS0", "SH"))
     ax.set_title('Land Distribution')
     ax.legend()
 
@@ -172,6 +169,7 @@ def get_cv_set(training_set, test_set, percentile=0.2):
     row = np.shape(training_set)[0]
     col = np.shape(training_set)[1]
     sample_idx = random.sample(range(row), int(percentile * row))
+    sample_idx.sort()
 
     # Get your CV data
     cv_train = training_set[sample_idx[:], 0:col]
@@ -179,6 +177,7 @@ def get_cv_set(training_set, test_set, percentile=0.2):
 
     # Remove CV data from original
     set_diff = np.setdiff1d(np.arange(row), sample_idx)
+
     training_set = training_set[set_diff[:], 0:col]
     test_set = test_set[set_diff[:]]
     return training_set, test_set, cv_train, cv_test
@@ -397,7 +396,8 @@ def start_and_clean_up(test_x, test_y):
         if existing_files():
             # Read input from user
             args = input("Files Found! Delete them and run script? If so, press CTRL-D.\n"
-                         "Otherwise, press any key to exit\n")
+                         "Otherwise, press any key to exit\n"
+                         "Press CTRL + C to run tests with all Classifiers in Classifers directory\n")
             if args is not None:
                 exit(0)
         else:

@@ -8,11 +8,12 @@ import java.util.Queue;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.network.Ip4.Timestamp;
 
+import nids.kddpreprocessor.Net.ip_field_protocol_t;
+
 public class ConversationReconstructor 
 {
 	HashMap<FiveTuple, Conversation> ConversationMap = new HashMap<FiveTuple, Conversation>();
 	ConversationMap conv_map;
-
 
 	// Queue of reconstructed conversations prepared to output
 	Deque<Conversation> output_queue = new LinkedList<Conversation>();
@@ -36,7 +37,7 @@ public class ConversationReconstructor
 
 		FiveTuple key = packet.get_five_tuple();
 		Conversation conversation = null;
-		Ip4 ip_proto = key.get_ip_proto();
+		ip_field_protocol_t ip_proto = key.get_ip_proto();
 
 		// Find or insert with single lookup: 
 		// http://stackoverflow.com/a/101980/3503528
@@ -46,7 +47,7 @@ public class ConversationReconstructor
 		if (it != conv_map.end() && !(conv_map.key_comp()(key, it.first)))
 		{
 			// Key (connection) already exists
-			conversation = it->second;
+			conversation = it.second;
 		}
 		else 
 		{
@@ -92,7 +93,8 @@ public class ConversationReconstructor
 		boolean is_finished = conversation.add_packet(packet);
 
 		// If connection is in final state, remove it from map & enqueue to output
-		if (is_finished) {
+		if (is_finished) 
+		{
 			conv_map.erase(it);
 			output_queue.push(conversation);
 		}

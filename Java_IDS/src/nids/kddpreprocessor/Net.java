@@ -219,7 +219,7 @@ public class Net
 	/*
 	 * TCP header
 	 */
-	public tcp_header_t()
+	public class tcp_header_t
 	{
 		int src_port;
 		int dst_port;
