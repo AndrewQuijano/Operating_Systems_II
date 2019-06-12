@@ -1,6 +1,9 @@
 package nids.kddpreprocessor;
 
 import org.jnetpcap.protocol.network.Ip4.Timestamp;
+
+import nids.kddpreprocessor.enums.conversation_state_t;
+
 import static nids.kddpreprocessor.Net.ip_field_protocol_t.*;
 
 public class Conversation

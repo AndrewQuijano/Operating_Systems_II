@@ -1,5 +1,7 @@
 package nids.kddpreprocessor;
 
+import nids.kddpreprocessor.enums.service_t;
+
 public class StatsPerHost 
 {	
 	//StatsperHost.h

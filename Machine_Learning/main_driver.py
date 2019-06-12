@@ -51,11 +51,17 @@ def main():
         test = np.concatenate((test_y, test_x), axis=1)
 
         if name == 'nt':
-            np.savetxt(p + '\\train_' + b, train, fmt="%s", delimiter=",")
-            np.savetxt(p + "\\test_" + b, test, fmt="%s", delimiter=",")
+            with open(p + '\\train_' + b, 'wb+') as f:
+                np.savetxt(f, train, fmt="%s", delimiter=",")
+            with open(p + "\\test_" + b, 'wb+') as f:
+                np.savetxt(f, test, fmt="%s", delimiter=",")
         else:
-            np.savetxt(p + "/train_" + b, train, fmt="%s", delimiter=",")
-            np.savetxt(p + "/test_" + b, test,  fmt="%s", delimiter=",")
+            with open(p + '/train_' + b, 'wb+') as f:
+                np.savetxt(f, train, fmt="%s", delimiter=",")
+            with open(p + '/test_' + b, 'wb+') as f:
+                np.savetxt(f, test, fmt="%s", delimiter=",")
+            # np.savetxt(p + "/train_" + b, train, fmt="%s", delimiter=",")
+            # np.savetxt(p + "/test_" + b, test,  fmt="%s", delimiter=",")
         exit(0)
 
     elif len(argv) == 3:

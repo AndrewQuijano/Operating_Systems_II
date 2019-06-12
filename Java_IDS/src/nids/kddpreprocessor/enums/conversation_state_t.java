@@ -1,4 +1,4 @@
-package nids.kddpreprocessor;
+package nids.kddpreprocessor.enums;
 
 /**
  * Conversatiov states 

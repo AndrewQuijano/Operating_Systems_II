@@ -1,56 +1,17 @@
 package nids.kddpreprocessor;
 
+import static nids.kddpreprocessor.enums.eth_field_type_t.*;
+import nids.kddpreprocessor.enums.eth_field_type_t;
+
 public class Net 
 {
 	// Net.h
-	/*
-	 * Ethernet type/length field
-	 */
-	enum eth_field_type_t  
-	{
-		TYPE_ZERO(0),
-		MIN_ETH2(0x600),
-		IPV4(0x800);
-		private int value;
 
-		private eth_field_type_t(int value) 
-		{
-			this.value = value;
-		}
-	};
-
-	/*
-	 * ICMP type field
-	 * Values from linux source code used
-	 * https://github.com/torvalds/linux/blob/master/include/uapi/linux/icmp.h
-	 */
-	enum icmp_field_type_t
-	{
-		ECHOREPLY(0),
-		DEST_UNREACH(3),
-		SOURCE_QUENCH(4),
-		REDIRECT(5),
-		ECHO(8),
-		TIME_EXCEEDED(11),
-		PARAMETERPROB(12),
-		TIMESTAMP(13),
-		TIMESTAMPREPLY(14),
-		INFO_REQUEST(15),
-		INFO_REPLY(16),
-		ADDRESS(17),
-		ADDRESSREPLY(18);
-		private int value;
-
-		private icmp_field_type_t(int value) 
-		{
-			this.value = value;
-		}
-	};
 	
 	/*
 	 * IP protocol field
 	 */
-	enum ip_field_protocol_t
+	public enum ip_field_protocol_t
 	{
 		PROTO_ZERO(0), ICMP(1), TCP(6), UDP(17);
 		private final int value;
@@ -64,7 +25,7 @@ public class Net
 	/*
 	 * Ethernet header
 	 */
-	public ether_header_t ()
+	public class ether_header_t
 	{
 		int dst_addr[] = new int[6];
 		int src_addr[] = new int[6];
@@ -74,12 +35,12 @@ public class Net
 		
 		boolean is_ethernet2()
 		{
-			return (ntohs(type_length) >= MIN_ETH2);
+			return (ntohs(type_length >= MIN_ETH2);
 		}
 
 		boolean is_type_ipv4()
 		{
-			return (ntohs(type_length) == IPV4);
+			return (type_length == IPV4);
 		}
 
 		int get_eth2_sdu()
@@ -145,7 +106,7 @@ public class Net
 
 		int frag_offset()
 		{
-			return (ntohs(flags_fo) & 0x01FFF) << 3; // 1 unit = 8 bytes
+			return (flags_fo & 0x01FFF) << 3; // 1 unit = 8 bytes
 		}
 
 		String protocol_str()
@@ -193,8 +154,14 @@ public class Net
 	public class tcp_field_flags_t 
 	{
 		int flags;
-		tcp_field_flags_t();
-		tcp_field_flags_t(int flags);
+		public tcp_field_flags_t()
+		{
+			
+		}
+		public tcp_field_flags_t(int flags)
+		{
+			this.flags = flags;
+		}
 		boolean urg();	// Urgent
 		boolean ece();	// ECN Echo
 		boolean cwr();	// Congestion Window Reduced
@@ -269,7 +236,7 @@ public class Net
 	/*
 	 * ICMP header
 	 */
-	public icmp_header_t()
+	public class icmp_header_t
 	{
 		icmp_field_type_t type;
 		int code;

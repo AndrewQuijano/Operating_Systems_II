@@ -3,10 +3,12 @@ package nids.kddpreprocessor;
 import org.jnetpcap.packet.JPacket;
 
 import nids.kddpreprocessor.Net.tcp_field_flags_t;
+import nids.kddpreprocessor.enums.conversation_state_t;
+import nids.kddpreprocessor.enums.service_t;
 
-import static nids.kddpreprocessor.conversation_state_t.*;
 import static nids.kddpreprocessor.Net.tcp_field_flags_t.*;
-import static nids.kddpreprocessor.service_t.*;
+import static nids.kddpreprocessor.enums.conversation_state_t.*;
+import static nids.kddpreprocessor.enums.service_t.*;
 
 public class TcpConnection 
 {

@@ -32,6 +32,7 @@ def read_data(file, has_header=False):
                                  autostrip=True, usecols=[i for i in range(1, columns)])
         classes = np.genfromtxt(file, delimiter=',', skip_header=0, dtype=str,
                                 autostrip=True, usecols=[0])
+    print(classes)
     return features, classes
 
 

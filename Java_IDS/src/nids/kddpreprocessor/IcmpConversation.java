@@ -1,8 +1,10 @@
 package nids.kddpreprocessor;
 
 import static nids.kddpreprocessor.Net.icmp_field_type_t.*;
+import static nids.kddpreprocessor.enums.service_t.*;
+
 import nids.kddpreprocessor.Net.icmp_field_type_t;
-import static nids.kddpreprocessor.service_t.*;
+import nids.kddpreprocessor.enums.service_t;
 
 public class IcmpConversation extends Conversation
 {
