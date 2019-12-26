@@ -1,6 +1,10 @@
 # Operating_Systems_II
 Creating an Intrusion Detection System
 
+------Obtaining the KDD cup data--------
+The KDD 99 Cup dataset was created from the tcpdumps found here:
+https://www.ll.mit.edu/r-d/datasets/1998-darpa-intrusion-detection-evaluation-dataset
+
 ------Obtaining the KDD Preprocessor----
 
 Please use the installation script to build the pre-processor when the respository is cloned.

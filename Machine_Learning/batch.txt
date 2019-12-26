@@ -1,3 +1,0 @@
-sniff_time 2400 ens33 test_2.pcap
-process test_2.pcap
-label test_2.csv 
