@@ -13,117 +13,12 @@
 
 
 import pyshark
+import urllib3
+import csv
 from sys import argv
 
 # GLOBAL TODO:
-#  - NEED TO DERIVE 100 connection window features
-#  - Remove to_string pretty printers for packet/connection?
-
-
-# An object for representing a single connection, with connection-based
-# features as members
-class Connection:
-
-    # fields set to "None" in construction are filled in by other functions
-    def __init__(self, src_ip, src_port, dst_ip, dst_port, timestamp,
-                 duration, protocol, service, packets, flag,
-                 src_bytes, dst_bytes, land, wrong_fragments, urgent):
-        # intermediate features - used for further feature derivation
-        self.src_ip = src_ip
-        self.src_port = src_port
-        self.dst_ip = dst_ip
-        self.dst_port = dst_port
-        self.timestamp = timestamp
-
-        # basic features of individual connections
-        self.duration = duration
-        self.protocol = protocol
-        self.service = service
-        self.packets = packets
-        self.flag = flag
-        self.src_bytes = src_bytes
-        self.dst_bytes = dst_bytes
-        self.land = land
-        self.wrong_fragments = wrong_fragments
-        self.urgent = urgent
-
-        # same-host, 2 sec window traffic features
-        self.count = None
-        self.serror_rate = None
-        self.rerror_rate = None
-        self.same_srv_rate = None
-        self.diff_srv_rate = None
-
-        # same-service, 2 sec window traffic features
-        self.srv_count = None
-        self.srv_serror_rate = None
-        self.srv_rerror_rate = None
-        self.srv_diff_host_rate = None
-
-        # host-based (connection-based) traffic features,
-        #   computed over 100 connections
-        self.dst_host_count = None
-        self.dst_host_srv_count = None
-        self.dst_host_same_srv_rate = None
-        self.dst_host_diff_srv_rate = None
-        self.dst_host_same_src_port_rate = None
-        self.dst_host_srv_diff_host_rate = None
-        self.dst_host_serror_rate = None
-        self.dst_host_srv_serror_rate = None
-        self.dst_host_rerror_rate = None
-        self.dst_host_srv_rerror_rate = None
-
-    def add_same_host_time_based_features(self, count, serror_rate, rerror_rate, same_srv_rate, diff_srv_rate):
-        self.count = count
-        self.serror_rate = serror_rate
-        self.rerror_rate = rerror_rate
-        self.same_srv_rate = same_srv_rate
-        self.diff_srv_rate = diff_srv_rate
-
-    def add_same_service_time_based_features(self, srv_count, srv_serror_rate,
-                                           srv_rerror_rate, srv_diff_host_rate):
-        self.srv_count = srv_count
-        self.srv_serror_rate = srv_serror_rate
-        self.srv_rerror_rate = srv_rerror_rate
-        self.srv_diff_host_rate = srv_diff_host_rate
-
-    def add_host_based_features(self, dst_host_count):
-        self.dst_host_count = dst_host_count
-
-    def to_string(self):
-        out_str = ('\nduration: ' + str(self.duration) +
-                   '\nprotocol: ' + self.protocol +
-                   '\nservice: ' + self.service +
-                   '\nflag: ' + str(self.flag) +
-                   '\nsrc_bytes: ' + str(self.src_bytes) +
-                   '\ndst_bytes: ' + str(self.dst_bytes) +
-                   '\nland: ' + str(self.land) +
-                   '\nwrong fragments: ' + str(self.wrong_fragments) +
-                   '\nurgent packets: ' + str(self.urgent) +
-                   '\n')
-        return out_str
-
-    def to_csv(self):
-        out_str = (str(self.duration) + ',' +
-                   self.protocol + ',' +
-                   self.service + ',' +
-                   str(self.flag) + ',' +
-                   str(self.src_bytes) + ',' +
-                   str(self.dst_bytes) + ',' +
-                   str(self.land) + ',' +
-                   str(self.wrong_fragments) + ',' +
-                   str(self.urgent) + ','
-                                      'THIS IS WHERE CONTENT-FEATURES GO,' +
-                   str(self.count) + ',' +
-                   str(self.srv_count) + ',' +
-                   str(self.serror_rate) + ',' +
-                   str(self.srv_serror_rate) + ',' +
-                   str(self.rerror_rate) + ',' +
-                   str(self.srv_rerror_rate) + ',' +
-                   str(self.same_srv_rate) + ',' +
-                   str(self.diff_srv_rate) + ',' +
-                   str(self.srv_diff_host_rate) + ',') + '\n'
-        return out_str
+# - NEED TO DERIVE 100 connection window features
 
 
 # input: PCAP capture file
@@ -137,6 +32,7 @@ def create_connection_records(cap):
     icmp_count = 0
 
     for packet in cap:
+
         try:
             if 'tcp' in packet:
                 key = "tcp_conn" + packet.tcp.stream
@@ -168,7 +64,6 @@ def initialize_connection(raw_connections):
     connections = []
 
     for key, packet_list in raw_connections.items():
-        # TODO: does taking service layer of first packet always represent the connection accurately? I think not...
         src_bytes = 0
         dst_bytes = 0
         wrong_frag = 0
@@ -210,30 +105,26 @@ def initialize_connection(raw_connections):
             if protocol == 'TCP':
                 if packet.tcp.flags_urg == 1:
                     urgent += 1
+                if int(packet.tcp.checksum_status) != 2:
+                    wrong_frag = wrong_frag + 1
+
             if protocol == 'UDP':
                 if packet.udp.flags_urg == 1:
                     urgent += 1
+
             if protocol == 'ICMP':
                 if packet.icmp.flags_urg == 1:
                     urgent += 1
 
         status_flag = get_connection_status(packet_list)
-        # ALSO....wrong fragments bit, hard-coding as 0
 
         # generate Connection with basic features as a tuple
-
         # Be sure to pre-prend: ip src, ip dst, time stamp
         # use a tuple so it can be sorted by timestamp and then by IP at the end!
-        record = Connection(timestamp, src_ip, src_port, dst_ip, dst_port,
-                            duration, protocol, service, 0, status_flag, src_bytes,
-                            dst_bytes, land, 0, urgent)
-
+        record = (timestamp, src_ip, src_port, dst_ip, dst_port,
+                  duration, protocol, service, status_flag, src_bytes,
+                  dst_bytes, land, wrong_frag, urgent)
         connections.append(record)
-
-        # Write it out
-        with open(str(key) + ".log", "w") as dummy:
-            dummy.write(record.to_string())
-            dummy.flush()
 
     # sort in terms of time! So you can easily find two last 2 seconds and last 100
     return sorted(connections, key=lambda x: x[0])
@@ -241,13 +132,14 @@ def initialize_connection(raw_connections):
 
 # Please view graph on main github page
 def get_connection_status(packets):
-    # define source and destination
+    # Define source and destination
     source_ip = packets[0].ip.src
     dest_ip = packets[0].ip.dst
-    connection_status = 'SF'
+
     for packet in packets:
         if 'tcp' in packet:
             print(dir(packet.tcp))
+
             if packet.tcp.flags_syn == 1 and packet.ip.src == source_ip:
                 connection_status = 'S0'
                 # Reset is hit
@@ -278,10 +170,29 @@ def get_connection_status(packets):
             return 'ERROR'
 
 
+def get_content_data(packet_list):
+    hot = 0
+    num_failed_logins = 0
+    logged_in = 0
+    num_compromised = 0
+    root_shell = 0
+    su_attempted = 0
+    num_root = 0
+    num_file_creations = 0
+    num_access_files = 0
+    num_outbound_cmds = 0
+    is_hot_login = 0
+    is_guest_login = 0
+    for packet in packet_list:
+        print(packet)
+    return (hot, num_failed_logins, logged_in, num_compromised, logged_in, num_compromised, root_shell,
+            su_attempted, num_root, num_file_creations, num_access_files, num_outbound_cmds, is_hot_login,
+            is_guest_login)
+
+
 # Derive time-based traffic features (over 2 sec window by default)
 # Do this just for ONE connection!
 def derive_time_features(connections, time_window=2.0):
-
     for rec in connections:
         samehost_connections = []
         twosec_samehost_connections = []
@@ -336,14 +247,15 @@ def derive_time_features(connections, time_window=2.0):
 
         srv_diff_host_rate = round(srv_diff_host_count / count, 2)
         rec.add_sameservice_timebased_features(count, None, None, srv_diff_host_rate)
+        return 'temp', 'hi'
 
 
 def derive_host_features(connection, hosts=100):
-    return
+    return 'temp', 'hi'
 
 
 # the main function
-def collect_connections(input_file):
+def collect_connections(input_file, keep_extra=False):
     # Read in the file
     capture = pyshark.FileCapture(input_file)
     # Have a dictionary mapping of connection number to packets within connection
@@ -361,23 +273,29 @@ def collect_connections(input_file):
         # Derive time-based traffic features (over 2 sec window)
         # ---------------------------------------------------------------------
         # same-host AND same-service feature derivation
-        derive_time_features(connections)
+        # time_traffic = derive_time_features(connections)
 
         # ---------------------------------------------------------------------
         # Derive host-based traffic features (same host over 100 connections)
         #  ---------------------------------------------------------------------
-        derive_host_features(connections)
+        # host_traffic = derive_host_features(connections)
         connection_record_counter += 1
+
+        # Append the answers!
+        # connection_record += time_traffic
+        # connection_record += host_traffic
         print("Completed Connection Record: " + str(connection_record_counter))
 
     # ---------------------------------------------------------------------
     # Traverse Connection list, generate CSV file
     # ---------------------------------------------------------------------
-    with open('records.csv', 'w') as output:
-        for rec in connections:
-            output.write(rec.to_csv())
-            output.flush()
-
+    with open('kdd.csv', 'w') as out:
+        # delete the timestamp, src ip, src port, dest ip, dest port
+        for record in connections:
+            for feature in record:
+                print(feature)
+                out.write(str(feature) + ',')
+            out.write('\n')
 
 # Label Encoder
 # THIS IS FOR LABELING TEST DATA GENERATED BY THE FUZZER!
@@ -431,9 +349,18 @@ def main():
 
 # The service mapping to port number is determined by IANA:
 def get_iana():
-    csv_location = 'https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.csv'
+    url = 'https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.csv'
+    user_agent = {'user-agent': 'Mozilla/5.0 (Windows NT 6.3; rv:36.0)'}
+    pool = urllib3.HTTPConnectionPool(url, maxsize=1, headers=user_agent, port=80)
+    response = pool.request('GET', url)
+    print(response.data.decode())
+    # cr = csv.reader(response.data)
+
+    #for row in cr:
+    #    print(row)
 
 
 # pass control to collect_connections(), take all the credit
 if __name__ == '__main__':
-    main()
+    get_iana()
+    # main()
