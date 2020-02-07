@@ -19,42 +19,6 @@ from sys import argv
 #  - NEED TO DERIVE 100 connection window features
 #  - Remove to_string pretty printers for packet/connection?
 
-# An object for individual packets, with members for all relevant
-# header information
-
-
-class Packet:
-
-    def __init__(self, con_no, protocol, service, src_ip, dst_ip, src_port,
-                 dst_port, time_elapsed, size, timestamp, urgent):
-        self.con_no = con_no
-        self.protocol = protocol
-        self.service = service
-        self.src_ip = src_ip
-        self.dst_ip = dst_ip
-        self.src_port = src_port
-        self.dst_port = dst_port
-        self.time_elapsed = time_elapsed
-        self.size = int(size)
-        self.timestamp = timestamp
-        self.urgent = urgent
-
-    def to_string(self):
-        out_str = ('\nconnection_number: ' + str(self.con_no) +
-                   '\nprotocol: ' + self.protocol +
-                   '\nservice: ' + self.service +
-                   '\nsource IP: ' + str(self.src_ip) +
-                   '\ndestination IP: ' + str(self.dst_ip) +
-                   '\nsource port: ' + str(self.src_port) +
-                   '\ndestination port: ' + str(self.dst_port) +
-                   '\npacket size: ' + str(self.size) +
-                   '\nurgent flag: ' + str(self.urgent) +
-                   '\ntime elapsed since first packet of connection: ' +
-                   str(self.time_elapsed) +
-                   '\nabsolute time: ' + str(self.timestamp) +
-                   '\n')
-        return out_str
-
 
 # An object for representing a single connection, with connection-based
 # features as members
@@ -109,8 +73,7 @@ class Connection:
         self.dst_host_rerror_rate = None
         self.dst_host_srv_rerror_rate = None
 
-    def add_same_host_time_based_features(self, count, serror_rate, rerror_rate,
-                                        same_srv_rate, diff_srv_rate):
+    def add_same_host_time_based_features(self, count, serror_rate, rerror_rate, same_srv_rate, diff_srv_rate):
         self.count = count
         self.serror_rate = serror_rate
         self.rerror_rate = rerror_rate
@@ -164,110 +127,162 @@ class Connection:
 
 
 # input: PCAP capture file
+# output: full dictionary of Connection ID to Connection
 def create_connection_records(cap):
     # ----------------------------------------------------------------
     # Collect packets from the same connection, create connection dict
     # ----------------------------------------------------------------
     raw_connections = {}
     udp_count = 0
+    icmp_count = 0
+
     for packet in cap:
         try:
             if 'tcp' in packet:
                 key = "tcp_conn" + packet.tcp.stream
-                flags = ""
-                if str(packet.tcp.flags) == "0x00000018":
-                    flags += "PUSH-ACK"
-
-                if str(packet.tcp.flags) == "0x00000018":
-                    flags += "PUSH-ACK"
-
-                pkt_obj = Packet(packet.tcp.stream, 'TCP', packet.highest_layer,
-                                 packet.ip.src, packet.ip.dst,
-                                 packet.tcp.srcport, packet.tcp.dstport, packet.tcp.time_relative,
-                                 packet.length, packet.sniff_timestamp, 0)  # pkt.tcp.flags.urg)
             elif 'udp' in packet:
-                # TODO: why doesn't pkt.udp.time_relative work?? didn't it used to?
                 key = "udp_conn" + str(udp_count)
                 udp_count = udp_count + 1
-                pkt_obj = Packet(packet.udp.stream, 'UDP', packet.highest_layer,
-                                 packet.ip.src, packet.ip.dst,
-                                 packet.udp.srcport, packet.udp.dstport, 0,  # pkt.udp.time_relative,
-                                 packet.length, packet.sniff_timestamp, 0)
+            elif 'icmp' in packet:
+                key = "icmp_conn" + str(icmp_count)
+                icmp_count = icmp_count + 1
             else:
-                # do not record packets that aren't TCP/UDP
+                # do not record packets that aren't TCP/UDP/ICMP
                 continue
 
             # If the packet not in a connection record, make a new one!
             if key not in raw_connections.keys():
-                raw_connections[key] = [pkt_obj]
+                raw_connections[key] = [packet]
             else:
                 lst = raw_connections[key]
-                lst.append(pkt_obj)
+                lst.append(packet)
 
         except AttributeError:
+            print("Attribute error found!")
             continue
+    print('Connections found: ' + str(len(raw_connections)))
     return raw_connections
 
 
 def initialize_connection(raw_connections):
     connections = []
 
-    for k, v in raw_connections.items():
-        # TODO: does taking service layer of first packet always represent
-        #   the connection accurately? I think not...
+    for key, packet_list in raw_connections.items():
+        # TODO: does taking service layer of first packet always represent the connection accurately? I think not...
         src_bytes = 0
         dst_bytes = 0
         wrong_frag = 0
         urgent = 0
-        protocol = v[0].protocol
-        service = v[0].service
-        duration = float(v[-1].time_elapsed)
+        if 'tcp' in packet_list[0]:
+            protocol = 'TCP'
+            duration = float(packet_list[-1].tcp.time_relative)
+            src_port = packet_list[0].tcp.srcport
+            dst_port = packet_list[0].tcp.dstport
+        elif 'udp' in packet_list[0]:
+            protocol = 'UDP'
+            duration = float(packet_list[-1].udp.time_relative)
+            src_port = packet_list[0].udp.srcport
+            dst_port = packet_list[0].udp.dstport
+        else:
+            protocol = 'ICMP'
+            duration = float(packet_list[-1].icmp.time_relative)
+            src_port = packet_list[0].icmp.srcport
+            dst_port = packet_list[0].icmp.dstport
+        service = packet_list[0].highest_layer
         duration = int(duration / 1.0)
-        src_ip = v[0].src_ip
-        dst_ip = v[0].dst_ip
-        src_port = v[0].src_port
-        dst_port = v[0].dst_port
-        timestamp = v[-1].timestamp
+        src_ip = packet_list[0].ip.src
+        dst_ip = packet_list[0].ip.dst
+        timestamp = packet_list[-1].sniff_timestamp
 
-        # land feature (loopback connection)
+        # land feature loop-back connection
         if src_ip == dst_ip and src_port == dst_port:
             land = 1
         else:
             land = 0
 
-        # traverse packets s(some basic features are aggregated from each packet)
-        for pkt in v:
-            if src_ip == pkt.src_ip:
-                src_bytes += pkt.size
+        # traverse packets (some basic features are aggregated from each packet)
+        for packet in packet_list:
+            if src_ip == packet.ip.src:
+                src_bytes += int(packet.length.size)
             else:
-                dst_bytes += pkt.size
+                dst_bytes += int(packet.length.size)
 
-            if pkt.urgent == 1:
-                urgent += 1
+            if protocol == 'TCP':
+                if packet.tcp.flags_urg == 1:
+                    urgent += 1
+            if protocol == 'UDP':
+                if packet.udp.flags_urg == 1:
+                    urgent += 1
+            if protocol == 'ICMP':
+                if packet.icmp.flags_urg == 1:
+                    urgent += 1
 
-        # TODO: how to catch status flag (last flag bit set)? I'm gonna
-        #       hardcode it now as SF, but that's soooo wrong
-        # ALSO....wrong fragments bit, hardcoding as 0
+        status_flag = get_connection_status(packet_list)
+        # ALSO....wrong fragments bit, hard-coding as 0
 
-        # generate Connection with basic features
-        record = Connection(src_ip, src_port, dst_ip, dst_port, timestamp,
-                            duration, protocol, service, v, 'SF', src_bytes,
+        # generate Connection with basic features as a tuple
+
+        # Be sure to pre-prend: ip src, ip dst, time stamp
+        # use a tuple so it can be sorted by timestamp and then by IP at the end!
+        record = Connection(timestamp, src_ip, src_port, dst_ip, dst_port,
+                            duration, protocol, service, 0, status_flag, src_bytes,
                             dst_bytes, land, 0, urgent)
 
         connections.append(record)
 
         # Write it out
-        # with open(str(k) + ".log", "w") as dummy:
-        #    dummy.write(record.to_string())
-        #    dummy.flush()
-    return connections
+        with open(str(key) + ".log", "w") as dummy:
+            dummy.write(record.to_string())
+            dummy.flush()
+
+    # sort in terms of time! So you can easily find two last 2 seconds and last 100
+    return sorted(connections, key=lambda x: x[0])
+
+
+# Please view graph on main github page
+def get_connection_status(packets):
+    # define source and destination
+    source_ip = packets[0].ip.src
+    dest_ip = packets[0].ip.dst
+    connection_status = 'SF'
+    for packet in packets:
+        if 'tcp' in packet:
+            print(dir(packet.tcp))
+            if packet.tcp.flags_syn == 1 and packet.ip.src == source_ip:
+                connection_status = 'S0'
+                # Reset is hit
+                if packet.tcp.flags_reset == 1 and packet.ip.src == source_ip:
+                    connection_status = 'REJ'
+                    return connection_status
+                elif packet.tcp.flags_reset == 1 and packet.ip.dest == dest_ip:
+                    connection_status = 'RST0S0'
+                    return connection_status
+                # normal TCP handshake, SYN and ACK
+                if packet.tcp.flags_syn == 1 and packet.tcp.flags_ack == 1:
+                    connection_status = 'S1'
+
+            elif packet.tcp.flags_fin == 1 and packet.ip.src == source_ip:
+                connection_status = 'SH'
+                return connection_status
+            elif packet.tcp.flags_syn == 1 and packet.tcp.flags_ack == 1:
+                connection_status = 'S4'
+            else:
+                connection_status = 'OTH'
+                return connection_status
+
+        elif 'udp' in packet:
+            return 'SF'
+        elif 'icmp' in packet:
+            return 'SF'
+        else:
+            return 'ERROR'
 
 
 # Derive time-based traffic features (over 2 sec window by default)
 # Do this just for ONE connection!
 def derive_time_features(connections, time_window=2.0):
-    for rec in connections:
 
+    for rec in connections:
         samehost_connections = []
         twosec_samehost_connections = []
         twosec_samesrv_connections = []
@@ -327,8 +342,11 @@ def derive_host_features(connection, hosts=100):
     return
 
 
+# the main function
 def collect_connections(input_file):
+    # Read in the file
     capture = pyshark.FileCapture(input_file)
+    # Have a dictionary mapping of connection number to packets within connection
     raw_connections = create_connection_records(capture)
 
     # -------------------------------------------------------------------------
@@ -336,6 +354,7 @@ def collect_connections(input_file):
     # -------------------------------------------------------------------------
     connections = initialize_connection(raw_connections)
 
+    # Derive Time and Host Computations!
     connection_record_counter = 0
     for connection_record in connections:
         # ---------------------------------------------------------------------
@@ -362,12 +381,11 @@ def collect_connections(input_file):
 
 # Label Encoder
 # THIS IS FOR LABELING TEST DATA GENERATED BY THE FUZZER!
-# THE OUTPUT OF KDDPROCESSOR 99 -E Spits last 5 extra columns...
+# THE OUTPUT OF KDD-PROCESSOR 99 -E Spits last 5 extra columns...
 # SRC IP, SRC PORT, DEST IP, DEST PORT, TIME STAMP
 # SINCE U KNOW THE ATTACKS ARE BY SPECIFIC IP, USE THAT TO LABEL
 # PLAY WITH COLUMN 28-32
 # GOAL: LABEL IS ON FIRST COLUMN
-# MOVE THIS TO KDD-PREPROCESSOR
 def label_testing_set(file_path, output):
     # From fuzzer I know the mapping of IP and attack
     # 192.168.147.152 is IP of Client running Kali Linux
@@ -405,10 +423,15 @@ def label_testing_set(file_path, output):
 def main():
     if len(argv) == 2:
         cap_file = argv[1]
+        collect_connections(cap_file)
+        print('Connection records generated, written to records.csv!')
     else:
-        cap_file = 'outside.tcpdump'
-    collect_connections(cap_file)
-    print('Connection records generated, written to records.csv!')
+        print('Usage: python3 kdd99_preprocessor.py <pcap-file>')
+
+
+# The service mapping to port number is determined by IANA:
+def get_iana():
+    csv_location = 'https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.csv'
 
 
 # pass control to collect_connections(), take all the credit
