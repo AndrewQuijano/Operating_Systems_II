@@ -13,7 +13,7 @@
 
 
 import pyshark
-import urllib3
+# import urllib3
 import csv
 from sys import argv
 
@@ -132,26 +132,28 @@ def initialize_connection(raw_connections):
 
 # Please view graph on main github page
 def get_connection_status(packets):
+    if 'udp' in packets[0] or 'icmp' in packets[0]:
+        return 'SF'
+
     # Define source and destination
     source_ip = packets[0].ip.src
     dest_ip = packets[0].ip.dst
+    connection_status = 'SF'
 
     for packet in packets:
-        if 'tcp' in packet:
-            print(dir(packet.tcp))
+        print(dir(packet.tcp))
+        if packet.tcp.flags_syn == 1 and packet.ip.src == source_ip:
+            connection_status = 'S0'
+            # Reset is hit
+            if packet.tcp.flags_reset == 1 and packet.ip.src == source_ip:
+                connection_status = 'REJ'
 
-            if packet.tcp.flags_syn == 1 and packet.ip.src == source_ip:
-                connection_status = 'S0'
-                # Reset is hit
-                if packet.tcp.flags_reset == 1 and packet.ip.src == source_ip:
-                    connection_status = 'REJ'
-                    return connection_status
-                elif packet.tcp.flags_reset == 1 and packet.ip.dest == dest_ip:
-                    connection_status = 'RST0S0'
-                    return connection_status
-                # normal TCP handshake, SYN and ACK
-                if packet.tcp.flags_syn == 1 and packet.tcp.flags_ack == 1:
-                    connection_status = 'S1'
+            elif packet.tcp.flags_reset == 1 and packet.ip.dest == dest_ip:
+                connection_status = 'RST0S0'
+                return connection_status
+            # normal TCP handshake, SYN and ACK
+            if packet.tcp.flags_syn == 1 and packet.tcp.flags_ack == 1:
+                connection_status = 'S1'
 
             elif packet.tcp.flags_fin == 1 and packet.ip.src == source_ip:
                 connection_status = 'SH'
@@ -160,14 +162,8 @@ def get_connection_status(packets):
                 connection_status = 'S4'
             else:
                 connection_status = 'OTH'
-                return connection_status
 
-        elif 'udp' in packet:
-            return 'SF'
-        elif 'icmp' in packet:
-            return 'SF'
-        else:
-            return 'ERROR'
+    return connection_status
 
 
 def get_content_data(packet_list):
@@ -292,9 +288,10 @@ def collect_connections(input_file, keep_extra=False):
     with open('kdd.csv', 'w') as out:
         # delete the timestamp, src ip, src port, dest ip, dest port
         for record in connections:
-            for feature in record:
-                print(feature)
-                out.write(str(feature) + ',')
+            if keep_extra:
+                out.write(','.join(list(record)))
+            else:
+                out.write(','.join(list(record))[5:])
             out.write('\n')
 
 # Label Encoder
@@ -348,16 +345,37 @@ def main():
 
 
 # The service mapping to port number is determined by IANA:
+# Return a dictionary of tcp/udp to port numbers
 def get_iana():
-    url = 'https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.csv'
-    user_agent = {'user-agent': 'Mozilla/5.0 (Windows NT 6.3; rv:36.0)'}
-    pool = urllib3.HTTPConnectionPool(url, maxsize=1, headers=user_agent, port=80)
-    response = pool.request('GET', url)
-    print(response.data.decode())
-    # cr = csv.reader(response.data)
+    # Get the CSV file from HTTP
+    # url = 'https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.csv'
+    # user_agent = {'user-agent': 'Mozilla/5.0 (Windows NT 6.3; rv:36.0)'}
+    # pool = urllib3.HTTPConnectionPool(url, maxsize=1, headers=user_agent, port=80)
+    # response = pool.request('GET', url)
 
-    #for row in cr:
-    #    print(row)
+    # Open the CSV file
+    service_mapping = {}
+    filename = './service-names-port-numbers.csv'
+    with open(filename, 'r') as fd:
+        # Only get the first three columns
+        for line in fd:
+            stuff = line.split(',')
+            try:
+                service = stuff[0]
+                port_protocol_tuple = (stuff[2], stuff[1])
+                if service == '' or stuff[1] == '' or stuff[2] == '':
+                    continue
+                else:
+                    # Ensure the port is number!
+                    int(stuff[1])
+                    print(port_protocol_tuple)
+                    print(service)
+                    service_mapping[port_protocol_tuple] = service
+            except IndexError:
+                continue
+            except ValueError:
+                continue
+    return service_mapping
 
 
 # pass control to collect_connections(), take all the credit
