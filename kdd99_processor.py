@@ -7,14 +7,12 @@
 #           extracts/derives various features of the connections
 #           consistent with those of the KDD CUP 99 dataset.
 #
-#    Authors: Daniel Mesko
-#    Modified by: Andrew Quijano
+#    Author: Andrew Quijano
 # --------------------------------------------------------------
 
 
 import pyshark
 # import urllib3
-import csv
 from sys import argv
 
 # GLOBAL TODO:
@@ -22,7 +20,7 @@ from sys import argv
 
 
 # input: PCAP capture file
-# output: full dictionary of Connection ID to Connection
+# output: full dictionary of Connection ID to all packets within the connection
 def create_connection_records(cap):
     # ----------------------------------------------------------------
     # Collect packets from the same connection, create connection dict
@@ -60,8 +58,17 @@ def create_connection_records(cap):
     return raw_connections
 
 
+def ip_address_index(ip_address):
+    numeric_parts = ''.join(ip_address.split(','))
+    index = int(numeric_parts)
+    print(index)
+    return index
+
+
 def initialize_connection(raw_connections):
     connections = []
+    # Get the service name
+    service_mapping = get_iana()
 
     for key, packet_list in raw_connections.items():
         src_bytes = 0
@@ -69,21 +76,31 @@ def initialize_connection(raw_connections):
         wrong_frag = 0
         urgent = 0
         if 'tcp' in packet_list[0]:
-            protocol = 'TCP'
+            protocol = 'tcp'
             duration = float(packet_list[-1].tcp.time_relative)
-            src_port = packet_list[0].tcp.srcport
-            dst_port = packet_list[0].tcp.dstport
+            src_port = int(packet_list[0].tcp.srcport)
+            dst_port = int(packet_list[0].tcp.dstport)
+            if src_port <= dst_port:
+                service = service_mapping[('tcp', src_port)]
+            else:
+                service = service_mapping[('tcp', dst_port)]
+
         elif 'udp' in packet_list[0]:
-            protocol = 'UDP'
+            protocol = 'udp'
             duration = float(packet_list[-1].udp.time_relative)
-            src_port = packet_list[0].udp.srcport
-            dst_port = packet_list[0].udp.dstport
+            src_port = int(packet_list[0].udp.srcport)
+            dst_port = int(packet_list[0].udp.dstport)
+            if src_port <= dst_port:
+                service = service_mapping[('udp', src_port)]
+            else:
+                service = service_mapping[('udp', dst_port)]
         else:
-            protocol = 'ICMP'
+            protocol = 'icmp'
             duration = float(packet_list[-1].icmp.time_relative)
-            src_port = packet_list[0].icmp.srcport
-            dst_port = packet_list[0].icmp.dstport
-        service = packet_list[0].highest_layer
+            src_port = int(packet_list[0].icmp.srcport)
+            dst_port = int(packet_list[0].icmp.dstport)
+            service = 'eco_i'
+
         duration = int(duration / 1.0)
         src_ip = packet_list[0].ip.src
         dst_ip = packet_list[0].ip.dst
@@ -102,17 +119,17 @@ def initialize_connection(raw_connections):
             else:
                 dst_bytes += int(packet.length.size)
 
-            if protocol == 'TCP':
+            if protocol == 'tcp':
                 if packet.tcp.flags_urg == 1:
                     urgent += 1
                 if int(packet.tcp.checksum_status) != 2:
                     wrong_frag = wrong_frag + 1
 
-            if protocol == 'UDP':
+            if protocol == 'udp':
                 if packet.udp.flags_urg == 1:
                     urgent += 1
 
-            if protocol == 'ICMP':
+            if protocol == 'icmp':
                 if packet.icmp.flags_urg == 1:
                     urgent += 1
 
@@ -140,8 +157,18 @@ def get_connection_status(packets):
     dest_ip = packets[0].ip.dst
     connection_status = 'SF'
 
+    # Now you need the key in the DFA
+    # The terms needed are: Source -> Destination, SYN, ACK, RST, FIN
+
+    # print(dir(packets[0].tcp))
+
     for packet in packets:
-        print(dir(packet.tcp))
+
+        # if packet.ip.src == source_ip:
+        #     key = (1, packet.tcp.flags_syn, packet.tcp.flags_ack, packet.tcp.flags_reset, packet.tcp.flags_fin)
+        # else:
+        #     key = (0, packet.tcp.flags_syn, packet.tcp.flags_ack, packet.tcp.flags_reset, packet.tcp.flags_fin)
+
         if packet.tcp.flags_syn == 1 and packet.ip.src == source_ip:
             connection_status = 'S0'
             # Reset is hit
@@ -258,7 +285,7 @@ def collect_connections(input_file, keep_extra=False):
     raw_connections = create_connection_records(capture)
 
     # -------------------------------------------------------------------------
-    # Derive basic features of each connection, create Connection objects list
+    # Derive basic features of each connection, create Connection tuples list: Columns 1 - 11
     # -------------------------------------------------------------------------
     connections = initialize_connection(raw_connections)
 
@@ -285,14 +312,16 @@ def collect_connections(input_file, keep_extra=False):
     # ---------------------------------------------------------------------
     # Traverse Connection list, generate CSV file
     # ---------------------------------------------------------------------
-    with open('kdd.csv', 'w') as out:
+    with open('kdd.csv', 'w+') as out:
         # delete the timestamp, src ip, src port, dest ip, dest port
         for record in connections:
             if keep_extra:
-                out.write(','.join(list(record)))
+                out.write(','.join(list(record)) + '\n')
             else:
-                out.write(','.join(list(record))[5:])
-            out.write('\n')
+                filtered_line = list(record)[5:]
+                filtered_line = ','.join([str(i) for i in filtered_line])
+                out.write(filtered_line + '\n')
+
 
 # Label Encoder
 # THIS IS FOR LABELING TEST DATA GENERATED BY THE FUZZER!
@@ -362,23 +391,24 @@ def get_iana():
             stuff = line.split(',')
             try:
                 service = stuff[0]
-                port_protocol_tuple = (stuff[2], stuff[1])
+                port_protocol_tuple = (stuff[2], int(stuff[1]))
                 if service == '' or stuff[1] == '' or stuff[2] == '':
                     continue
                 else:
                     # Ensure the port is number!
-                    int(stuff[1])
-                    print(port_protocol_tuple)
-                    print(service)
+                    # print(port_protocol_tuple)
+                    # print(service)
                     service_mapping[port_protocol_tuple] = service
             except IndexError:
                 continue
             except ValueError:
                 continue
+    # Manually enter port 80
+    service_mapping[('tcp', 80)] = 'http'
+    service_mapping[('udp', 80)] = 'http'
     return service_mapping
 
 
 # pass control to collect_connections(), take all the credit
 if __name__ == '__main__':
-    get_iana()
-    # main()
+    main()
