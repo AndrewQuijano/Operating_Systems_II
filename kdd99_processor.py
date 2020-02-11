@@ -15,11 +15,8 @@ import pyshark
 # import urllib3
 from sys import argv
 
-# GLOBAL TODO:
-# - NEED TO DERIVE 100 connection window features
 
-
-# input: PCAP capture file
+# input: Packet capture file
 # output: full dictionary of Connection ID to all packets within the connection
 def create_connection_records(cap):
     # ----------------------------------------------------------------
@@ -59,7 +56,11 @@ def create_connection_records(cap):
 
 
 def ip_address_index(ip_address):
-    numeric_parts = ''.join(ip_address.split(','))
+    numeric_parts = ip_address.split('.')
+    for num in numeric_parts:
+        while len(num) != 3:
+            num = '0' + num
+    numeric_parts = ','.join(numeric_parts)
     index = int(numeric_parts)
     print(index)
     return index
@@ -69,12 +70,16 @@ def initialize_connection(raw_connections):
     connections = []
     # Get the service name
     service_mapping = get_iana()
+    # Know the index number so you can get the list index to save time
+    idx = 0
 
     for key, packet_list in raw_connections.items():
         src_bytes = 0
         dst_bytes = 0
         wrong_frag = 0
         urgent = 0
+        index = ip_address_index(packet_list[0].ip.dst)
+        idx += 1
         if 'tcp' in packet_list[0]:
             protocol = 'tcp'
             duration = float(packet_list[-1].tcp.time_relative)
@@ -136,18 +141,20 @@ def initialize_connection(raw_connections):
         status_flag = get_connection_status(packet_list)
 
         # generate Connection with basic features as a tuple
-        # Be sure to pre-prend: ip src, ip dst, time stamp
+        # Be sure to prepend: ip src, ip dst, time stamp
         # use a tuple so it can be sorted by timestamp and then by IP at the end!
-        record = (timestamp, src_ip, src_port, dst_ip, dst_port,
+        record = (timestamp, src_ip, src_port, dst_ip, dst_port, index, idx,
                   duration, protocol, service, status_flag, src_bytes,
                   dst_bytes, land, wrong_frag, urgent)
         connections.append(record)
+        get_content_data(packet_list)
 
     # sort in terms of time! So you can easily find two last 2 seconds and last 100
     return sorted(connections, key=lambda x: x[0])
 
 
 # Please view graph on main github page
+# Given a list of packets return connection status
 def get_connection_status(packets):
     if 'udp' in packets[0] or 'icmp' in packets[0]:
         return 'SF'
@@ -207,7 +214,11 @@ def get_content_data(packet_list):
     is_hot_login = 0
     is_guest_login = 0
     for packet in packet_list:
-        print(packet)
+        try:
+            print(packet.tcp.payload)
+
+        except AttributeError:
+            continue
     return (hot, num_failed_logins, logged_in, num_compromised, logged_in, num_compromised, root_shell,
             su_attempted, num_root, num_file_creations, num_access_files, num_outbound_cmds, is_hot_login,
             is_guest_login)
@@ -215,62 +226,83 @@ def get_content_data(packet_list):
 
 # Derive time-based traffic features (over 2 sec window by default)
 # Do this just for ONE connection!
-def derive_time_features(connections, time_window=2.0):
-    for rec in connections:
-        samehost_connections = []
-        twosec_samehost_connections = []
-        twosec_samesrv_connections = []
+# I AM ASSUMING IT IS ALREADY SORTED BY TIMESTAMP!
+def derive_time_features(connection_idx, connections, time_window=2.0):
+    current_connection = connections[connection_idx]
+    current_conn_time = current_connection[0]
+    current_ip = current_connection[1]
+    current_conn_service = current_connection[9]
+    current_conn_status = current_connection[10]
 
-        # traverse all connections to find same host, same service
-        for cmprec in connections:
-            time_delta = float(rec.timestamp) - float(cmprec.timestamp)
-            if rec.dst_ip == cmprec.dst_ip:
-                samehost_connections.append(cmprec)
-                if (time_delta <= time_window) and (time_delta >= 0.0):
-                    twosec_samehost_connections.append(cmprec)
+    # Since it is sorted by time stamp, I just need to go backward!
+    samehost_connections = []
+    twosec_samehost_connections = []
+    twosec_samesrv_connections = []
+    counter = connection_idx - 1
 
-            if rec.service == cmprec.service:
-                if (time_delta <= time_window) and (time_delta >= 0.0):
-                    twosec_samesrv_connections.append(cmprec)
-            else:
-                continue
+    count = 0
+    srv_count = 0
+    serror_rate = 0
+    srv_serror_rate = 0
+    rerror_rate = 0
+    srv_error_rate = 0
+    same_srv_rate = 0
+    diff_srv_rate = 0
+    srv_diff_host_rate = 0
 
-        # process two second same host connections
-        count = len(twosec_samehost_connections)
-        same_srv_count = 0
-        diff_srv_count = 0
-        serror_count = 0
-        rerror_count = 0
+    # Step 1- Collect all relevant (service, flag) tuples
+    while True:
+        # Don't go out of bounds
+        if counter < 0:
+            break
 
-        for cmprec in twosec_samehost_connections:
-            if rec.service == cmprec.service:
-                same_srv_count = same_srv_count + 1
-            else:
-                diff_srv_count = diff_srv_count + 1
-            # TODO: do syn errors, rej errors
+        time_delta = float(current_conn_time) - float(connections[counter])
+        if time_delta < time_window:
+            break
 
-        same_srv_rate = round(same_srv_count / count, 2)
-        diff_srv_rate = round(diff_srv_count / count, 2)
-        rec.add_samehost_timebased_features(count, None, None,
-                                            same_srv_rate, diff_srv_rate)
+        # Collect all connection data
+        other_connection = connections[counter]
 
-        # process two second same service connections
-        srv_countcount = len(twosec_samesrv_connections)
-        srv_serror_count = 0
-        srv_rerror_count = 0
-        srv_diff_host_count = 0
+        if current_ip == other_connection[1]:
+            samehost_connections.append('hi')
 
-        for cmprec in twosec_samesrv_connections:
-            if rec.dst_ip != cmprec.dst_ip:
-                srv_diff_host_count = srv_diff_host_count + 1
-            else:
-                continue
+        if current_conn_service == other_connection[1]:
+            twosec_samesrv_connections.append('hi')
 
-            # TODO: do syn errors, rej errors
+    # process two second same host connections
+    count = len(twosec_samehost_connections)
+    same_srv_count = 0
+    diff_srv_count = 0
+    serror_count = 0
+    rerror_count = 0
 
-        srv_diff_host_rate = round(srv_diff_host_count / count, 2)
-        rec.add_sameservice_timebased_features(count, None, None, srv_diff_host_rate)
-        return 'temp', 'hi'
+    for cmprec in twosec_samehost_connections:
+        if rec.service == cmprec.service:
+            same_srv_count = same_srv_count + 1
+        else:
+            diff_srv_count = diff_srv_count + 1
+        # TODO: do syn errors, rej errors
+
+    same_srv_rate = round(same_srv_count / count, 2)
+    diff_srv_rate = round(diff_srv_count / count, 2)
+
+    # process two second same service connections
+    srv_countcount = len(twosec_samesrv_connections)
+    srv_serror_count = 0
+    srv_rerror_count = 0
+    srv_diff_host_count = 0
+
+    for cmprec in twosec_samesrv_connections:
+        if rec.dst_ip != cmprec.dst_ip:
+            srv_diff_host_count = srv_diff_host_count + 1
+        else:
+            continue
+
+        # TODO: do syn errors, rej errors
+    srv_diff_host_rate = round(srv_diff_host_count / count, 2)
+
+    return (count, srv_count, serror_rate, srv_serror_rate, rerror_rate,
+            srv_error_rate, same_srv_rate, diff_srv_rate, srv_diff_host_rate)
 
 
 def derive_host_features(connection, hosts=100):
@@ -296,7 +328,7 @@ def collect_connections(input_file, keep_extra=False):
         # Derive time-based traffic features (over 2 sec window)
         # ---------------------------------------------------------------------
         # same-host AND same-service feature derivation
-        # time_traffic = derive_time_features(connections)
+        time_traffic = derive_time_features(connection_record_counter, connections)
 
         # ---------------------------------------------------------------------
         # Derive host-based traffic features (same host over 100 connections)
