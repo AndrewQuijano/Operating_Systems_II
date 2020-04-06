@@ -12,8 +12,9 @@
 
 
 import pyshark
-# import urllib3
+import time
 from sys import argv
+# import urllib3
 
 
 # input: Packet capture file
@@ -23,8 +24,11 @@ def create_connection_records(cap):
     # Collect packets from the same connection, create connection dict
     # ----------------------------------------------------------------
     raw_connections = {}
-    udp_count = 0
+    # udp_count = 0
     icmp_count = 0
+
+    # Start time
+    start_time = start_time = time.time()
 
     for packet in cap:
 
@@ -32,11 +36,12 @@ def create_connection_records(cap):
             if 'tcp' in packet:
                 key = "tcp_conn" + packet.tcp.stream
             elif 'udp' in packet:
-                key = "udp_conn" + str(udp_count)
-                udp_count = udp_count + 1
+                # key = "udp_conn" + str(udp_count)
+                key = 'udp_conn' + packet.udp.stream
+                # udp_count = udp_count + 1
             elif 'icmp' in packet:
                 key = "icmp_conn" + str(icmp_count)
-                icmp_count = icmp_count + 1
+                icmp_count += 1
             else:
                 # do not record packets that aren't TCP/UDP/ICMP
                 continue
@@ -47,23 +52,26 @@ def create_connection_records(cap):
             else:
                 lst = raw_connections[key]
                 lst.append(packet)
-
         except AttributeError:
-            print("Attribute error found!")
             continue
+    print("--- %s seconds to collect connection records ---" % (time.time() - start_time))
     print('Connections found: ' + str(len(raw_connections)))
     return raw_connections
 
 
-def ip_address_index(ip_address):
-    numeric_parts = ip_address.split('.')
-    final_number = []
-    for num in numeric_parts:
-        while len(num) != 3:
-            num = '0' + num
-        final_number.append(num)
-    numeric_parts = ''.join(final_number)
-    index = int(numeric_parts)
+def ip_address_index(ip_address, ipv4=True):
+    power = 0
+    index = 0
+    if ipv4:
+        numeric_parts = ip_address.split('.')
+        numeric_parts.reverse()
+        for num in numeric_parts:
+            index += int(num) * pow(10, power)
+            power += 3
+    else:
+        # TODO: INDEX THIS???
+        print(ip_address)
+        index = 1
     return index
 
 
@@ -79,7 +87,7 @@ def initialize_connection(raw_connections):
         dst_bytes = 0
         wrong_frag = 0
         urgent = 0
-        index = ip_address_index(packet_list[0].ip.dst)
+
         idx += 1
         if 'tcp' in packet_list[0]:
             protocol = 'tcp'
@@ -100,17 +108,31 @@ def initialize_connection(raw_connections):
                 service = service_mapping[('udp', src_port)]
             else:
                 service = service_mapping[('udp', dst_port)]
-        else:
+        elif 'icmp' in packet_list[0]:
             protocol = 'icmp'
             duration = float(packet_list[-1].icmp.time_relative)
             src_port = int(packet_list[0].icmp.srcport)
             dst_port = int(packet_list[0].icmp.dstport)
+            # see ICMP.cc
             service = 'eco_i'
+        else:
+            continue
 
-        duration = int(duration / 1.0)
-        src_ip = packet_list[0].ip.src
-        dst_ip = packet_list[0].ip.dst
-        timestamp = packet_list[-1].sniff_timestamp
+        duration = int(duration)
+
+        # IPv4 and IPv6...
+        if 'ip' in packet_list[0]:
+            # IPv4
+            src_ip = packet_list[0].ip.src
+            dst_ip = packet_list[0].ip.dst
+            index = ip_address_index(dst_ip)
+            status_flag = get_connection_status(packet_list)
+        else:
+            # IPv6
+            src_ip = packet_list[0].ipv6.src
+            dst_ip = packet_list[0].ipv6.dst
+            index = ip_address_index(dst_ip, False)
+            status_flag = get_connection_status(packet_list, False)
 
         # land feature loop-back connection
         if src_ip == dst_ip and src_port == dst_port:
@@ -118,28 +140,34 @@ def initialize_connection(raw_connections):
         else:
             land = 0
 
+        timestamp = packet_list[-1].sniff_timestamp
         # traverse packets (some basic features are aggregated from each packet in whole connection)
         for packet in packet_list:
-            if src_ip == packet.ip.src:
-                src_bytes += int(packet.length.size)
+            if 'ip' in packet_list[0]:
+                if src_ip == packet.ip.src:
+                    src_bytes += int(packet.length.size)
+                else:
+                    dst_bytes += int(packet.length.size)
             else:
-                dst_bytes += int(packet.length.size)
+                if src_ip == packet.ipv6.src:
+                    src_bytes += int(packet.length.size)
+                else:
+                    dst_bytes += int(packet.length.size)
 
+            # Urgent packets only happen with TCP
             if protocol == 'tcp':
-                if packet.tcp.flags_urg == 1:
+                if packet.tcp.flags_urg == '1':
                     urgent += 1
-                if int(packet.tcp.checksum_status) != 2:
-                    wrong_frag = wrong_frag + 1
+                if packet.tcp.checksum_status != '2':
+                    wrong_frag += 1
 
             elif protocol == 'udp':
-                if packet.udp.flags_urg == 1:
-                    urgent += 1
+                if packet.udp.checksum_status != '2':
+                    wrong_frag += 1
 
             elif protocol == 'icmp':
-                if packet.icmp.flags_urg == 1:
-                    urgent += 1
-
-        status_flag = get_connection_status(packet_list)
+                if packet.icmp.checksum_status != '2':
+                    wrong_frag += 1
 
         # generate Connection with basic features as a tuple
         # Be sure to prepend: ip src, ip dst, time stamp
@@ -155,24 +183,14 @@ def initialize_connection(raw_connections):
     return sorted(connections, key=lambda x: x[0])
 
 
-def accepts(transitions, initial_state, full_path):
-    state = initial_state # DONE
-    for c in full_path:
-        state = transitions[state][c]
-    return state
-
 # Please view graph on main github page
 # Given a list of packets return connection status
 # Here is tha link on how I implemented DFA
 # https://stackoverflow.com/questions/35272592/how-are-finite-automata-implemented-in-code
-def get_connection_status(packets):
+def get_connection_status(packets, ipv4=True):
 
     if 'udp' in packets[0] or 'icmp' in packets[0]:
         return 'SF'
-
-    dfa = {0: {'0': 0, '1': 1},
-           1: {'0': 2, '1': 0},
-           2: {'0': 1, '1': 2}}
 
     # The terms needed are: Source -> Destination, SYN, ACK, RST, FIN
     # Judging by KDD data set, NO S2F or S3F was found
@@ -193,21 +211,29 @@ def get_connection_status(packets):
             'S3': {('1', '0', '1', '0', '0'): 'SF'},
             'SF': {}}                  # END NOW
     # Define source and destination
-    source_ip = packets[0].ip.src
+    if ipv4:
+        source_ip = packets[0].ip.src
+    else:
+        source_ip = packets[0].ipv6.src
     connection_status = 'INIT'
 
     # Now you need the key in the DFA
     # The terms needed are: Source -> Destination, SYN, ACK, RST, FIN
 
     for packet in packets:
-
-        if source_ip == packet.ip.src:
-            key = ('1', packet.tcp.flags_syn, packet.tcp.flags_ack, packet.tcp.flags_reset, packet.tcp.flags_fin)
+        if ipv4:
+            if source_ip == packet.ip.src:
+                key = ('1', packet.tcp.flags_syn, packet.tcp.flags_ack, packet.tcp.flags_reset, packet.tcp.flags_fin)
+            else:
+                key = ('0', packet.tcp.flags_syn, packet.tcp.flags_ack, packet.tcp.flags_reset, packet.tcp.flags_fin)
         else:
-            key = ('0', packet.tcp.flags_syn, packet.tcp.flags_ack, packet.tcp.flags_reset, packet.tcp.flags_fin)
+            if source_ip == packet.ipv6.src:
+                key = ('1', packet.tcp.flags_syn, packet.tcp.flags_ack, packet.tcp.flags_reset, packet.tcp.flags_fin)
+            else:
+                key = ('0', packet.tcp.flags_syn, packet.tcp.flags_ack, packet.tcp.flags_reset, packet.tcp.flags_fin)
 
-        print("STATE IS NOW: " + connection_status)
-        print(key)
+        # print("STATE IS NOW: " + connection_status)
+        # print(key)
         try:
             connection_status = conn[connection_status][key]
         except KeyError:
@@ -246,8 +272,8 @@ def get_content_data(packet_list):
             # Get the ASCII output
             byte_list = packet.tcp.payload.replace(':', '')
             commmand = bytes.fromhex(byte_list).decode()
-            print(packet_no)
-            print(commmand)
+            # print(packet_no)
+            print(commmand, end="")
 
             # First check if for login attempt successful or not
             if logged_in == 1:
@@ -449,6 +475,7 @@ def main():
     if len(argv) == 1:
         # cap_file = './outside.tcpdump'
         cap_file = './test.pcap'
+        # cap_file = './telnet.pcapng'
         collect_connections(cap_file)
     elif len(argv) == 2:
         cap_file = argv[1]
