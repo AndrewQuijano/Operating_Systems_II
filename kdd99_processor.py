@@ -175,6 +175,7 @@ def get_connection_status(packets):
            2: {'0': 1, '1': 2}}
 
     # The terms needed are: Source -> Destination, SYN, ACK, RST, FIN
+    # Judging by KDD data set, NO S2F or S3F was found
     conn = {'INIT': {('0', '1', '1', '0', '0'): 'S4', ('1', '0', '0', '0', '1'): 'SH', ('1', '1', '0', '0', '0'): 'S0'}, # OTH IS ACCOUNTED FOR
             'S4': {('0', '0', '0', '1', '0'): 'SHR', ('0', '0', '0', '0', '1'): 'RSTRH'},
             'SH': {},               # END NOW
@@ -187,11 +188,9 @@ def get_connection_status(packets):
             'RST0': {},             # END NOW
             'RSTR': {},             # END NOW
             'S1': {('1', '0', '1', '0', '0'): 'ESTAB', ('1', '0', '0', '1', '0'): 'RST0', ('0', '0', '0', '1', '0'): 'RSTR'},
-            'ESTAB': {('0', '1', '1', '0', '0'): 'S2', ('0', '1', '1', '0', '0'): 'S3'},
-            'S2': {('0', '0', '0', '0', '1'): 'S2F', ('0', '0', '1', '0', '1'): 'SF'},
-            'S3': {('1', '0', '0', '0', '1'): 'S3F', ('0', '0', '1', '0', '1'): 'SF'},
-            'S2F': {('1', '0', '1', '0', '0'): 'SF'},
-            'S3F': {('0', '0', '1', '0', '0'): 'SF'},
+            'ESTAB': {('1', '0', '1', '0', '1'): 'S2', ('0', '0', '1', '0', '1'): 'S3'},
+            'S2': {('0', '0', '1', '0', '0'): 'SF'},
+            'S3': {('1', '0', '1', '0', '0'): 'SF'},
             'SF': {}}                  # END NOW
     # Define source and destination
     source_ip = packets[0].ip.src
