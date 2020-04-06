@@ -175,24 +175,24 @@ def get_connection_status(packets):
            2: {'0': 1, '1': 2}}
 
     # The terms needed are: Source -> Destination, SYN, ACK, RST, FIN
-    conn = {'INIT': {'S4': (1, 1, 1, 0, 0), 'SH': (0, 0, 0, 0, 1), 'OTH': 2, 'S0': (1, 1, 0, 0, 0)},
-            'S4': {'SHR': (0, 1, 1, 0, 0), 'RSTRH': (0, 1, 1, 0, 0)},
-            'SH': {'SH': 1},            # END NOW
-            'SHR' : {'SHR', 1},         # END NOW
-            'RSTRH': {'RSTRH', 1},      # END NOW
-            'OTH' : {'OTH', 1},         # END NOW
-            'S0' : {'S1': (0, 1, 1, 0, 0), 'REJ': (0, 1, 1, 0, 0), 'RST0S0': (0, 1, 1, 0, 0)},
-            'REJ' : {'REJ', 0},         # END NOW
-            'RST0S0' : {'RST0S0': 0},   # END NOW
-            'RST0' : {},                # END NOW
-            'RSTR' : {},                # END NOW
-            'S1' : {'ESTAB': (0, 1, 1, 0, 0), 'RST0': (0, 1, 1, 0, 0), 'RSTR': (0, 1, 1, 0, 0)},
-            'ESTAB' : {'S2:': (0, 1, 1, 0, 0), 'S3': (0, 1, 1, 0, 0)},
-            'S2' : {'S2F': (0, 1, 1, 0, 0), 'SF': (0, 1, 1, 0, 0)},
-            'S3' : {'S3F': (0, 1, 1, 0, 0), 'SF': (0, 1, 1, 0, 0)},
-            'S2F' : {'SF': (0, 1, 1, 0, 0)},
-            'S3F' : {'SF': (0, 1, 1, 0, 0)},
-            'SF' : {}}                  # END NOW
+    conn = {'INIT': {('0', '1', '1', '0', '0'): 'S4', ('1', '0', '0', '0', '1'): 'SH', ('1', '1', '0', '0', '0'): 'S0'}, # OTH IS ACCOUNTED FOR
+            'S4': {('0', '0', '0', '1', '0'): 'SHR', ('0', '0', '0', '0', '1'): 'RSTRH'},
+            'SH': {},               # END NOW
+            'SHR': {},              # END NOW
+            'RSTRH': {},            # END NOW
+            'OTH': {},              # END NOW
+            'S0': {('0', '1', '1', '0', '0'): 'S1', ('0', '0', '0', '1', '0'): 'REJ', ('1', '0', '0', '1', '0'): 'RST0S0'},
+            'REJ': {},              # END NOW
+            'RST0S0': {},           # END NOW
+            'RST0': {},             # END NOW
+            'RSTR': {},             # END NOW
+            'S1': {('1', '0', '1', '0', '0'): 'ESTAB', ('1', '0', '0', '1', '0'): 'RST0', ('0', '0', '0', '1', '0'): 'RSTR'},
+            'ESTAB': {('0', '1', '1', '0', '0'): 'S2', ('0', '1', '1', '0', '0'): 'S3'},
+            'S2': {('0', '0', '0', '0', '1'): 'S2F', ('0', '0', '1', '0', '1'): 'SF'},
+            'S3': {('1', '0', '0', '0', '1'): 'S3F', ('0', '0', '1', '0', '1'): 'SF'},
+            'S2F': {('1', '0', '1', '0', '0'): 'SF'},
+            'S3F': {('0', '0', '1', '0', '0'): 'SF'},
+            'SF': {}}                  # END NOW
     # Define source and destination
     source_ip = packets[0].ip.src
     connection_status = 'INIT'
@@ -201,14 +201,29 @@ def get_connection_status(packets):
     # The terms needed are: Source -> Destination, SYN, ACK, RST, FIN
 
     for packet in packets:
-        if source_ip == packet.src_ip:
-            key = (1, packet.tcp.flags_syn, packet.tcp.flags_ack, packet.tcp.flags_reset, packet.tcp.flags_fin)
+
+        if source_ip == packet.ip.src:
+            key = ('1', packet.tcp.flags_syn, packet.tcp.flags_ack, packet.tcp.flags_reset, packet.tcp.flags_fin)
         else:
-            key = (0, packet.tcp.flags_syn, packet.tcp.flags_ack, packet.tcp.flags_reset, packet.tcp.flags_fin)
+            key = ('0', packet.tcp.flags_syn, packet.tcp.flags_ack, packet.tcp.flags_reset, packet.tcp.flags_fin)
+
+        print("STATE IS NOW: " + connection_status)
+        print(key)
         try:
             connection_status = conn[connection_status][key]
         except KeyError:
-            return connection_status
+            if connection_status == 'INIT':
+                return 'OTH'
+            elif connection_status == 'SH' or connection_status == 'SHR':
+                return connection_status
+            elif connection_status == 'RSTRH' or connection_status == 'OTH':
+                return connection_status
+            elif connection_status == 'REJ' or connection_status == 'RST0S0' or connection_status == 'RST0':
+                return connection_status
+            elif connection_status == 'RSTR' or connection_status == 'SF':
+                return connection_status
+            else:
+                continue
     return connection_status
 
 
