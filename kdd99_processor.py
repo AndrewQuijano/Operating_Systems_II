@@ -57,12 +57,13 @@ def create_connection_records(cap):
 
 def ip_address_index(ip_address):
     numeric_parts = ip_address.split('.')
+    final_number = []
     for num in numeric_parts:
         while len(num) != 3:
             num = '0' + num
-    numeric_parts = ','.join(numeric_parts)
+        final_number.append(num)
+    numeric_parts = ''.join(final_number)
     index = int(numeric_parts)
-    print(index)
     return index
 
 
@@ -117,7 +118,7 @@ def initialize_connection(raw_connections):
         else:
             land = 0
 
-        # traverse packets (some basic features are aggregated from each packet)
+        # traverse packets (some basic features are aggregated from each packet in whole connection)
         for packet in packet_list:
             if src_ip == packet.ip.src:
                 src_bytes += int(packet.length.size)
@@ -130,11 +131,11 @@ def initialize_connection(raw_connections):
                 if int(packet.tcp.checksum_status) != 2:
                     wrong_frag = wrong_frag + 1
 
-            if protocol == 'udp':
+            elif protocol == 'udp':
                 if packet.udp.flags_urg == 1:
                     urgent += 1
 
-            if protocol == 'icmp':
+            elif protocol == 'icmp':
                 if packet.icmp.flags_urg == 1:
                     urgent += 1
 
@@ -147,56 +148,67 @@ def initialize_connection(raw_connections):
                   duration, protocol, service, status_flag, src_bytes,
                   dst_bytes, land, wrong_frag, urgent)
         connections.append(record)
+        print(record)
         get_content_data(packet_list)
 
     # sort in terms of time! So you can easily find two last 2 seconds and last 100
     return sorted(connections, key=lambda x: x[0])
 
 
+def accepts(transitions, initial_state, full_path):
+    state = initial_state # DONE
+    for c in full_path:
+        state = transitions[state][c]
+    return state
+
 # Please view graph on main github page
 # Given a list of packets return connection status
+# Here is tha link on how I implemented DFA
+# https://stackoverflow.com/questions/35272592/how-are-finite-automata-implemented-in-code
 def get_connection_status(packets):
+
     if 'udp' in packets[0] or 'icmp' in packets[0]:
         return 'SF'
 
+    dfa = {0: {'0': 0, '1': 1},
+           1: {'0': 2, '1': 0},
+           2: {'0': 1, '1': 2}}
+
+    # The terms needed are: Source -> Destination, SYN, ACK, RST, FIN
+    conn = {'INIT': {'S4': (1, 1, 1, 0, 0), 'SH': (0, 0, 0, 0, 1), 'OTH': 2, 'S0': (1, 1, 0, 0, 0)},
+            'S4': {'SHR': (0, 1, 1, 0, 0), 'RSTRH': (0, 1, 1, 0, 0)},
+            'SH': {'SH': 1},            # END NOW
+            'SHR' : {'SHR', 1},         # END NOW
+            'RSTRH': {'RSTRH', 1},      # END NOW
+            'OTH' : {'OTH', 1},         # END NOW
+            'S0' : {'S1': (0, 1, 1, 0, 0), 'REJ': (0, 1, 1, 0, 0), 'RST0S0': (0, 1, 1, 0, 0)},
+            'REJ' : {'REJ', 0},         # END NOW
+            'RST0S0' : {'RST0S0': 0},   # END NOW
+            'RST0' : {},                # END NOW
+            'RSTR' : {},                # END NOW
+            'S1' : {'ESTAB': (0, 1, 1, 0, 0), 'RST0': (0, 1, 1, 0, 0), 'RSTR': (0, 1, 1, 0, 0)},
+            'ESTAB' : {'S2:': (0, 1, 1, 0, 0), 'S3': (0, 1, 1, 0, 0)},
+            'S2' : {'S2F': (0, 1, 1, 0, 0), 'SF': (0, 1, 1, 0, 0)},
+            'S3' : {'S3F': (0, 1, 1, 0, 0), 'SF': (0, 1, 1, 0, 0)},
+            'S2F' : {'SF': (0, 1, 1, 0, 0)},
+            'S3F' : {'SF': (0, 1, 1, 0, 0)},
+            'SF' : {}}                  # END NOW
     # Define source and destination
     source_ip = packets[0].ip.src
-    dest_ip = packets[0].ip.dst
-    connection_status = 'SF'
+    connection_status = 'INIT'
 
     # Now you need the key in the DFA
     # The terms needed are: Source -> Destination, SYN, ACK, RST, FIN
 
-    # print(dir(packets[0].tcp))
-
     for packet in packets:
-
-        # if packet.ip.src == source_ip:
-        #     key = (1, packet.tcp.flags_syn, packet.tcp.flags_ack, packet.tcp.flags_reset, packet.tcp.flags_fin)
-        # else:
-        #     key = (0, packet.tcp.flags_syn, packet.tcp.flags_ack, packet.tcp.flags_reset, packet.tcp.flags_fin)
-
-        if packet.tcp.flags_syn == 1 and packet.ip.src == source_ip:
-            connection_status = 'S0'
-            # Reset is hit
-            if packet.tcp.flags_reset == 1 and packet.ip.src == source_ip:
-                connection_status = 'REJ'
-
-            elif packet.tcp.flags_reset == 1 and packet.ip.dest == dest_ip:
-                connection_status = 'RST0S0'
-                return connection_status
-            # normal TCP handshake, SYN and ACK
-            if packet.tcp.flags_syn == 1 and packet.tcp.flags_ack == 1:
-                connection_status = 'S1'
-
-            elif packet.tcp.flags_fin == 1 and packet.ip.src == source_ip:
-                connection_status = 'SH'
-                return connection_status
-            elif packet.tcp.flags_syn == 1 and packet.tcp.flags_ack == 1:
-                connection_status = 'S4'
-            else:
-                connection_status = 'OTH'
-
+        if source_ip == packet.src_ip:
+            key = (1, packet.tcp.flags_syn, packet.tcp.flags_ack, packet.tcp.flags_reset, packet.tcp.flags_fin)
+        else:
+            key = (0, packet.tcp.flags_syn, packet.tcp.flags_ack, packet.tcp.flags_reset, packet.tcp.flags_fin)
+        try:
+            connection_status = conn[connection_status][key]
+        except KeyError:
+            return connection_status
     return connection_status
 
 
@@ -213,10 +225,33 @@ def get_content_data(packet_list):
     num_outbound_cmds = 0
     is_hot_login = 0
     is_guest_login = 0
+
+    packet_no = 1
     for packet in packet_list:
         try:
-            print(packet.tcp.payload)
+            # Get the ASCII output
+            byte_list = packet.tcp.payload.replace(':', '')
+            commmand = bytes.fromhex(byte_list).decode()
+            print(packet_no)
+            print(commmand)
 
+            # First check if for login attempt successful or not
+            if logged_in == 1:
+                # User is logged in, try to get the prompt!
+                if '#' in commmand:
+                    root_shell = 1
+                if '$' or '#' in commmand:
+                    # print(commmand, end='')
+                    3 + 4
+            else:
+                # User is NOT logged in
+                if 'Last login' in commmand:
+                    logged_in = 1
+                if 'failed' in commmand:
+                    num_failed_logins += 1
+            packet_no += 1
+        except UnicodeDecodeError:
+            continue
         except AttributeError:
             continue
     return (hot, num_failed_logins, logged_in, num_compromised, logged_in, num_compromised, root_shell,
@@ -328,7 +363,7 @@ def collect_connections(input_file, keep_extra=False):
         # Derive time-based traffic features (over 2 sec window)
         # ---------------------------------------------------------------------
         # same-host AND same-service feature derivation
-        time_traffic = derive_time_features(connection_record_counter, connections)
+        # time_traffic = derive_time_features(connection_record_counter, connections)
 
         # ---------------------------------------------------------------------
         # Derive host-based traffic features (same host over 100 connections)
@@ -345,12 +380,12 @@ def collect_connections(input_file, keep_extra=False):
     # Traverse Connection list, generate CSV file
     # ---------------------------------------------------------------------
     with open('kdd.csv', 'w+') as out:
-        # delete the timestamp, src ip, src port, dest ip, dest port
+        # delete the timestamp, src ip, src port, dest ip, dest port, dest_ip_idx, idx
         for record in connections:
             if keep_extra:
                 out.write(','.join(list(record)) + '\n')
             else:
-                filtered_line = list(record)[5:]
+                filtered_line = list(record)[7:]
                 filtered_line = ','.join([str(i) for i in filtered_line])
                 out.write(filtered_line + '\n')
 
@@ -397,7 +432,11 @@ def label_testing_set(file_path, output):
 
 
 def main():
-    if len(argv) == 2:
+    if len(argv) == 1:
+        # cap_file = './outside.tcpdump'
+        cap_file = './test.pcap'
+        collect_connections(cap_file)
+    elif len(argv) == 2:
         cap_file = argv[1]
         collect_connections(cap_file)
         print('Connection records generated, written to records.csv!')
