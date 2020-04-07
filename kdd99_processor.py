@@ -26,12 +26,9 @@ def create_connection_records(cap):
     raw_connections = {}
     # udp_count = 0
     icmp_count = 0
-
-    # Start time
-    start_time = start_time = time.time()
+    start_time = time.time()
 
     for packet in cap:
-
         try:
             if 'tcp' in packet:
                 key = "tcp_conn" + packet.tcp.stream
@@ -110,9 +107,9 @@ def initialize_connection(raw_connections):
                 service = service_mapping[('udp', dst_port)]
         elif 'icmp' in packet_list[0]:
             protocol = 'icmp'
-            duration = float(packet_list[-1].icmp.time_relative)
             src_port = int(packet_list[0].icmp.srcport)
             dst_port = int(packet_list[0].icmp.dstport)
+            duration = float(packet_list[0].icmp.time_relative)
             # see ICMP.cc
             service = 'eco_i'
         else:
@@ -281,8 +278,7 @@ def get_content_data(packet_list):
                 if '#' in commmand:
                     root_shell = 1
                 if '$' or '#' in commmand:
-                    # print(commmand, end='')
-                    3 + 4
+                    print(commmand, end='')
             else:
                 # User is NOT logged in
                 if 'Last login' in commmand:
@@ -303,85 +299,121 @@ def get_content_data(packet_list):
 # Do this just for ONE connection!
 # I AM ASSUMING IT IS ALREADY SORTED BY TIMESTAMP!
 def derive_time_features(connection_idx, connections, time_window=2.0):
-    current_connection = connections[connection_idx]
-    current_conn_time = current_connection[0]
-    current_ip = current_connection[1]
-    current_conn_service = current_connection[9]
-    current_conn_status = current_connection[10]
+    pass
 
-    # Since it is sorted by time stamp, I just need to go backward!
-    samehost_connections = []
-    twosec_samehost_connections = []
-    twosec_samesrv_connections = []
-    counter = connection_idx - 1
 
-    count = 0
-    srv_count = 0
-    serror_rate = 0
-    srv_serror_rate = 0
-    rerror_rate = 0
-    srv_error_rate = 0
-    same_srv_rate = 0
-    diff_srv_rate = 0
-    srv_diff_host_rate = 0
+# Derive the host feature for the one connection!
+# View tcp_host_traffic.c in original for reference
+def derive_host_features(current_connection, connections, hosts=100):
+    long_count = 0
+    long_serror_count = 0
+    long_rerror_count = 0
+    long_same_services = 0
+    long_diff_services = 0
+    long_same_src_ports = 0
+    long_diff_src_ports = 0
 
-    # Step 1- Collect all relevant (service, flag) tuples
-    while True:
-        # Don't go out of bounds
-        if counter < 0:
-            break
+    srv_long_count = 0
+    srv_long_serror_count = 0
+    srv_long_rerror_count = 0
+    srv_long_diff_hosts = 0
 
-        time_delta = float(current_conn_time) - float(connections[counter])
-        if time_delta < time_window:
-            break
+    # 0 - timestamp
+    # 1- src_ip
+    # 2- src_port
+    # 3- dst_ip
+    # 4- dst_port
+    # 5- index
+    # 6- idx,
+    # (7, 8) duration, protocol
+    # 9 - service,
+    # 10 - status_flag,
+    # src_bytes, dst_bytes, land, wrong_frag, urgent
 
-        # Collect all connection data
-        other_connection = connections[counter]
+    # Iterate the last few hundred connections
+    for (i = idx; count > 1 && i != end; i = (i-1+CHUNCKSIZE) % CHUNCKSIZE):
+        # for the same destination host
+        if current_connection[3] == connections[i][3]:
+            long_count += 1
 
-        if current_ip == other_connection[1]:
-            samehost_connections.append('hi')
+            # count various errors
+            if current_connection[10] != "SF":
+                if 'S' in connections[i][0]:
+                    long_serror_count += 1
+                elif 'R' in connections[i][0]:
+                    long_rerror_count += 1
 
-        if current_conn_service == other_connection[1]:
-            twosec_samesrv_connections.append('hi')
+            # count the  # of same services
+            if current_connection[9] == connections[i][9]:
+                long_same_services += 1
 
-    # process two second same host connections
-    count = len(twosec_samehost_connections)
-    same_srv_count = 0
-    diff_srv_count = 0
-    serror_count = 0
-    rerror_count = 0
+            # count the # of unique (different) services
+            if long_count == 1:
+                long_services[long_diff_services] = data_protocols[i]
+                long_diff_services += 1
+            else:
+                for (j = 0; j < long_diff_services; j++):
+                    if (!strcmp (long_services[j], data_protocols[i])):
+                        break
+                if j == long_diff_services:
+                    long_services[long_diff_services] = data_protocols[i]
+                    long_diff_services += 1
+            # count the  # of same source port
+            if current_connection[2] == connections[i][2]:
+                long_same_src_ports += 1
 
-    for cmprec in twosec_samehost_connections:
-        if rec.service == cmprec.service:
-            same_srv_count = same_srv_count + 1
+        # for the same service
+        if current_connection[9] == connections[i][9]:
+            srv_long_count += 1
+            # count various errors
+            if current_connection[i][10] != "SF":
+                if 'S' in connections[i][10]:
+                    srv_long_serror_count += 1
+                elif 'R' in connections[i][10]:
+                    srv_long_rerror_count += 1
+
+            if srv_long_count == 1:
+                srv_long_hosts[srv_long_diff_hosts] = connections[i][3]
+                srv_long_diff_hosts += 1
+            else:
+                for (j = 0; j < srv_long_diff_hosts; j++):
+                    if (!strcmp (srv_long_hosts[j], data_host2s[i])):
+                        break
+                if j == srv_long_diff_hosts:
+                    srv_long_hosts[srv_long_diff_hosts] = data_host2s[i]
+                    srv_long_diff_hosts += 1
+    # End of for loop
+    if long_count > 0:
+        long_serror_rate = long_serror_count / long_count
+        long_rerror_rate = long_rerror_count / long_count
+        if long_diff_services > 1:
+            long_diff_srv_rate = long_diff_services / long_count
         else:
-            diff_srv_count = diff_srv_count + 1
-        # TODO: do syn errors, rej errors
+            long_diff_srv_rate = 0
+        long_same_srv_rate = long_same_services / long_count
+        long_same_src_port_rate = long_same_src_ports / long_count
 
-    same_srv_rate = round(same_srv_count / count, 2)
-    diff_srv_rate = round(diff_srv_count / count, 2)
+    else:
+        long_serror_rate = 0
+        long_rerror_rate = 0
+        long_diff_srv_rate = 0
+        long_same_srv_rate = 0
+        long_same_src_port_rate = 0
 
-    # process two second same service connections
-    srv_countcount = len(twosec_samesrv_connections)
-    srv_serror_count = 0
-    srv_rerror_count = 0
-    srv_diff_host_count = 0
-
-    for cmprec in twosec_samesrv_connections:
-        if rec.dst_ip != cmprec.dst_ip:
-            srv_diff_host_count = srv_diff_host_count + 1
+    if srv_long_count > 0:
+        srv_long_serror_rate = srv_long_serror_count / srv_long_count
+        srv_long_rerror_rate = srv_long_rerror_count / srv_long_count
+        if srv_long_diff_hosts > 1:
+            srv_long_diff_host_rate = srv_long_diff_hosts / srv_long_count
         else:
-            continue
-
-        # TODO: do syn errors, rej errors
-    srv_diff_host_rate = round(srv_diff_host_count / count, 2)
-
-    return (count, srv_count, serror_rate, srv_serror_rate, rerror_rate,
-            srv_error_rate, same_srv_rate, diff_srv_rate, srv_diff_host_rate)
-
-
-def derive_host_features(connection, hosts=100):
-    return 'temp', 'hi'
+            srv_long_diff_host_rate = 0
+    else:
+        srv_long_serror_rate = 0
+        srv_long_rerror_rate = 0
+        srv_long_diff_host_rate = 0
+    # Return results!
+    return long_count, srv_long_count, long_same_srv_rate, long_diff_srv_rate, long_same_src_port_rate, \
+           srv_long_diff_host_rate, long_serror_rate, srv_long_serror_rate, long_rerror_rate, srv_long_rerror_rate
 
 
 # the main function
@@ -408,7 +440,8 @@ def collect_connections(input_file, keep_extra=False):
         # ---------------------------------------------------------------------
         # Derive host-based traffic features (same host over 100 connections)
         #  ---------------------------------------------------------------------
-        # host_traffic = derive_host_features(connections)
+        host_traffic = derive_host_features(connection_record, connections)
+        print(host_traffic)
         connection_record_counter += 1
 
         # Append the answers!
@@ -473,8 +506,8 @@ def label_testing_set(file_path, output):
 
 def main():
     if len(argv) == 1:
-        # cap_file = './outside.tcpdump'
-        cap_file = './test.pcap'
+        cap_file = './outside.tcpdump'
+        # cap_file = './test.pcap'
         # cap_file = './telnet.pcapng'
         collect_connections(cap_file)
     elif len(argv) == 2:
