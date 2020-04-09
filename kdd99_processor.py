@@ -304,14 +304,15 @@ def derive_time_features(connection_idx, connections, time_window=2.0):
 
 # Derive the host feature for the one connection!
 # View tcp_host_traffic.c in original for reference
-def derive_host_features(current_connection, connections, hosts=100):
+def derive_host_features(current_connection, idx, connections, hosts=256):
+    long_services = {}
+    srv_long_hosts = {}
     long_count = 0
     long_serror_count = 0
     long_rerror_count = 0
     long_same_services = 0
     long_diff_services = 0
     long_same_src_ports = 0
-    long_diff_src_ports = 0
 
     srv_long_count = 0
     srv_long_serror_count = 0
@@ -331,7 +332,15 @@ def derive_host_features(current_connection, connections, hosts=100):
     # src_bytes, dst_bytes, land, wrong_frag, urgent
 
     # Iterate the last few hundred connections
-    for (i = idx; count > 1 && i != end; i = (i-1+CHUNCKSIZE) % CHUNCKSIZE):
+    # note i goes from 0 to number of records
+
+    for i in range(idx, idx + hosts, 1):
+        # Catch index out of bound
+        try:
+            connections[idx]
+        except IndexError:
+            break
+
         # for the same destination host
         if current_connection[3] == connections[i][3]:
             long_count += 1
@@ -349,14 +358,15 @@ def derive_host_features(current_connection, connections, hosts=100):
 
             # count the # of unique (different) services
             if long_count == 1:
-                long_services[long_diff_services] = data_protocols[i]
+                long_services[long_diff_services] = connections[i][8]
                 long_diff_services += 1
             else:
-                for (j = 0; j < long_diff_services; j++):
-                    if (!strcmp (long_services[j], data_protocols[i])):
+                j = 0
+                for j in range(0, long_diff_services, 1):
+                    if long_services[j] == connections[i][8]:
                         break
                 if j == long_diff_services:
-                    long_services[long_diff_services] = data_protocols[i]
+                    long_services[long_diff_services] = connections[i][8]
                     long_diff_services += 1
             # count the  # of same source port
             if current_connection[2] == connections[i][2]:
@@ -366,7 +376,7 @@ def derive_host_features(current_connection, connections, hosts=100):
         if current_connection[9] == connections[i][9]:
             srv_long_count += 1
             # count various errors
-            if current_connection[i][10] != "SF":
+            if connections[i][10] != "SF":
                 if 'S' in connections[i][10]:
                     srv_long_serror_count += 1
                 elif 'R' in connections[i][10]:
@@ -376,11 +386,12 @@ def derive_host_features(current_connection, connections, hosts=100):
                 srv_long_hosts[srv_long_diff_hosts] = connections[i][3]
                 srv_long_diff_hosts += 1
             else:
-                for (j = 0; j < srv_long_diff_hosts; j++):
-                    if (!strcmp (srv_long_hosts[j], data_host2s[i])):
+                j = 0
+                for j in range(0, srv_long_diff_hosts, 1):
+                    if srv_long_hosts[j] == connections[i][3]:
                         break
                 if j == srv_long_diff_hosts:
-                    srv_long_hosts[srv_long_diff_hosts] = data_host2s[i]
+                    srv_long_hosts[srv_long_diff_hosts] = connections[i][3]
                     srv_long_diff_hosts += 1
     # End of for loop
     if long_count > 0:
@@ -411,9 +422,9 @@ def derive_host_features(current_connection, connections, hosts=100):
         srv_long_serror_rate = 0
         srv_long_rerror_rate = 0
         srv_long_diff_host_rate = 0
+
     # Return results!
-    return long_count, srv_long_count, long_same_srv_rate, long_diff_srv_rate, long_same_src_port_rate, \
-           srv_long_diff_host_rate, long_serror_rate, srv_long_serror_rate, long_rerror_rate, srv_long_rerror_rate
+    return long_count, srv_long_count, long_same_srv_rate, long_diff_srv_rate, long_same_src_port_rate,  srv_long_diff_host_rate, long_serror_rate, srv_long_serror_rate, long_rerror_rate, srv_long_rerror_rate
 
 
 # the main function
@@ -440,7 +451,7 @@ def collect_connections(input_file, keep_extra=False):
         # ---------------------------------------------------------------------
         # Derive host-based traffic features (same host over 100 connections)
         #  ---------------------------------------------------------------------
-        host_traffic = derive_host_features(connection_record, connections)
+        host_traffic = derive_host_features(connection_record, connection_record_counter, connections)
         print(host_traffic)
         connection_record_counter += 1
 
