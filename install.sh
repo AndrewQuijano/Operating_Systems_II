@@ -1,12 +1,5 @@
 #!/bin/bash
 
-sudo apt-get update
-sudo apt-get install git
-
-# Install basics
-sudo apt-get install vim
-sudo apt-get install dos2unix
-
 # Install Python and packages
 sudo apt-get install python3-pip
 sudo apt-get install tcpdump python3-crypto ipython3
@@ -22,23 +15,23 @@ sudo pip3 install joblib
 sudo pip3 install pikepdf
 sudo pip3 install scikit-plot
 
-# Update the packages, Written as of May 4, 2019
-# You want sklearn 0.20.3 scipy 1.1.0 numpy 1.16.3
-sudo pip3 install scipy -U
-sudo pip3 install sklearn -U
-sudo pip3 install numpy -U
-
-# Install Java and Eclipse
-sudo apt-get install default-jdk
-sudo apt-get install default-jre
-sudo add-apt-repository ppa:linuxuprising/java
-sudo apt update
-sudo apt-get install oracle-java11-installer
-
-# To install C++ Processor, hope to make java version someday after OS2 ends
-sudo apt-get install cmake
-sudo apt-get install libpcap-dev
-
 # More Attack packages
 sudo pip3 install pexpect
 sudo pip3 install python-nmap
+
+# Dependancies for Bro/Zeek
+# Works for C+++ preprocessor
+sudo apt-get install cmake make gcc g++ flex bison 
+sudo apt-get install libpcap-dev libssl-dev python-dev swig zlib1g-dev
+
+# Install Bro/Zeek from source
+sudo apt-get install git
+git clone --recursive https://github.com/zeek/zeek
+cd ./zeek
+./configure
+make
+sudo make install
+sudo make install-aux
+export PATH=/usr/local/zeek/bin:$PATH
+cd ..
+rm -rf ./zeek
